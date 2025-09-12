@@ -4,159 +4,163 @@ let
   home-manager = builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/master.tar.gz";
 in
 {
+  # Imports
   imports = [
     ./hardware-configuration.nix
     (import "${home-manager}/nixos")
     ./home-manager-hadichokr.nix
   ];
 
-  # Bootloader
-  boot.loader.systemd-boot.enable = true;
+  # Bootloader configuration
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.systemd-boot.enable = true;
   boot.loader.systemd-boot.configurationLimit = 5;
+  boot.loader.timeout = 0;
 
-  # Use latest kernel
+  # Kernel
   boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelParams = [
+    "quiet"
+    "splash"
+    "boot.shell_on_fail"
+    "rd.systemd.show_status=auto"
+    "udev.log_priority=3"
+  ];
+
+  # Plymouth
+  boot.consoleLogLevel = 3;
+  boot.initrd.verbose = false;
+  boot.plymouth = {
+    enable = true;
+    theme = "bgrt";
+  };
+
+  # Swap
+  swapDevices = [
+    {
+      device = "/var/lib/swapfile";
+      size = 16*1024; # 16 GiB
+    }
+  ];
 
   # Networking
   networking.hostName = "nixos";
   networking.networkmanager.enable = true;
 
-  # Time zone and locale
-  time.timeZone = "Europe/Berlin";
+  # Locale and time
   i18n.defaultLocale = "de_DE.UTF-8";
   i18n.extraLocaleSettings = {
-    LC_ADDRESS = "de_DE.UTF-8";
+    LC_ADDRESS        = "de_DE.UTF-8";
     LC_IDENTIFICATION = "de_DE.UTF-8";
-    LC_MEASUREMENT = "de_DE.UTF-8";
-    LC_MONETARY = "de_DE.UTF-8";
-    LC_NAME = "de_DE.UTF-8";
-    LC_NUMERIC = "de_DE.UTF-8";
-    LC_PAPER = "de_DE.UTF-8";
-    LC_TELEPHONE = "de_DE.UTF-8";
-    LC_TIME = "de_DE.UTF-8";
+    LC_MEASUREMENT    = "de_DE.UTF-8";
+    LC_MONETARY       = "de_DE.UTF-8";
+    LC_NAME           = "de_DE.UTF-8";
+    LC_NUMERIC        = "de_DE.UTF-8";
+    LC_PAPER          = "de_DE.UTF-8";
+    LC_TELEPHONE      = "de_DE.UTF-8";
+    LC_TIME           = "de_DE.UTF-8";
   };
+  time.timeZone = "Europe/Berlin";
 
-  # Console and X11 keymap
+  # Console / X11 keyboard
   console.keyMap = "de";
+  services.xserver.enable = true;
   services.xserver.xkb = {
     layout = "de";
     variant = "";
   };
 
-  # Display manager and desktop environment
-  services.displayManager.sddm.enable = true;
+  # Display manager & desktop environment
   services.desktopManager.plasma6.enable = true;
-
-  services.xserver.enable = true;
+  services.displayManager.sddm.enable = true;
 
   # Printing
   services.printing.enable = true;
 
-  # Sound via Pipewire
-  services.pulseaudio.enable = false;
-  security.rtkit.enable = true;
+  # Sound
   services.pipewire = {
     enable = true;
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
   };
+  services.pulseaudio.enable = false;
+  security.rtkit.enable = true;
 
-  # Environment/system packages
-  environment.systemPackages = with pkgs; [
-    vim
-    wget
-    curl
-    git
-    htop
-    neofetch
-    btop
-    nixos-bgrt-plymouth
-    home-manager
-    flatpak
-    floorp
-    kdePackages.kdevelop
-    (bottles.override {
-      removeWarningPopup = true;
-    })
-    discord
-    vlc
-    distrobox
-    toolbox
-    github-desktop
-    kdePackages.kcalc
-    kdePackages.partitionmanager
-    libreoffice-qt-fresh
-    kdePackages.neochat
-    qbittorrent-enhanced
-    spotify
-    superTux
-    superTuxKart
-    thunderbird-bin
-    megasync
-  ];
-
-  programs.virt-manager.enable = true;
-  virtualisation.libvirtd.enable = true;
-  virtualisation.spiceUSBRedirection.enable = true;
-
-  programs.steam = {
-    enable = true;
-    remotePlay.openFirewall = true;
-    dedicatedServer.openFirewall = true;
-    localNetworkGameTransfers.openFirewall = true;
-  };
-
-  virtualisation.waydroid.enable = true;
-  systemd.services.waydroid-container.enable = true;
-
+  # Flatpak
   services.flatpak.enable = true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
-  nixpkgs.config.permittedInsecurePackages = [
-    "olm-3.2.16"
-  ];
+  nixpkgs.config.permittedInsecurePackages = [ "olm-3.2.16" ];
 
-  # Plymouth and boot tweaks
-  boot.plymouth = {
-    enable = true;
-    theme = "bgrt";
-  };
-  boot.consoleLogLevel = 3;
-  boot.initrd.verbose = false;
-  boot.kernelParams = [
-    "quiet"
-    "splash"
-    "boot.shell_on_fail"
-    "udev.log_priority=3"
-    "rd.systemd.show_status=auto"
-  ];
-  boot.loader.timeout = 0;
-
-  # Garbage Collection (QoL)
+  # Nix / system optimizations
   nix.gc = {
     automatic = true;
     dates = "daily";
     options = "--delete-older-than 5d";
   };
-
-  # Nix daemon optimizations
   nix.settings = {
     auto-optimise-store = true;
     experimental-features = [ "nix-command" "flakes" ];
   };
 
-  # Enable auto-upgrades (optional QoL)
+  # Auto-upgrades
   system.autoUpgrade = {
     enable = true;
     allowReboot = false;
   };
 
-  # Shell and CLI enhancements
+  # Shell
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
+
+  # Virtualization
+  programs.virt-manager.enable = true;
+  virtualisation.libvirtd.enable = true;
+  virtualisation.spiceUSBRedirection.enable = true;
+  virtualisation.waydroid.enable = true;
+  systemd.services.waydroid-container.enable = true;
+
+  # Steam
+  programs.steam = {
+    enable = true;
+    dedicatedServer.openFirewall = true;
+    localNetworkGameTransfers.openFirewall = true;
+    remotePlay.openFirewall = true;
+  };
+
+  # System packages
+  environment.systemPackages = with pkgs; [
+    btop
+    bottles.override { removeWarningPopup = true; }
+    curl
+    discord
+    distrobox
+    flatpak
+    floorp
+    github-desktop
+    git
+    htop
+    kdePackages.kcalc
+    kdePackages.kdevelop
+    kdePackages.neochat
+    kdePackages.partitionmanager
+    libreoffice-qt-fresh
+    megasync
+    neofetch
+    nixos-bgrt-plymouth
+    qbittorrent-enhanced
+    spotify
+    superTux
+    superTuxKart
+    thunderbird-bin
+    toolbox
+    vim
+    vlc
+    wget
+    home-manager
+  ];
 
   # System version
   system.stateVersion = "25.11";

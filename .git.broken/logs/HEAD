@@ -1,7 +1,0 @@
-0000000000000000000000000000000000000000 5758854b73bc7afcf08e7e2bcf4f0df235f790e3 Hadi Chokr <hadichokr@icloud.com> 1757661187 +0200	commit (initial): first commit
-5758854b73bc7afcf08e7e2bcf4f0df235f790e3 ec3222b94c5958d30d80c3820a450960dfda7dd5 Hadi Chokr <hadichokr@icloud.com> 1757661886 +0200	commit: Cleanup.
-ec3222b94c5958d30d80c3820a450960dfda7dd5 ec3222b94c5958d30d80c3820a450960dfda7dd5 Hadi Chokr <hadichokr@icloud.com> 1757665579 +0200	reset: moving to HEAD
-ec3222b94c5958d30d80c3820a450960dfda7dd5 d98f156c51a719cd1164c771e9df9e5bd3a5c0a7 Hadi Chokr <hadichokr@icloud.com> 1757666223 +0200	commit: Add Flatpaks.
-d98f156c51a719cd1164c771e9df9e5bd3a5c0a7 90448cac5b0fd9605675d6ed5f81823b656d612b Hadi Chokr <hadichokr@icloud.com> 1757668671 +0200	commit: Configure Plasma correctly.
-90448cac5b0fd9605675d6ed5f81823b656d612b 0c69af8e97f24c361419124e513850148d3fa489 Hadi Chokr <hadichokr@icloud.com> 1757669409 +0200	commit: Flatpaks work now.
-0c69af8e97f24c361419124e513850148d3fa489 ae8e01d43192fe8c1e6b3be6f37d5f4498ff315d Hadi Chokr <hadichokr@icloud.com> 1757690131 +0200	commit: Biggie

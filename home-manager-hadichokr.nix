@@ -1,41 +1,41 @@
 { config, pkgs, ... }:
 
 let
-  # Fetch nix-flatpak
+  # Fetch nix-flatpak & plasma-manager
   nix-flatpak = builtins.fetchTarball "https://github.com/gmodena/nix-flatpak/archive/latest.tar.gz";
-
-  # Fetch Plasma Manager as a standalone module
   plasma-manager = builtins.fetchTarball "https://github.com/nix-community/plasma-manager/archive/trunk.tar.gz";
 in
 {
-  # The normal user
+  # Normal user
   users.users.hadichokr = {
     isNormalUser = true;
     description = "Hadi Chokr";
-    extraGroups = [ "networkmanager" "wheel" "libvirtd"];
+    extraGroups = [ "libvirtd" "networkmanager" "wheel" ];
     packages = with pkgs; [
+      fastfetch
       kdePackages.kate
+      neovim
       pkgs.oh-my-zsh
       zsh-autosuggestions
       zsh-syntax-highlighting
-      neovim
-      fastfetch
     ];
   };
 
-  users.groups.libvirtd.members = ["hadichokr"];
+  # Add user to groups
+  users.groups.libvirtd.members = [ "hadichokr" ];
 
-  # Home Manager configuration for the user
+  # Home Manager configuration
   home-manager.users.hadichokr = { pkgs, ... }: {
     home.stateVersion = "25.05";
 
-    # Packages installed in user environment
+    # Packages
     home.packages = with pkgs; [
+      plasma-manager
       zsh-autosuggestions
       zsh-syntax-highlighting
-      plasma-manager
     ];
 
+    # DConf
     dconf.settings = {
       "org/virt-manager/virt-manager/connections" = {
         autoconnect = ["qemu:///system"];
@@ -43,33 +43,26 @@ in
       };
     };
 
-    # Git config
+    # Git
     programs.git = {
       enable = true;
-      userName = "Hadi Chokr";
       userEmail = "hadichokr@icloud.com";
+      userName = "Hadi Chokr";
     };
 
-    # Zsh + Oh-My-Zsh
+    # Oh-My-Zsh
     programs.zsh = {
       enable = true;
       enableCompletion = true;
-
       shellAliases = {
         ll = "ls -l";
         update = "sudo nixos-rebuild switch";
       };
-
       oh-my-zsh = {
         enable = true;
+        plugins = [ "git" "sudo" ];
         theme = "robbyrussell";
-        plugins = [
-          "git"
-          "sudo"
-        ];
       };
-
-      # Load extra plugins manually
       initContent = ''
         export ZSH=${pkgs.oh-my-zsh}/share/oh-my-zsh
         source $ZSH/oh-my-zsh.sh
@@ -82,89 +75,62 @@ in
       '';
     };
 
-    # Enable Home Manager
+    # Enable Home Manager itself
     programs.home-manager.enable = true;
 
-    # Enable Plasma Manager
+    # Additional modules
     imports = [
       (import "${plasma-manager}/modules")
       "${nix-flatpak}/modules/home-manager.nix"
     ];
 
-    # Configure nix-flatpak
+    # Flatpak
     services.flatpak = {
       enable = true;
       packages = [
+        "com.ktechpit.whatsie"
+        "com.obsproject.Studio"
         "org.zealdocs.Zeal"
-	"com.obsproject.Studio"
-	"party.supertux.supertuxparty"
-	"com.ktechpit.whatsie"
+        "party.supertux.supertuxparty"
       ];
+      update.auto = {
+        enable = true;
+        onCalendar = "weekly";
+      };
     };
 
-    services.flatpak.update.auto = {
-      enable = true;
-      onCalendar = "weekly"; # Default value
-    };
-
-    # Plasma 4 / KDE 4 compatible settings
+    # Plasma workspace
     programs.plasma = {
       enable = true;
-
-      # Workspace settings
+      input.keyboard.layouts = [ { layout = "de"; } ];
+      kwin.effects.translucency.enable = true;
+      kwin.effects.wobblyWindows.enable = true;
+      kwin.effects.windowOpenClose.animation = "glide";
+      powerdevil.AC.whenLaptopLidClosed = "doNothing";
+      spectacle.shortcuts.launch = "<F12>";
       workspace = {
         clickItemTo = "open";
         lookAndFeel = "org.kde.breezedark.desktop";
         wallpaper = "${pkgs.kdePackages.plasma-workspace-wallpapers}/share/wallpapers/FlyingKonqui/contents/images/1920x1080.png";
-	wallpaperBackground.blur = true;
+        wallpaperBackground.blur = true;
       };
-
-      # Virtual desktops
-      kwin.virtualDesktops = {
-        number = 2;
-        rows = 2;
-      };
-
-      # KWin effects
-      kwin.effects.wobblyWindows.enable = true;
-      kwin.effects.translucency.enable = true;
-      kwin.effects.windowOpenClose.animation = "glide";
-
-      # Power settings
-      powerdevil.AC.whenLaptopLidClosed = "doNothing";
-
-      # Keyboard layouts (list format)
-      input.keyboard.layouts = [
-        {
-          layout = "de";
-        }
-      ];
-
-      # Shortcuts
-      spectacle.shortcuts.launch = "<F12>";
+      kwin.virtualDesktops = { number = 2; rows = 2; };
     };
 
-    # Activation script to set the Plasma start menu icon
+    # Activate Plasma start menu icon
     home.activation.set-plasma-startmenu-icon = ''
       echo "Setting Plasma Application Launcher icon…"
-
       section='[Containments][2][Applets][3][Configuration][General]'
       config="$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc"
-
-      # Backup first
       cp "$config" "$config.home-manager-backup"
-
-      # Add section if missing
       grep -q "^$section" "$config" || echo "$section" >> "$config"
-
-      # Add icon= if missing, or replace if present
       grep -q "^icon=" "$config" && \
         sed -i "/^$section/,/^\[/ s/^icon=.*/icon=nix-snowflake/" "$config" || \
         sed -i "/^$section/a icon=nix-snowflake" "$config"
     '';
   };
 
-  # Global Home Manager option
+  # Global Home Manager backup
   home-manager.backupFileExtension = "backup";
 }
 
