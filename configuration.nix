@@ -1,23 +1,40 @@
 { config, pkgs, lib, ... }:
 
 let
+  # Fetch Home Manager
   home-manager = builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/master.tar.gz";
 in
 {
+  # ---------------------------------------------------------------------------
   # Imports
+  # ---------------------------------------------------------------------------
   imports = [
     ./hardware-configuration.nix
     (import "${home-manager}/nixos")
     ./home-manager-hadichokr.nix
   ];
 
-  # Bootloader configuration
+  # ---------------------------------------------------------------------------
+  # Nixpkgs overlays
+  # ---------------------------------------------------------------------------
+  nixpkgs.overlays = [
+    (self: super: {
+      # Override bottles to remove the warning popup
+      bottles = super.bottles.override { removeWarningPopup = true; };
+    })
+  ];
+
+  # ---------------------------------------------------------------------------
+  # Bootloader
+  # ---------------------------------------------------------------------------
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.systemd-boot.enable = true;
   boot.loader.systemd-boot.configurationLimit = 5;
   boot.loader.timeout = 0;
 
+  # ---------------------------------------------------------------------------
   # Kernel
+  # ---------------------------------------------------------------------------
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.kernelParams = [
     "quiet"
@@ -27,7 +44,9 @@ in
     "udev.log_priority=3"
   ];
 
-  # Plymouth
+  # ---------------------------------------------------------------------------
+  # Plymouth & boot tweaks
+  # ---------------------------------------------------------------------------
   boot.consoleLogLevel = 3;
   boot.initrd.verbose = false;
   boot.plymouth = {
@@ -35,7 +54,9 @@ in
     theme = "bgrt";
   };
 
+  # ---------------------------------------------------------------------------
   # Swap
+  # ---------------------------------------------------------------------------
   swapDevices = [
     {
       device = "/var/lib/swapfile";
@@ -43,11 +64,15 @@ in
     }
   ];
 
+  # ---------------------------------------------------------------------------
   # Networking
+  # ---------------------------------------------------------------------------
   networking.hostName = "nixos";
   networking.networkmanager.enable = true;
 
-  # Locale and time
+  # ---------------------------------------------------------------------------
+  # Locale & time
+  # ---------------------------------------------------------------------------
   i18n.defaultLocale = "de_DE.UTF-8";
   i18n.extraLocaleSettings = {
     LC_ADDRESS        = "de_DE.UTF-8";
@@ -62,7 +87,9 @@ in
   };
   time.timeZone = "Europe/Berlin";
 
+  # ---------------------------------------------------------------------------
   # Console / X11 keyboard
+  # ---------------------------------------------------------------------------
   console.keyMap = "de";
   services.xserver.enable = true;
   services.xserver.xkb = {
@@ -70,14 +97,20 @@ in
     variant = "";
   };
 
+  # ---------------------------------------------------------------------------
   # Display manager & desktop environment
+  # ---------------------------------------------------------------------------
   services.desktopManager.plasma6.enable = true;
   services.displayManager.sddm.enable = true;
 
+  # ---------------------------------------------------------------------------
   # Printing
+  # ---------------------------------------------------------------------------
   services.printing.enable = true;
 
+  # ---------------------------------------------------------------------------
   # Sound
+  # ---------------------------------------------------------------------------
   services.pipewire = {
     enable = true;
     alsa.enable = true;
@@ -87,14 +120,20 @@ in
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
 
+  # ---------------------------------------------------------------------------
   # Flatpak
+  # ---------------------------------------------------------------------------
   services.flatpak.enable = true;
 
+  # ---------------------------------------------------------------------------
   # Allow unfree packages
+  # ---------------------------------------------------------------------------
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.permittedInsecurePackages = [ "olm-3.2.16" ];
 
+  # ---------------------------------------------------------------------------
   # Nix / system optimizations
+  # ---------------------------------------------------------------------------
   nix.gc = {
     automatic = true;
     dates = "daily";
@@ -105,24 +144,32 @@ in
     experimental-features = [ "nix-command" "flakes" ];
   };
 
+  # ---------------------------------------------------------------------------
   # Auto-upgrades
+  # ---------------------------------------------------------------------------
   system.autoUpgrade = {
     enable = true;
     allowReboot = false;
   };
 
+  # ---------------------------------------------------------------------------
   # Shell
+  # ---------------------------------------------------------------------------
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
 
+  # ---------------------------------------------------------------------------
   # Virtualization
+  # ---------------------------------------------------------------------------
   programs.virt-manager.enable = true;
   virtualisation.libvirtd.enable = true;
   virtualisation.spiceUSBRedirection.enable = true;
   virtualisation.waydroid.enable = true;
   systemd.services.waydroid-container.enable = true;
 
+  # ---------------------------------------------------------------------------
   # Steam
+  # ---------------------------------------------------------------------------
   programs.steam = {
     enable = true;
     dedicatedServer.openFirewall = true;
@@ -130,10 +177,12 @@ in
     remotePlay.openFirewall = true;
   };
 
+  # ---------------------------------------------------------------------------
   # System packages
+  # ---------------------------------------------------------------------------
   environment.systemPackages = with pkgs; [
     btop
-    bottles.override { removeWarningPopup = true; }
+    bottles        # <- uses overlay with removeWarningPopup = true
     curl
     discord
     distrobox
@@ -162,7 +211,9 @@ in
     home-manager
   ];
 
+  # ---------------------------------------------------------------------------
   # System version
+  # ---------------------------------------------------------------------------
   system.stateVersion = "25.11";
 }
 
