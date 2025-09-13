@@ -5,16 +5,19 @@ let
   plasma-manager = builtins.fetchTarball "https://github.com/nix-community/plasma-manager/archive/trunk.tar.gz";
 in
 {
-  # Standalone Home Manager requires these:
   home.username = "hadichokr";
   home.homeDirectory = "/home/hadichokr";
-  
   home.stateVersion = "25.05";
 
   home.packages = with pkgs; [
     plasma-manager
     zsh-autosuggestions
     zsh-syntax-highlighting
+    autojump
+    tmux
+    docker
+    kubectl
+    fastfetch
   ];
 
   dconf.settings = {
@@ -35,28 +38,79 @@ in
     enableCompletion = true;
 
     shellAliases = {
-      ll          = "ls -l";
+      ll = "ls -lh --color=auto";
+      la = "ls -A";
+      l  = "ls -CF";
+
       rebuild     = "sudo nixos-rebuild switch";
       update      = "sudo nixos-rebuild switch --upgrade";
       update-home = "home-manager -f /etc/nixos/hadichokr-home.nix switch";
       update-all  = "sudo nixos-rebuild switch --upgrade && home-manager -f /etc/nixos/hadichokr-home.nix switch";
+
+      # Alias home-manager to always use your config
+      home-manager = "home-manager -f /etc/nixos/hadichokr-home.nix";
+
+      gs = "git status";
+      ga = "git add";
+      gc = "git commit";
+      gp = "git push";
+      gd = "git diff";
+
+      vi = "nvim";
+      h  = "history";
+
+      cleanup = ''
+        echo "Cleaning old Nix generations, keeping last 5..."
+        sudo nix-collect-garbage -d
+        sudo nix-env --delete-generations old
+        sudo nix-env --delete-generations +5
+        home-manager generations delete --older-than 5d || true
+        echo "Cleanup done!"
+      '';
     };
 
     oh-my-zsh = {
       enable = true;
-      theme = "robbyrussell";
-      plugins = [ "git" "sudo" ];
+      theme  = "robbyrussell";
+      plugins = [
+        "git"
+        "sudo"
+        "z"
+        "autojump"
+        "extract"
+        "docker"
+        "kubectl"
+        "npm"
+        "golang"
+        "pip"
+        "tmux"
+        "history-substring-search"
+      ];
     };
 
     initContent = ''
       export ZSH=${pkgs.oh-my-zsh}/share/oh-my-zsh
       source $ZSH/oh-my-zsh.sh
 
+      # Load Nix-installed plugins
       source ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
       source ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
+      # Useful environment vars
+      export EDITOR=nvim
+      export VISUAL=nvim
+      export PATH=$HOME/.local/bin:$PATH
+
+      # Enable autojump if installed
+      [[ -s ${pkgs.autojump}/share/autojump/autojump.zsh ]] && source ${pkgs.autojump}/share/autojump/autojump.zsh
+
+      # Fast system info
       echo ""
       fastfetch
+
+      # Improve history search
+      bindkey '^[[A' history-substring-search-up
+      bindkey '^[[B' history-substring-search-down
     '';
   };
 
@@ -75,7 +129,6 @@ in
       "org.kde.neochat"
       "org.zealdocs.Zeal"
       "party.supertux.supertuxparty"
-
     ];
     update.auto = {
       enable = true;

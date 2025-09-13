@@ -184,7 +184,6 @@ in
     nerd-fonts.fira-code
   ];
 
-
   # ---------------------------------------------------------------------------
   # Virtualization
   # ---------------------------------------------------------------------------
@@ -235,7 +234,20 @@ in
     vlc
     wget
     xdg-desktop-portal-gtk
-    home-manager   # <- standalone CLI installed
+    home-manager
+
+    # -------------------------------------------------------------------------
+    # Go / Wayland / KDE Dev Packages
+    # -------------------------------------------------------------------------
+    go
+    gopls
+    go-md2man
+    xdg-utils
+    wayland-utils
+    kdePackages.kde-dev-utils
+    kdePackages.kdev-php
+    kdePackages.kdev-python
+    kdePackages.kde-dev-scripts
   ];
 
   # ---------------------------------------------------------------------------
