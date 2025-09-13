@@ -204,6 +204,7 @@ in
     kdePackages.kcalc
     kdePackages.kdevelop
     kdePackages.partitionmanager
+    kdePackages.xdg-desktop-portal-kde
     libreoffice-qt-fresh
     megasync
     nixos-bgrt-plymouth
@@ -216,7 +217,6 @@ in
     vim
     vlc
     wget
-    xdg-desktop-portal-kde
     home-manager   # <- standalone CLI installed
   ];
 
