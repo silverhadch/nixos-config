@@ -32,6 +32,26 @@ in
     };
   };
 
+  programs.konsole = {
+    enable = true;
+
+    # Optional: set the default profile to the one we define
+    defaultProfile = "Linux";
+
+    # Define custom profiles
+    profiles = {
+      Linux = {
+        name = "Linux";
+        colorScheme = "Linux";      # Use the 'Linux' color scheme
+        extraConfig = {
+          Keyboard = {
+            KeyBindings = "linux";  # Wrapped in the correct section
+          };
+        };
+      };
+    };
+  };
+
   programs.git = {
     enable = true;
     userEmail = "hadichokr@icloud.com";
