@@ -159,7 +159,7 @@ in
   # ---------------------------------------------------------------------------
   nix.gc = {
     automatic = true;
-    dates = "daily";
+    dates = "hourly";
     options = "--delete-older-than 5d";
   };
   nix.settings = {

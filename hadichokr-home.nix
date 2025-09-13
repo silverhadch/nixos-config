@@ -20,6 +20,11 @@ in
     fastfetch
   ];
 
+  # Cleanup after Home Manager
+  services.home-manager.autoExpire.enable = true;
+  services.home-manager.autoExpire.frequency = "hourly";
+  services.home-manager.autoExpire.timestamp = "-3 days";
+
   dconf.settings = {
     "org/virt-manager/virt-manager/connections" = {
       autoconnect = ["qemu:///system"];
@@ -64,7 +69,6 @@ in
         sudo nix-collect-garbage -d
         sudo nix-env --delete-generations old
         sudo nix-env --delete-generations +5
-        home-manager generations delete --older-than 5d || true
         echo "Cleanup done!"
       '';
     };
