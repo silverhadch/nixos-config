@@ -72,8 +72,11 @@ in
     packages = [
       "com.ktechpit.whatsie"
       "com.obsproject.Studio"
+      "io.github.shiftey.Desktop"
+      "org.kde.neochat"
       "org.zealdocs.Zeal"
       "party.supertux.supertuxparty"
+
     ];
     update.auto = {
       enable = true;
@@ -88,7 +91,7 @@ in
     kwin.effects.wobblyWindows.enable = true;
     kwin.effects.windowOpenClose.animation = "glide";
     powerdevil.AC.whenLaptopLidClosed = "doNothing";
-    spectacle.shortcuts.launch = "<F12>";
+    spectacle.shortcuts.launch = "F12";
 
     workspace = {
       clickItemTo = "open";

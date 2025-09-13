@@ -125,12 +125,18 @@ in
   # Flatpak
   # ---------------------------------------------------------------------------
   services.flatpak.enable = true;
+  xdg.portal = {
+    xdgOpenUsePortal = true;
+    enable = true;
+    extraPortals = [
+      pkgs.xdg-desktop-portal-kde
+    ];
+  };
 
   # ---------------------------------------------------------------------------
   # Allow unfree packages
   # ---------------------------------------------------------------------------
   nixpkgs.config.allowUnfree = true;
-  nixpkgs.config.permittedInsecurePackages = [ "olm-3.2.16" ];
 
   # ---------------------------------------------------------------------------
   # Nix / system optimizations
@@ -154,10 +160,14 @@ in
   };
 
   # ---------------------------------------------------------------------------
-  # Shell
+  # Shell & Fonts
   # ---------------------------------------------------------------------------
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
+  fonts.packages = with pkgs; [
+    nerd-fonts.fira-code
+  ];
+
 
   # ---------------------------------------------------------------------------
   # Virtualization
@@ -189,16 +199,13 @@ in
     distrobox
     flatpak
     floorp
-    github-desktop
     git
     htop
     kdePackages.kcalc
     kdePackages.kdevelop
-    kdePackages.neochat
     kdePackages.partitionmanager
     libreoffice-qt-fresh
     megasync
-    neofetch
     nixos-bgrt-plymouth
     qbittorrent-enhanced
     spotify
@@ -209,6 +216,7 @@ in
     vim
     vlc
     wget
+    xdg-desktop-portal-kde
     home-manager   # <- standalone CLI installed
   ];
 
