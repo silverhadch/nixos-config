@@ -72,7 +72,6 @@ in
     packages = [
       "com.ktechpit.whatsie"
       "com.obsproject.Studio"
-      "io.github.shiftey.Desktop"
       "org.kde.neochat"
       "org.zealdocs.Zeal"
       "party.supertux.supertuxparty"

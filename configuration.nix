@@ -126,12 +126,28 @@ in
   # ---------------------------------------------------------------------------
   services.flatpak.enable = true;
   xdg.portal = {
-    xdgOpenUsePortal = true;
     enable = true;
-    extraPortals = [
-      pkgs.kdePackages.xdg-desktop-portal-kde
+    xdgOpenUsePortal = true;
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-gtk
+      kdePackages.xdg-desktop-portal-kde
     ];
+    config.common.default = [ "gtk" "kde" ];
   };
+
+  # ---------------------------------------------------------------------------
+  # Firefox
+  # ---------------------------------------------------------------------------
+  programs.firefox = {
+    enable = true;
+    preferences = {
+      "widget.use-xdg-desktop-portal.file-picker" = 1;
+    };
+    wrapperConfig = {
+      pipewireSupport = true;
+    };
+  };
+  programs.firefox.nativeMessagingHosts.packages = [ pkgs.firefoxpwa ];
 
   # ---------------------------------------------------------------------------
   # Allow unfree packages
@@ -197,9 +213,10 @@ in
     curl
     discord
     distrobox
+    firefoxpwa
     flatpak
-    floorp
     git
+    github-desktop
     htop
     kdePackages.kcalc
     kdePackages.kdevelop
@@ -217,6 +234,7 @@ in
     vim
     vlc
     wget
+    xdg-desktop-portal-gtk
     home-manager   # <- standalone CLI installed
   ];
 
