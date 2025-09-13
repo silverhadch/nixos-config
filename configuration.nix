@@ -19,7 +19,6 @@ in
   # ---------------------------------------------------------------------------
   nixpkgs.overlays = [
     (self: super: {
-      # Override bottles to remove the warning popup
       bottles = super.bottles.override { removeWarningPopup = true; };
     })
   ];
@@ -60,7 +59,7 @@ in
   swapDevices = [
     {
       device = "/var/lib/swapfile";
-      size = 16*1024; # 16 GiB
+      size = 16*1024;
     }
   ];
 
@@ -184,7 +183,7 @@ in
   # ---------------------------------------------------------------------------
   environment.systemPackages = with pkgs; [
     btop
-    bottles        # <- uses overlay with removeWarningPopup = true
+    bottles
     curl
     discord
     distrobox
@@ -210,7 +209,7 @@ in
     vim
     vlc
     wget
-    home-manager
+    home-manager   # <- standalone CLI installed
   ];
 
   # ---------------------------------------------------------------------------

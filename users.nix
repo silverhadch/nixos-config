@@ -7,6 +7,7 @@
     extraGroups = [ "libvirtd" "networkmanager" "wheel" ];
     packages = with pkgs; [
       fastfetch
+      home-manager
       kdePackages.kate
       neovim
       pkgs.oh-my-zsh

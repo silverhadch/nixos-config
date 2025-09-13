@@ -5,6 +5,10 @@ let
   plasma-manager = builtins.fetchTarball "https://github.com/nix-community/plasma-manager/archive/trunk.tar.gz";
 in
 {
+  # Standalone Home Manager requires these:
+  home.username = "hadichokr";
+  home.homeDirectory = "/home/hadichokr";
+  
   home.stateVersion = "25.05";
 
   home.packages = with pkgs; [
@@ -34,7 +38,8 @@ in
       ll          = "ls -l";
       rebuild     = "sudo nixos-rebuild switch";
       update      = "sudo nixos-rebuild switch --upgrade";
-      update-home = "home-manager switch";
+      update-home = "home-manager -f /etc/nixos/hadichokr-home.nix switch";
+      update-all  = "sudo nixos-rebuild switch --upgrade && home-manager -f /etc/nixos/hadichokr-home.nix switch";
     };
 
     oh-my-zsh = {

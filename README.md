@@ -1,49 +1,125 @@
-# NixOS Configuration
+# ❄️ NixOS Configuration
 
-This directory contains the full declarative configuration for this system.  
-All configs are kept in `/etc/nixos` for simplicity.
+This repository contains my personal NixOS system configuration.  
+It is fully declarative, using **NixOS modules**, **Home Manager**, and extra tooling for **Flatpak** and **Plasma** customization.  
 
-## File layout
+---
 
-- **configuration.nix**  
-  Main system configuration (imports hardware config, Home Manager, users).
+## 📂 Repository Layout
 
-- **hardware-configuration.nix**  
-  Auto-generated hardware configuration from NixOS install.
+- **`configuration.nix`** – main system configuration  
+- **`hardware-configuration.nix`** – auto-generated hardware settings  
+- **`users.nix`** – user definitions + Home Manager integration  
+- **`hadichokr-home.nix`** – Home Manager configuration for my user  
 
-- **users.nix**  
-  Defines all system users and groups, plus links each user to their Home Manager configuration.  
-  This is the place to add new users in the future.
+---
 
-- **hadichokr-home.nix**  
-  Home Manager configuration for the user `hadichokr`.  
-  Contains user-level packages, aliases, Plasma config, Flatpak setup, etc.
+## 🚀 Features
 
-## Aliases (Zsh)
+- **Boot & Kernel**
+  - `systemd-boot` with EFI support  
+  - Latest Linux kernel (`linuxPackages_latest`)  
+  - Plymouth splash with `bgrt` theme  
 
-Inside the Home Manager config (`hadichokr-home.nix`) these aliases are defined:
+- **System Tweaks**
+  - Daily garbage collection (`--delete-older-than 5d`)  
+  - `nix-command` and `flakes` enabled  
+  - Auto system upgrades (without reboot)  
 
-- `rebuild` → `sudo nixos-rebuild switch`  
-- `update` → `sudo nixos-rebuild switch --upgrade`  
-- `update-home` → `home-manager switch`  
+- **Desktop**
+  - **Plasma 6** with SDDM (Wayland enabled by default)  
+  - Plasma customization via [plasma-manager](https://github.com/nix-community/plasma-manager)  
+  - Dark theme, Konqi wallpaper, wobbly windows & glide animations  
 
-So you can quickly rebuild or update either the whole system or just your Home Manager config.
+- **User Environment**
+  - **Home Manager** for user configuration  
+  - **Zsh + Oh My Zsh** with autosuggestions, syntax highlighting  
+  - Aliases for rebuild/update workflows  
 
-## How to add a new user
+- **Networking & Locale**
+  - NetworkManager enabled  
+  - Hostname: `nixos`  
+  - Locale: `de_DE.UTF-8`  
+  - Timezone: `Europe/Berlin`  
 
-1. Add a new `users.users.<name>` entry in `users.nix`.  
-2. Create a `<name>-home.nix` file for their Home Manager config.  
-3. Import it in `users.nix` under `home-manager.users.<name>`.  
+- **Audio**
+  - PipeWire (with ALSA + PulseAudio support)  
+  - RealtimeKit enabled  
 
-Example:
+- **Virtualization**
+  - libvirt + virt-manager  
+  - Spice USB redirection  
+  - Waydroid enabled  
 
-```nix
-users.users.alice = {
-  isNormalUser = true;
-  extraGroups = [ "wheel" ];
-};
+- **Applications**
+  - System: `git`, `vim`, `htop`, `btop`, `curl`, `wget`  
+  - KDE apps: Kate, KCalc, KDevelop, Partition Manager, NeoChat  
+  - Productivity: LibreOffice, Thunderbird, GitHub Desktop, MEGAsync  
+  - Gaming: Steam, SuperTux, SuperTuxKart  
+  - Media: Spotify, VLC, qBittorrent Enhanced, Discord  
+  - Flatpak support (extra apps installed via Home Manager)  
 
-home-manager.users.alice = import ./alice-home.nix;
+---
+
+## 🛠 Home Manager
+
+User-specific configuration lives in `hadichokr-home.nix`:
+
+- **Zsh setup**
+  - Aliases (`rebuild`, `update`, `update-home`, `update-all`)  
+  - `fastfetch` runs on shell start  
+- **Flatpak integration**
+  - Automatic weekly updates  
+  - Installed apps: Whatsie, OBS Studio, Zeal, SuperTux Party  
+- **Plasma**
+  - Dark Breeze look & feel  
+  - Konqi wallpaper with blur  
+  - F12 → Spectacle screenshot shortcut  
+  - Start menu icon replaced with Nix snowflake  
+
+---
+
+## 🔄 Usage
+
+Rebuild the system:
+
+```sh
+sudo nixos-rebuild switch
 ```
 
-This keeps system-wide user accounts separate from their individual Home Manager configs.
+Rebuild and upgrade system:
+
+```sh
+sudo nixos-rebuild switch --upgrade
+```
+
+Update only Home Manager:
+
+```sh
+home-manager -f /etc/nixos/hadichokr-home.nix switch
+```
+
+Update everything:
+
+```sh
+sudo nixos-rebuild switch --upgrade && home-manager -f /etc/nixos/hadichokr-home.nix switch
+```
+
+---
+
+## 📌 System Info
+
+- **NixOS version**: `25.11` (state version)  
+- **Home Manager stateVersion**: `25.05`  
+- **Primary user**: `hadichokr`  
+
+---
+
+## 📜 License
+
+Feel free to reuse snippets of this config — but double-check paths and usernames.  
+
+---
+
+✨ Powered by **NixOS**, **Home Manager**, and a touch of Konqi magic 🐉
+
