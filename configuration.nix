@@ -240,6 +240,7 @@ in
     distrobox
     firefoxpwa
     flatpak
+    gimp
     git
     github-desktop
     htop
@@ -263,11 +264,15 @@ in
     home-manager
 
     # -------------------------------------------------------------------------
-    # Go / Wayland / KDE Dev Packages
+    # C / C++ / Go / Wayland / KDE Dev Packages
     # -------------------------------------------------------------------------
+    cmakeWithGui
+    gnumake
     go
     gopls
     go-md2man
+    libgcc
+    meson
     xdg-utils
     wayland-utils
     kdePackages.kde-dev-utils
