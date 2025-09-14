@@ -267,6 +267,7 @@ in
     # C / C++ / Go / Wayland / KDE Dev Packages
     # -------------------------------------------------------------------------
     cmakeWithGui
+    gcc
     gnumake
     go
     gopls
