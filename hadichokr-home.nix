@@ -30,7 +30,7 @@ in
     timestamp  = "-3 days";  # Delete generations older than 3 days
   };
 
-  ## ── Development toolbox container (Fedora) ─────────────────────────
+  ## ── Development toolbox container (Debian Unstable) ─────────────────────────
   programs.distrobox = {
     enable = true;
 
@@ -43,45 +43,45 @@ in
     };
 
     containers.toolbox-dev = {
-      image = "fedora:rawhide";   # Use specific version for reproducibility
+      image = "docker.io/library/debian:unstable";   # Debian unstable base
       entry = true;
 
       # Extra packages to bootstrap the dev environment
       additional_packages = [
         # Build tools
-        "meson" "ninja-build" "gcc" "gcc-c++" "make" "pkgconfig"
+        "cmake" "meson" "ninja-build" "gcc" "g++" "make" "pkg-config"
 
         # Parser tools
         "bison" "flex"
 
         # XML / Docbook
-        "libxml2-devel" "libxslt-devel"
-        "docbook-dtds" "docbook-style-xsl" "itstool"
+        "libxml2-dev" "libxslt1-dev"
+        "docbook-dtds" "docbook-xsl" "itstool"
 
         # Python tooling
         "python3" "python3-pip" "python3-setuptools"
 
         # Subid headers & libs
-        "shadow-utils-subid-devel"
+        "libsubid-dev"
 
         # Shell completions
         "bash-completion" "fish" "zsh"
 
         # Security / crypto
-        "openssl" "openssl-devel"
-        "p11-kit" "podman" "skopeo"
+        "openssl" "libssl-dev" "p11-kit" "podman" "skopeo"
 
         # Linting & testing
         "shellcheck" "bats" "codespell"
 
         # Go tooling
-        "go" "go-md2man"
+        "golang" "golang-godoc"
 
         # Nice-to-have
         "fastfetch"
       ];
     };
   };
+
 
   ## ── Virt-manager settings ──────────────────────────────────────────
   dconf.settings = {
