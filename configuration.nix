@@ -274,6 +274,8 @@ in
     go-md2man
     libgcc
     meson
+    shadow
+    podman
     xdg-utils
     wayland-utils
     kdePackages.kde-dev-utils
