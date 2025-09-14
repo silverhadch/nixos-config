@@ -1,14 +1,17 @@
 { pkgs, ... }:
 
 let
-  nix-flatpak   = builtins.fetchTarball "https://github.com/gmodena/nix-flatpak/archive/latest.tar.gz";
+  # External Home Manager modules
+  nix-flatpak    = builtins.fetchTarball "https://github.com/gmodena/nix-flatpak/archive/latest.tar.gz";
   plasma-manager = builtins.fetchTarball "https://github.com/nix-community/plasma-manager/archive/trunk.tar.gz";
 in
 {
-  home.username = "hadichokr";
+  ## ── Home user basics ───────────────────────────────────────────────
+  home.username      = "hadichokr";
   home.homeDirectory = "/home/hadichokr";
-  home.stateVersion = "25.05";
+  home.stateVersion  = "25.05";  # Update this only when upgrading HM
 
+  ## ── Packages installed in home environment ─────────────────────────
   home.packages = with pkgs; [
     plasma-manager
     zsh-autosuggestions
@@ -20,70 +23,123 @@ in
     fastfetch
   ];
 
-  # Cleanup after Home Manager
-  services.home-manager.autoExpire.enable = true;
-  services.home-manager.autoExpire.frequency = "hourly";
-  services.home-manager.autoExpire.timestamp = "-3 days";
+  ## ── Housekeeping: auto-expire HM generations ───────────────────────
+  services.home-manager.autoExpire = {
+    enable     = true;
+    frequency  = "hourly";
+    timestamp  = "-3 days";  # Delete generations older than 3 days
+  };
 
+  ## ── Development toolbox container (Fedora) ─────────────────────────
+  programs.distrobox = {
+    enable = true;
+
+    containers.toolbox-dev = {
+      image = "fedora:latest";   # Always latest Fedora
+      entry = true;
+
+      # Extra packages to bootstrap the dev environment
+      additional_packages = [
+        # Build tools
+        "meson" "ninja-build" "gcc" "gcc-c++" "make" "pkgconfig"
+
+        # Parser tools
+        "bison" "flex"
+
+        # XML / Docbook
+        "libxml2-devel" "libxslt-devel"
+        "docbook-dtds" "docbook-style-xsl" "itstool"
+
+        # Python tooling
+        "python3" "python3-pip" "python3-setuptools"
+
+        # Subid headers & libs
+        "shadow-utils-subid-devel"
+
+        # Shell completions
+        "bash-completion" "fish" "zsh"
+
+        # Security / crypto
+        "openssl" "openssl-devel"
+        "p11-kit" "podman" "skopeo"
+
+        # Linting & testing
+        "shellcheck" "bats-core" "codespell"
+
+        # Go tooling
+        "go" "go-md2man"
+
+        # Nice-to-have
+        "fastfetch"
+      ];
+
+      # Keep container up to date at creation time
+      init_hooks = ''
+        sudo dnf -y update
+      '';
+    };
+  };
+
+  ## ── Virt-manager settings ──────────────────────────────────────────
   dconf.settings = {
     "org/virt-manager/virt-manager/connections" = {
-      autoconnect = ["qemu:///system"];
-      uris = ["qemu:///system"];
+      autoconnect = [ "qemu:///system" ];
+      uris        = [ "qemu:///system" ];
     };
   };
 
+  ## ── Konsole configuration ──────────────────────────────────────────
   programs.konsole = {
-    enable = true;
-
-    # Optional: set the default profile to the one we define
+    enable         = true;
     defaultProfile = "Linux";
 
-    # Define custom profiles
-    profiles = {
-      Linux = {
-        name = "Linux";
-        colorScheme = "Linux";      # Use the 'Linux' color scheme
-        extraConfig = {
-          Keyboard = {
-            KeyBindings = "linux";  # Wrapped in the correct section
-          };
-        };
-      };
+    profiles.Linux = {
+      name        = "Linux";
+      colorScheme = "Linux";   # Matches default Linux scheme
+      extraConfig.Keyboard.KeyBindings = "linux";
     };
   };
 
+  ## ── Git config ─────────────────────────────────────────────────────
   programs.git = {
-    enable = true;
+    enable    = true;
+    userName  = "Hadi Chokr";
     userEmail = "hadichokr@icloud.com";
-    userName = "Hadi Chokr";
   };
 
+  ## ── Zsh config ─────────────────────────────────────────────────────
   programs.zsh = {
-    enable = true;
+    enable           = true;
     enableCompletion = true;
 
+    # Custom aliases
     shellAliases = {
+      # ls variations
       ll = "ls -lh --color=auto";
       la = "ls -A";
       l  = "ls -CF";
 
+      # NixOS rebuild / upgrade
       rebuild     = "sudo nixos-rebuild switch";
       update      = "sudo nixos-rebuild switch --upgrade";
       update-home = "home-manager -f /etc/nixos/hadichokr-home.nix switch";
       update-all  = "sudo nixos-rebuild switch --upgrade && home-manager -f /etc/nixos/hadichokr-home.nix switch";
 
-      # Alias home-manager to always use your config
+      # Always use your config
       home-manager = "home-manager -f /etc/nixos/hadichokr-home.nix";
 
+      # Git shortcuts
       gs = "git status";
       ga = "git add";
       gc = "git commit";
       gp = "git push";
       gd = "git diff";
 
+      # Misc
       vi = "nvim";
       h  = "history";
 
+      # Cleanup old generations
       cleanup = ''
         echo "Cleaning old Nix generations, keeping last 5..."
         sudo nix-collect-garbage -d
@@ -93,25 +149,18 @@ in
       '';
     };
 
+    # Oh-my-zsh configuration
     oh-my-zsh = {
-      enable = true;
-      theme  = "robbyrussell";
+      enable  = true;
+      theme   = "robbyrussell";
       plugins = [
-        "git"
-        "sudo"
-        "z"
-        "autojump"
-        "extract"
-        "docker"
-        "kubectl"
-        "npm"
-        "golang"
-        "pip"
-        "tmux"
-        "history-substring-search"
+        "git" "sudo" "z" "autojump" "extract"
+        "docker" "kubectl" "npm" "golang" "pip"
+        "tmux" "history-substring-search"
       ];
     };
 
+    # Zsh init script
     initContent = ''
       export ZSH=${pkgs.oh-my-zsh}/share/oh-my-zsh
       source $ZSH/oh-my-zsh.sh
@@ -120,31 +169,34 @@ in
       source ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
       source ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-      # Useful environment vars
+      # Environment variables
       export EDITOR=nvim
       export VISUAL=nvim
       export PATH=$HOME/.local/bin:$PATH
 
-      # Enable autojump if installed
+      # Autojump
       [[ -s ${pkgs.autojump}/share/autojump/autojump.zsh ]] && source ${pkgs.autojump}/share/autojump/autojump.zsh
 
       # Fast system info
       echo ""
       fastfetch
 
-      # Improve history search
+      # History search with arrow keys
       bindkey '^[[A' history-substring-search-up
       bindkey '^[[B' history-substring-search-down
     '';
   };
 
+  ## ── Home Manager self-management ───────────────────────────────────
   programs.home-manager.enable = true;
 
+  ## ── Import external modules ────────────────────────────────────────
   imports = [
     (import "${plasma-manager}/modules")
     "${nix-flatpak}/modules/home-manager.nix"
   ];
 
+  ## ── Flatpak integration ────────────────────────────────────────────
   services.flatpak = {
     enable = true;
     packages = [
@@ -155,30 +207,46 @@ in
       "party.supertux.supertuxparty"
     ];
     update.auto = {
-      enable = true;
+      enable     = true;
       onCalendar = "weekly";
     };
   };
 
+  ## ── Plasma desktop settings ────────────────────────────────────────
   programs.plasma = {
     enable = true;
+
+    # Keyboard
     input.keyboard.layouts = [ { layout = "de"; } ];
-    kwin.effects.translucency.enable = true;
-    kwin.effects.wobblyWindows.enable = true;
-    kwin.effects.windowOpenClose.animation = "glide";
+
+    # Effects
+    kwin.effects = {
+      translucency.enable       = true;
+      wobblyWindows.enable      = true;
+      windowOpenClose.animation = "fade";
+    };
+
+    # Power
     powerdevil.AC.whenLaptopLidClosed = "doNothing";
+
+    # Shortcuts
     spectacle.shortcuts.launch = "F12";
 
+    # Workspace
     workspace = {
-      clickItemTo = "open";
-      lookAndFeel = "org.kde.breezedark.desktop";
-      wallpaper = "${pkgs.kdePackages.plasma-workspace-wallpapers}/share/wallpapers/FlyingKonqui/contents/images/1920x1080.png";
+      clickItemTo       = "open";
+      lookAndFeel       = "org.kde.breezedark.desktop";
+      wallpaper         = "${pkgs.kdePackages.plasma-workspace-wallpapers}/share/wallpapers/FlyingKonqui/contents/images/1920x1080.png";
       wallpaperBackground.blur = true;
     };
 
-    kwin.virtualDesktops = { number = 2; rows = 2; };
+    kwin.virtualDesktops = {
+      number = 2;
+      rows   = 2;
+    };
   };
 
+  ## ── Custom activation hooks ────────────────────────────────────────
   home.activation.set-plasma-startmenu-icon = ''
     echo "Setting Plasma Application Launcher icon…"
     section='[Containments][2][Applets][3][Configuration][General]'
