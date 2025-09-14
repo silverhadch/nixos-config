@@ -34,9 +34,24 @@ in
   programs.distrobox = {
     enable = true;
 
+    # Global distrobox settings
+    settings = {
+      container_manager = "podman"; # Use podman instead of docker
+      container_name_default = "toolbox-dev";
+      container_generate_entry = 1;
+      container_always_pull = 1; # Always pull latest image
+    };
+
     containers.toolbox-dev = {
-      image = "fedora:latest";   # Always latest Fedora
+      image = "fedora:40";   # Use specific version for reproducibility
       entry = true;
+
+      # Share host directories with container
+      additional_volumes = [
+        "/home/hadichokr/Projects:/home/hadichokr/Projects"
+        "/home/hadichokr/.ssh:/home/hadichokr/.ssh:ro"
+        "/home/hadichokr/.gitconfig:/home/hadichokr/.gitconfig:ro"
+      ];
 
       # Extra packages to bootstrap the dev environment
       additional_packages = [
@@ -74,9 +89,11 @@ in
       ];
 
       # Keep container up to date at creation time
-      init_hooks = ''
-        sudo dnf -y update
-      '';
+      init_hooks = [
+        "sudo dnf -y update"
+        "sudo dnf -y install dnf-plugins-core"
+        "echo 'Container setup complete!'"
+      ];
     };
   };
 
@@ -135,6 +152,9 @@ in
       gp = "git push";
       gd = "git diff";
 
+      # Distrobox shortcuts
+      toolbox-dev = "distrobox enter toolbox-dev";
+
       # Misc
       vi = "nvim";
       h  = "history";
@@ -184,6 +204,7 @@ in
       # History search with arrow keys
       bindkey '^[[A' history-substring-search-up
       bindkey '^[[B' history-substring-search-down
+
     '';
   };
 
@@ -208,7 +229,7 @@ in
     ];
     update.auto = {
       enable     = true;
-      onCalendar = "weekly";
+      onCalendar = "daily";
     };
   };
 
@@ -258,4 +279,3 @@ in
       sed -i "/^$section/a icon=nix-snowflake" "$config"
   '';
 }
-
