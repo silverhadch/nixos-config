@@ -56,7 +56,7 @@ in
 
         # XML / Docbook
         "libxml2-dev" "libxslt1-dev"
-        "docbook-dtds" "docbook-xsl" "itstool"
+        "docbook-xsl" "itstool"
 
         # Python tooling
         "python3" "python3-pip" "python3-setuptools"
@@ -64,20 +64,11 @@ in
         # Subid headers & libs
         "libsubid-dev"
 
-        # Shell completions
-        "bash-completion" "fish" "zsh"
-
-        # Security / crypto
-        "openssl" "libssl-dev" "p11-kit" "podman" "skopeo"
-
-        # Linting & testing
-        "shellcheck" "bats" "codespell"
-
         # Go tooling
-        "golang" "golang-godoc"
+        "golang" "go-md2man"
 
         # Nice-to-have
-        "fastfetch"
+        "fastfetch" "systemd-dev"
       ];
     };
   };
