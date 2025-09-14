@@ -43,7 +43,7 @@ in
     };
 
     containers.toolbox-dev = {
-      image = "fedora-toolbox:latest";   # Use specific version for reproducibility
+      image = "fedora:rawhide";   # Use specific version for reproducibility
       entry = true;
 
       # Extra packages to bootstrap the dev environment
@@ -184,8 +184,9 @@ in
 
       # Autojump
       [[ -s ${pkgs.autojump}/share/autojump/autojump.zsh ]] && source ${pkgs.autojump}/share/autojump/autojump.zsh
-
+      
       # Fast system info
+      clear
       echo ""
       fastfetch
 
