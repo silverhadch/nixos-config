@@ -43,15 +43,8 @@ in
     };
 
     containers.toolbox-dev = {
-      image = "fedora:40";   # Use specific version for reproducibility
+      image = "fedora:latest";   # Use specific version for reproducibility
       entry = true;
-
-      # Share host directories with container
-      additional_volumes = [
-        "/home/hadichokr/Projects:/home/hadichokr/Projects"
-        "/home/hadichokr/.ssh:/home/hadichokr/.ssh:ro"
-        "/home/hadichokr/.gitconfig:/home/hadichokr/.gitconfig:ro"
-      ];
 
       # Extra packages to bootstrap the dev environment
       additional_packages = [
@@ -79,7 +72,7 @@ in
         "p11-kit" "podman" "skopeo"
 
         # Linting & testing
-        "shellcheck" "bats-core" "codespell"
+        "shellcheck" "bats" "codespell"
 
         # Go tooling
         "go" "go-md2man"
