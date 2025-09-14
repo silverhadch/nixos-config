@@ -43,7 +43,7 @@ in
     };
 
     containers.toolbox-dev = {
-      image = "fedora:latest";   # Use specific version for reproducibility
+      image = "fedora-toolbox:latest";   # Use specific version for reproducibility
       entry = true;
 
       # Extra packages to bootstrap the dev environment
@@ -79,13 +79,6 @@ in
 
         # Nice-to-have
         "fastfetch"
-      ];
-
-      # Keep container up to date at creation time
-      init_hooks = [
-        "sudo dnf -y update"
-        "sudo dnf -y install dnf-plugins-core"
-        "echo 'Container setup complete!'"
       ];
     };
   };
@@ -146,6 +139,7 @@ in
       gd = "git diff";
 
       # Distrobox shortcuts
+      assemble-toolbox-dev = "distrobox assemble create --replace --file ~/.config/distrobox/containers.ini";
       toolbox-dev = "distrobox enter toolbox-dev";
 
       # Misc
@@ -175,6 +169,7 @@ in
 
     # Zsh init script
     initContent = ''
+      ZSH_DISABLE_COMPFIX=true 
       export ZSH=${pkgs.oh-my-zsh}/share/oh-my-zsh
       source $ZSH/oh-my-zsh.sh
 
