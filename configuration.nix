@@ -266,6 +266,7 @@ in
     kdePackages.partitionmanager
     kdePackages.xdg-desktop-portal-kde
     libreoffice-qt-fresh
+    localsend
     megasync
     nixos-bgrt-plymouth
     qbittorrent-enhanced
@@ -284,6 +285,7 @@ in
     # C / C++ / Go / Wayland / KDE Dev Packages
     # -------------------------------------------------------------------------
     cmakeWithGui
+    devbox
     gcc
     gnumake
     go
