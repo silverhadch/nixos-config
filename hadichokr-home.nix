@@ -10,6 +10,7 @@ in
   home.username      = "hadichokr";
   home.homeDirectory = "/home/hadichokr";
   home.stateVersion  = "25.05";  # Update this only when upgrading HM
+  home.enableNixpkgsReleaseCheck = false;
 
   ## ── Packages installed in home environment ─────────────────────────
   home.packages = with pkgs; [
@@ -97,8 +98,10 @@ in
   ## ── Git config ─────────────────────────────────────────────────────
   programs.git = {
     enable    = true;
-    userName  = "Hadi Chokr";
-    userEmail = "hadichokr@icloud.com";
+    settings.user = {
+      name = "Hadi Chokr";
+      email = "hadichokr@icloud.com";
+    };
   };
 
   ## ── Zsh config ─────────────────────────────────────────────────────
