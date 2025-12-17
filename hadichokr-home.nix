@@ -206,6 +206,7 @@ in
     packages = [
       "com.ktechpit.whatsie"
       "com.obsproject.Studio"
+      "it.mijorus.gearlever"
       "org.kde.neochat"
       "org.zealdocs.Zeal"
       "party.supertux.supertuxparty"
@@ -240,7 +241,7 @@ in
     workspace = {
       clickItemTo       = "open";
       lookAndFeel       = "org.kde.breezedark.desktop";
-      wallpaper         = "${pkgs.kdePackages.plasma-workspace-wallpapers}/share/wallpapers/FlyingKonqui/contents/images/1920x1080.png";
+      wallpaper = "${pkgs.kdePackages.plasma-workspace-wallpapers}/share/wallpapers/FlyingKonqui/";
       wallpaperBackground.blur = true;
     };
 

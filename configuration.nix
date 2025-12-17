@@ -179,6 +179,14 @@ in
   };
 
   # ---------------------------------------------------------------------------
+  # AppImage
+  # ---------------------------------------------------------------------------
+  programs.appimage = {
+    enable = true;
+    binfmt = true;
+  };
+
+  # ---------------------------------------------------------------------------
   # Firefox
   # ---------------------------------------------------------------------------
   programs.firefox = {
@@ -257,6 +265,7 @@ in
     distrobox
     firefoxpwa
     flatpak
+    geteduroam
     gimp
     git
     github-desktop
@@ -277,6 +286,7 @@ in
     toolbox
     vim
     vlc
+    webex
     wget
     xdg-desktop-portal-gtk
     home-manager
@@ -295,6 +305,7 @@ in
     meson
     shadow
     podman
+    vscode
     xdg-utils
     wayland-utils
     kdePackages.kde-dev-utils
@@ -314,6 +325,23 @@ in
     figlet
     rig
     nyancat
+
+
+    # -------------------------------------------------------------------------
+    # VsCode Extensions
+    # -------------------------------------------------------------------------
+    (vscode-with-extensions.override {
+      vscodeExtensions = with vscode-extensions; [
+        bbenoist.nix
+        ms-python.python
+        ms-azuretools.vscode-docker
+        ms-vscode-remote.remote-ssh
+        dracula-theme.theme-dracula
+        llvm-vs-code-extensions.vscode-clangd
+        ms-vscode.makefile-tools
+        yzhang.markdown-all-in-one
+      ];
+    })
   ];
 
   # ---------------------------------------------------------------------------
