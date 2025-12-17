@@ -241,7 +241,10 @@ in
   programs.virt-manager.enable = true;
   virtualisation.libvirtd.enable = true;
   virtualisation.spiceUSBRedirection.enable = true;
-  virtualisation.waydroid.enable = true;
+  virtualisation.waydroid = {
+    enable = true;
+    package = pkgs.waydroid-nftables;
+  };
   systemd.services.waydroid-container.enable = true;
 
   # ---------------------------------------------------------------------------
