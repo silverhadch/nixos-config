@@ -85,10 +85,37 @@ in
   # ---------------------------------------------------------------------------
   networking.hostName = "nixos";
 
-  networking.networkmanager.enable = true;
-  networking.networkmanager.plugins = with pkgs; [
-    networkmanager-openconnect
-  ];
+  networking.networkmanager = {
+    enable = true;
+
+    plugins = with pkgs; [
+      networkmanager-openconnect
+    ];
+
+    ensureProfiles.profiles.fuVpn = {
+      connection = {
+        id = "FU VPN";
+        type = "vpn";
+        autoconnect = false;
+      };
+
+      vpn = {
+        service-type = "org.freedesktop.NetworkManager.openconnect";
+
+        gateway = "vpn.fu-berlin.de";
+        protocol = "anyconnect";
+
+        # Cisco-required lies
+        useragent = "AnyConnect";
+        reported-os = "ios";
+        reported-version = "5.1.6.103";
+      };
+
+      ipv4.method = "auto";
+      ipv6.method = "disabled";
+    };
+  };
+
 
 
   # ---------------------------------------------------------------------------
@@ -370,7 +397,9 @@ in
     # -------------------------------------------------------------------------
     # Custom Packages
     # -------------------------------------------------------------------------
-    (pkgs.callPackage ./pkgs/fu-vpn { })
+
+    # Disabled because the Network Manager Profile works now
+    #(pkgs.callPackage ./pkgs/fu-vpn { })
   ];
 
   # ---------------------------------------------------------------------------
