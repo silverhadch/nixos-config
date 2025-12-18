@@ -15,28 +15,47 @@ pkgs.writeShellApplication {
 
     PIDFILE="/run/fu-vpn.pid"
 
-    case "''${1:-start}" in
-      start)
-        if [ -f "$PIDFILE" ] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then
-          echo "fu-vpn already running (PID $(cat "$PIDFILE"))"
-          exit 0
-        fi
+    usage() {
+      cat <<EOF
+Usage: fu-vpn <command>
 
-        if [ "$EUID" -ne 0 ]; then
-          echo "Must be run as root (use sudo)" >&2
-          exit 1
-        fi
+Commands:
+  start       Start the FU VPN
+  stop        Stop the FU VPN
+  restart     Restart the FU VPN
+  status      Show VPN status
+  -h, --help  Show this help
 
-        USER_NAME="$SUDO_USER"
-        USER_UID="$(id -u "$USER_NAME")"
+EOF
+    }
 
-        export DISPLAY="''${DISPLAY:-:0}"
-        export XDG_RUNTIME_DIR="/run/user/$USER_UID"
-        export DBUS_SESSION_BUS_ADDRESS="unix:path=$XDG_RUNTIME_DIR/bus"
+    require_root() {
+      if [ "$EUID" -ne 0 ]; then
+        echo "Must be run as root (use sudo)" >&2
+        exit 1
+      fi
+    }
 
-        BROWSER_WRAPPER="$(mktemp)"
+    is_running() {
+      [ -f "$PIDFILE" ] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null
+    }
 
-        cat > "$BROWSER_WRAPPER" <<EOF
+    start_vpn() {
+      if is_running; then
+        echo "fu-vpn already running (PID $(cat "$PIDFILE"))" >&2
+        exit 1
+      fi
+
+      USER_NAME="$SUDO_USER"
+      USER_UID="$(id -u "$USER_NAME")"
+
+      export DISPLAY="''${DISPLAY:-:0}"
+      export XDG_RUNTIME_DIR="/run/user/$USER_UID"
+      export DBUS_SESSION_BUS_ADDRESS="unix:path=$XDG_RUNTIME_DIR/bus"
+
+      BROWSER_WRAPPER="$(mktemp)"
+
+      cat > "$BROWSER_WRAPPER" <<EOF
 #!/bin/sh
 exec ${pkgs.sudo}/bin/sudo -u "$USER_NAME" \
   DISPLAY="$DISPLAY" \
@@ -45,30 +64,55 @@ exec ${pkgs.sudo}/bin/sudo -u "$USER_NAME" \
   ${pkgs.firefox}/bin/firefox "\$@"
 EOF
 
-        chmod +x "$BROWSER_WRAPPER"
+      chmod +x "$BROWSER_WRAPPER"
 
-        exec ${pkgs.openconnect}/bin/openconnect \
-          --server=vpn.fu-berlin.de \
-          --protocol=anyconnect \
-          --useragent=AnyConnect \
-          --external-browser="$BROWSER_WRAPPER" \
-          --background \
-          --pid-file="$PIDFILE"
+      exec ${pkgs.openconnect}/bin/openconnect \
+        --server=vpn.fu-berlin.de \
+        --protocol=anyconnect \
+        --useragent=AnyConnect \
+        --external-browser="$BROWSER_WRAPPER" \
+        --background \
+        --pid-file="$PIDFILE"
+    }
+
+    stop_vpn() {
+      if ! is_running; then
+        echo "fu-vpn not running" >&2
+        exit 1
+      fi
+
+      kill "$(cat "$PIDFILE")"
+      rm -f "$PIDFILE"
+      echo "fu-vpn stopped"
+    }
+
+    case "''${1:-}" in
+      start)
+        require_root
+        start_vpn
         ;;
 
       stop)
-        if [ ! -f "$PIDFILE" ]; then
-          echo "fu-vpn not running"
-          exit 0
+        require_root
+        stop_vpn
+        ;;
+
+      restart)
+        require_root
+
+        if ! is_running; then
+          echo "fu-vpn not running, cannot restart" >&2
+          exit 1
         fi
 
-        kill "$(cat "$PIDFILE")"
-        rm -f "$PIDFILE"
-        echo "fu-vpn stopped"
+        stop_vpn
+        start_vpn
         ;;
 
       status)
-        if [ -f "$PIDFILE" ] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then
+        require_root
+
+        if is_running; then
           echo "fu-vpn running (PID $(cat "$PIDFILE"))"
         else
           echo "fu-vpn not running"
@@ -76,8 +120,14 @@ EOF
         fi
         ;;
 
+      -h|--help|"")
+        usage
+        exit 0
+        ;;
+
       *)
-        echo "Usage: fu-vpn [start|stop|status]"
+        echo "Unknown command: $1" >&2
+        usage
         exit 1
         ;;
     esac
