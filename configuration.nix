@@ -294,6 +294,7 @@ in
     libreoffice-qt-fresh
     localsend
     megasync
+    networkmanager-openconnect
     nixos-bgrt-plymouth
     openconnect
     qbittorrent-enhanced
