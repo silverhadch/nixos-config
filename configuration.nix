@@ -84,7 +84,12 @@ in
   # Networking
   # ---------------------------------------------------------------------------
   networking.hostName = "nixos";
+
   networking.networkmanager.enable = true;
+  networking.networkmanager.plugins = with pkgs; [
+    networkmanager-openconnect
+  ];
+
 
   # ---------------------------------------------------------------------------
   # Bluetooth
@@ -294,7 +299,6 @@ in
     libreoffice-qt-fresh
     localsend
     megasync
-    networkmanager-openconnect
     nixos-bgrt-plymouth
     openconnect
     qbittorrent-enhanced
