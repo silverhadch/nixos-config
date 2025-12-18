@@ -295,6 +295,7 @@ in
     localsend
     megasync
     nixos-bgrt-plymouth
+    openconnect
     qbittorrent-enhanced
     spotify
     superTux
