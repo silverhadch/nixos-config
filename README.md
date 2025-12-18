@@ -1,105 +1,199 @@
-# ❄️ NixOS Configuration
+# ❄ NixOS Configuration
 
-This repository contains my personal NixOS system configuration.  
-It is fully declarative, using **NixOS modules**, **Home Manager**, and extra tooling for **Flatpak** and **Plasma** customization.  
+This repository contains my personal **NixOS + Home Manager** setup.
+It is fully declarative, slightly over-engineered on purpose, and tuned for a **Plasma 6 / Wayland** workstation with containers, virtualization, Flatpak, and a reproducible dev environment.
 
 ---
 
 ## 📂 Repository Layout
 
-- **`configuration.nix`** – main system configuration  
-- **`hardware-configuration.nix`** – auto-generated hardware settings  
-- **`users.nix`** – user definitions + Home Manager integration  
-- **`hadichokr-home.nix`** – Home Manager configuration for my user  
+* **`configuration.nix`** – system-wide NixOS configuration
+* **`hardware-configuration.nix`** – auto-generated hardware settings
+* **`users.nix`** – users, groups, and Home Manager integration
+* **`hadichokr-home.nix`** – Home Manager configuration for `hadichokr`
+* **`pkgs/`** – custom / overridden packages
+
+  * `fu-vpn/` – legacy custom VPN package (currently unused)
 
 ---
 
-## 🚀 Features
+## 🚀 System Features
 
-- **Boot & Kernel**
-  - `systemd-boot` with EFI support  
-  - Latest Linux kernel (`linuxPackages_latest`)  
-  - Plymouth splash with `bgrt` theme  
+### Boot & Kernel
 
-- **System Tweaks**
-  - Daily garbage collection (`--delete-older-than 5d`)  
-  - `nix-command` and `flakes` enabled  
-  - Auto system upgrades (without reboot)  
+* `systemd-boot` with EFI variables enabled
+* Latest kernel (`linuxPackages_latest`)
+* Quiet boot with Plymouth (`bgrt` theme)
+* Limited boot entries (keeps last 3)
 
-- **Desktop**
-  - **Plasma 6** with SDDM (Wayland enabled by default)  
-  - Plasma customization via [plasma-manager](https://github.com/nix-community/plasma-manager)  
-  - Dark theme, Konqi wallpaper, wobbly windows & glide animations  
+### Nix & System Maintenance
 
-- **User Environment**
-  - **Home Manager** for user configuration  
-  - **Zsh + Oh My Zsh** with autosuggestions, syntax highlighting  
-  - Aliases for rebuild/update workflows  
+* Automatic garbage collection (hourly, keeps 5 days)
+* Store auto-optimisation enabled
+* `nix-command` + `flakes` enabled
+* Automatic system upgrades (no forced reboot)
+* `nix-ld` enabled for running non-Nix binaries
 
-- **Networking & Locale**
-  - NetworkManager enabled  
-  - Hostname: `nixos`  
-  - Locale: `de_DE.UTF-8`  
-  - Timezone: `Europe/Berlin`  
+### Storage
 
-- **Audio**
-  - PipeWire (with ALSA + PulseAudio support)  
-  - RealtimeKit enabled  
-
-- **Virtualization**
-  - libvirt + virt-manager  
-  - Spice USB redirection  
-  - Waydroid enabled  
-
-- **Applications**
-  - System: `git`, `vim`, `htop`, `btop`, `curl`, `wget`  
-  - KDE apps: Kate, KCalc, KDevelop, Partition Manager, NeoChat  
-  - Productivity: LibreOffice, Thunderbird, GitHub Desktop, MEGAsync  
-  - Gaming: Steam, SuperTux, SuperTuxKart  
-  - Media: Spotify, VLC, qBittorrent Enhanced, Discord  
-  - Flatpak support (extra apps installed via Home Manager)  
+* Encrypted swapfile (`/var/lib/swapfile`, 16 GiB)
+* Randomized swap encryption on each boot
 
 ---
 
-## 🛠 Home Manager
+## 🌐 Networking
 
-User-specific configuration lives in `hadichokr-home.nix`:
+* **NetworkManager** enabled
+* **Cisco AnyConnect VPN** via `networkmanager-openconnect`
 
-- **Zsh setup**
-  - Aliases (`rebuild`, `update`, `update-home`, `update-all`)  
-  - `fastfetch` runs on shell start  
-- **Flatpak integration**
-  - Automatic weekly updates  
-  - Installed apps: Whatsie, OBS Studio, Zeal, SuperTux Party  
-- **Plasma**
-  - Dark Breeze look & feel  
-  - Konqi wallpaper with blur  
-  - F12 → Spectacle screenshot shortcut  
-  - Start menu icon replaced with Nix snowflake  
+  * FU Berlin VPN profile declared declaratively
+  * Custom user-agent & OS spoofing for Cisco compatibility
+* IPv6 disabled for the VPN profile
 
 ---
 
-## 🔄 Usage
+## 🖥 Desktop & UX
 
-Rebuild the system:
+* **Plasma 6** (Wayland-first)
+* **SDDM** display manager (Wayland enabled)
+* PipeWire audio stack (ALSA + PulseAudio compatibility)
+* Bluetooth enabled with:
+
+  * FastConnectable
+  * Battery reporting for supported devices
+
+### Portals & App Support
+
+* Flatpak enabled (system + Home Manager)
+* XDG portals:
+
+  * KDE + GTK portals
+  * File picker forced through portals
+* AppImage support via `binfmt`
+
+---
+
+## 📦 Containers & Virtualization
+
+### Containers
+
+* Podman as the primary container engine
+* Docker-compatible CLI (`docker` → podman)
+* DNS-enabled default podman network
+* Distrobox integration
+
+### Virtualization
+
+* libvirt + virt-manager
+* Spice USB redirection
+* Waydroid enabled (nftables backend)
+
+---
+
+## 🌍 Locale & Input
+
+* Locale: `de_DE.UTF-8`
+* Timezone: `Europe/Berlin`
+* Keyboard layout: `de` (console + X11/Wayland)
+
+---
+
+## 🧑 User Environment (Home Manager)
+
+Managed in **`hadichokr-home.nix`**.
+
+### Shell & CLI
+
+* **Zsh + Oh My Zsh**
+* Autosuggestions & syntax highlighting (Nix-installed)
+* Extensive aliases for:
+
+  * NixOS rebuilds
+  * Home Manager
+  * Git
+  * Distrobox
+* `fastfetch` runs on shell startup
+
+### Development Toolbox
+
+A reproducible **Debian Unstable** dev container via **Distrobox**:
+
+* Podman-backed
+* Auto-pull latest image
+* Preinstalled toolchain:
+
+  * C / C++ (gcc, cmake, meson, ninja)
+  * Go
+  * Python
+  * XML / DocBook tooling
+  * systemd headers
+
+This keeps the host clean while still allowing heavy development.
+
+### Plasma Configuration
+
+Configured declaratively via **plasma-manager**:
+
+* Breeze Dark look & feel
+* Konqi wallpaper (blurred background)
+* Wobbly windows + translucency
+* Virtual desktops: 2×2 grid
+* Screenshot shortcut: **F12** (Spectacle)
+
+### Flatpak (User)
+
+* Daily auto-updates
+* Global Wayland-only policy (no X11 fallback)
+* Cursor & GTK theme fixes
+* Selected apps:
+
+  * Whatsie
+  * OBS Studio
+  * Gear Lever
+  * NeoChat
+  * Zeal
+  * SuperTux Party
+
+---
+
+## 🧩 Package Highlights
+
+### System Packages
+
+* Browsers & communication: Firefox, Thunderbird, Webex, Discord
+* Office & media: LibreOffice, VLC, Spotify
+* Dev & tooling: Git, GCC, Clang tools, Go, Meson, CMake
+* KDE tooling: KDevelop, Partition Manager, KDE dev utils
+* Fun & terminal toys: cowsay, cmatrix, ponysay, nyancat
+
+### Overlays
+
+* **Bottles** patched to remove warning popups
+* **Webex** wrapped to force X11 for stability under Wayland
+
+---
+
+## 🔄 Common Commands
+
+Rebuild system:
 
 ```sh
 sudo nixos-rebuild switch
 ```
 
-Rebuild and upgrade system:
+Upgrade system:
 
 ```sh
 sudo nixos-rebuild switch --upgrade
 ```
 
-Update only Home Manager:
+Home Manager only:
 
 ```sh
 home-manager -f /etc/nixos/hadichokr-home.nix switch
 ```
 
-Update everything:
+Full update:
 
 ```sh
 sudo nixos-rebuild switch --upgrade && home-manager -f /etc/nixos/hadichokr-home.nix switch
@@ -107,19 +201,17 @@ sudo nixos-rebuild switch --upgrade && home-manager -f /etc/nixos/hadichokr-home
 
 ---
 
-## 📌 System Info
+## 📌 Versions
 
-- **NixOS version**: `25.11` (state version)  
-- **Home Manager stateVersion**: `25.05`  
-- **Primary user**: `hadichokr`  
+* **System stateVersion**: `25.11`
+* **Home Manager stateVersion**: `25.05`
+* **Primary user**: `hadichokr`
 
 ---
 
 ## 📜 License
 
-Feel free to reuse snippets of this config — but double-check paths and usernames.  
+Reuse anything you like.
+Just remember: declarative power cuts both ways — read before you rebuild.
 
----
-
-✨ Powered by **NixOS**, **Home Manager**, and a touch of Konqi magic 🐉
-
+❄ Built with **NixOS**, **Home Manager**, and a healthy distrust of mutable systems.
