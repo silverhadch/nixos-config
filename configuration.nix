@@ -308,6 +308,7 @@ in
   # ---------------------------------------------------------------------------
   environment.systemPackages = with pkgs; [
     btop
+    btrfs-progs
     bottles
     curl
     discord
