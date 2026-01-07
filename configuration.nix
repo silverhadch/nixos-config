@@ -36,6 +36,7 @@ in
     })
   ];
 
+  environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
   programs.nix-ld.enable = true;
 
@@ -327,7 +328,6 @@ in
     distrobox
     firefoxpwa
     flatpak
-    geteduroam
     gimp
     git
     github-desktop
@@ -371,7 +371,6 @@ in
     meson
     shadow
     podman
-    vscode
     xdg-utils
     wayland-utils
     kdePackages.kde-dev-utils
@@ -394,17 +393,19 @@ in
 
 
     # -------------------------------------------------------------------------
-    # VsCode Extensions
+    # VsCode & Extensions
     # -------------------------------------------------------------------------
     (vscode-with-extensions.override {
       vscodeExtensions = with vscode-extensions; [
         bbenoist.nix
-        ms-python.python
-        ms-azuretools.vscode-docker
-        ms-vscode-remote.remote-ssh
         dracula-theme.theme-dracula
+        formulahendry.code-runner
+        llvm-vs-code-extensions.lldb-dap
         llvm-vs-code-extensions.vscode-clangd
+        ms-azuretools.vscode-docker
+        ms-python.python
         ms-vscode.makefile-tools
+        ms-vscode-remote.remote-ssh
         yzhang.markdown-all-in-one
       ];
     })

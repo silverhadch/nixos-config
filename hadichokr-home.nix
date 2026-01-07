@@ -207,6 +207,7 @@ in
   services.flatpak = {
     enable = true;
     packages = [
+      "app.eduroam.geteduroam"
       "com.ktechpit.whatsie"
       "com.obsproject.Studio"
       "it.mijorus.gearlever"
