@@ -343,6 +343,7 @@ in
     ocrmypdf
     openconnect
     qbittorrent-enhanced
+    texlive.combined.scheme-basic
     spotify
     superTux
     superTuxKart
