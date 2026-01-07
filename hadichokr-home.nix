@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{config, pkgs, ... }:
 
 let
   # External Home Manager modules
@@ -9,7 +9,7 @@ in
   ## ── Home user basics ───────────────────────────────────────────────
   home.username      = "hadichokr";
   home.homeDirectory = "/home/hadichokr";
-  home.stateVersion  = "25.05";  # Update this only when upgrading HM
+  home.stateVersion  = "26.05";  # Update this only when upgrading HM
   home.enableNixpkgsReleaseCheck = false;
 
   ## ── Packages installed in home environment ─────────────────────────
@@ -108,6 +108,9 @@ in
   programs.zsh = {
     enable           = true;
     enableCompletion = true;
+
+    # XDG compliant
+    dotDir = "${config.xdg.configHome}/zsh";
 
     # Custom aliases
     shellAliases = {
