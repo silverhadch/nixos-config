@@ -211,6 +211,7 @@ in
       "com.ktechpit.whatsie"
       "com.obsproject.Studio"
       "it.mijorus.gearlever"
+      "net.codelogistics.clicker"
       "org.kde.neochat"
       "org.zealdocs.Zeal"
       "party.supertux.supertuxparty"
