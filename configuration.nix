@@ -64,10 +64,14 @@ in
   # Plymouth & boot tweaks
   # ---------------------------------------------------------------------------
   boot.consoleLogLevel = 3;
+  boot.initrd.systemd.enable = true;
   boot.initrd.verbose = false;
   boot.plymouth = {
     enable = true;
-    theme = "bgrt";
+    theme = "nixos-bgrt";
+    themePackages = with pkgs; [
+      nixos-bgrt-plymouth
+    ];
   };
 
   # ---------------------------------------------------------------------------
