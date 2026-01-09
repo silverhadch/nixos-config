@@ -1,78 +1,386 @@
 { config, pkgs, lib, ... }:
 
 let
-  # Home Manager fetch
   home-manager = builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/master.tar.gz";
 in
 {
+  # ---------------------------------------------------------------------------
+  # Boot
+  # ---------------------------------------------------------------------------
+  boot = {
+    consoleLogLevel = 3;
+
+    initrd = {
+      systemd.enable = true;
+      verbose = false;
+    };
+
+    kernelPackages = pkgs.linuxPackages_latest;
+    kernelParams = [
+      "boot.shell_on_fail"
+      "quiet"
+      "rd.systemd.show_status=auto"
+      "splash"
+      "udev.log_priority=3"
+    ];
+
+    loader = {
+      efi.canTouchEfiVariables = true;
+
+      systemd-boot = {
+        configurationLimit = 5;
+        enable = true;
+      };
+
+      timeout = 0;
+    };
+
+    plymouth = {
+      enable = true;
+      theme = "nixos-bgrt";
+      themePackages = with pkgs; [
+        nixos-bgrt-plymouth
+      ];
+    };
+  };
+
+  # ---------------------------------------------------------------------------
+  # Console / X11
+  # ---------------------------------------------------------------------------
+  console.keyMap = "de";
+
+  services.xserver = {
+    enable = true;
+
+    xkb = {
+      layout = "de";
+      variant = "";
+    };
+  };
+
+  # ---------------------------------------------------------------------------
+  # Desktop
+  # ---------------------------------------------------------------------------
+  hardware.graphics.enable = true;
+
+  services.desktopManager.plasma6.enable = true;
+
+  services.displayManager.sddm = {
+    enable = true;
+    wayland.enable = true;
+  };
+
+  # ---------------------------------------------------------------------------
+  # Environment
+  # ---------------------------------------------------------------------------
+  environment = {
+    sessionVariables = {
+      NIXOS_OZONE_WL = "1";
+    };
+
+    systemPackages = with pkgs; [
+      # Core
+      btop
+      btrfs-progs
+      curl
+      git
+      htop
+      vim
+      wget
+
+      # Desktop / Apps
+      bottles
+      discord
+      firefoxpwa
+      flatpak
+      gimp
+      github-desktop
+      libreoffice-qt-fresh
+      localsend
+      megasync
+      nixos-bgrt-plymouth
+      ocrmypdf
+      qbittorrent-enhanced
+      spotify
+      thunderbird-bin
+      vlc
+      webex
+
+      # KDE
+      kdePackages.kcalc
+      kdePackages.kdevelop
+      kdePackages.kmines
+      kdePackages.partitionmanager
+      kdePackages.xdg-desktop-portal-kde
+
+      # Containers / VM
+      distrobox
+      podman
+      toolbox
+
+      # Dev
+      clang-tools
+      cmakeWithGui
+      devbox
+      gcc
+      gnumake
+      go
+      go-md2man
+      gopls
+      libgcc
+      meson
+      msedit
+      shadow
+      texlive.combined.scheme-basic
+      wayland-utils
+      xdg-utils
+
+      # KDE Dev
+      kdePackages.kde-dev-scripts
+      kdePackages.kde-dev-utils
+      kdePackages.kdev-php
+      kdePackages.kdev-python
+
+      # Fun
+      cmatrix
+      cowsay
+      figlet
+      fortune
+      nyancat
+      ponysay
+      rig
+      sl
+      toilet
+
+      # VSCode
+      (vscode-with-extensions.override {
+        vscodeExtensions = with vscode-extensions; [
+          bbenoist.nix
+          dracula-theme.theme-dracula
+          formulahendry.code-runner
+          llvm-vs-code-extensions.lldb-dap
+          llvm-vs-code-extensions.vscode-clangd
+          ms-azuretools.vscode-docker
+          ms-python.python
+          ms-vscode.makefile-tools
+          ms-vscode-remote.remote-ssh
+          yzhang.markdown-all-in-one
+        ];
+      })
+
+      home-manager
+    ];
+  };
+
+  # ---------------------------------------------------------------------------
+  # Flatpak / Portals
+  # ---------------------------------------------------------------------------
+  services.flatpak.enable = true;
+
+  xdg.portal = {
+    enable = true;
+    xdgOpenUsePortal = true;
+
+    config.common.default = [ "gtk" "kde" ];
+
+    extraPortals = with pkgs; [
+      kdePackages.xdg-desktop-portal-kde
+      xdg-desktop-portal-gtk
+    ];
+  };
+
+  # ---------------------------------------------------------------------------
+  # Fonts
+  # ---------------------------------------------------------------------------
+  fonts.packages = with pkgs; [
+    nerd-fonts.fira-code
+  ];
+
+  # ---------------------------------------------------------------------------
+  # Hardware
+  # ---------------------------------------------------------------------------
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+
+    settings = {
+      General = {
+        Experimental = true;
+        FastConnectable = true;
+      };
+
+      Policy.AutoEnable = true;
+    };
+  };
+
   # ---------------------------------------------------------------------------
   # Imports
   # ---------------------------------------------------------------------------
   imports = [
     ./hardware-configuration.nix
-    (import "${home-manager}/nixos")
     ./users.nix
+    (import "${home-manager}/nixos")
   ];
 
   # ---------------------------------------------------------------------------
-  # Nixpkgs overlays
+  # i18n / Time
   # ---------------------------------------------------------------------------
-  nixpkgs.overlays = [
-    (self: super: {
-      bottles = super.bottles.override { removeWarningPopup = true; };
+  i18n = {
+    defaultLocale = "de_DE.UTF-8";
 
-      webex = super.webex.overrideAttrs (old: {
-        nativeBuildInputs = (old.nativeBuildInputs or []) ++ [ super.makeWrapper ];
+    extraLocaleSettings = {
+      LC_ADDRESS        = "de_DE.UTF-8";
+      LC_IDENTIFICATION = "de_DE.UTF-8";
+      LC_MEASUREMENT    = "de_DE.UTF-8";
+      LC_MONETARY       = "de_DE.UTF-8";
+      LC_NAME           = "de_DE.UTF-8";
+      LC_NUMERIC        = "de_DE.UTF-8";
+      LC_PAPER          = "de_DE.UTF-8";
+      LC_TELEPHONE      = "de_DE.UTF-8";
+      LC_TIME           = "de_DE.UTF-8";
+    };
+  };
 
-        postFixup = (old.postFixup or "") + ''
-          wrapProgram $out/opt/Webex/bin/CiscoCollabHost \
-            --set WAYLAND_DISPLAY "" \
-            --set XDG_SESSION_TYPE x11 \
-            --set QT_QPA_PLATFORM xcb \
-            --set GDK_BACKEND x11 \
-            --set NIXOS_OZONE_WL 0
-        '';
-      });
-    })
-  ];
-
-  environment.sessionVariables.NIXOS_OZONE_WL = "1";
-
-  programs.nix-ld.enable = true;
+  time.timeZone = "Europe/Berlin";
 
   # ---------------------------------------------------------------------------
-  # Bootloader
+  # Networking
   # ---------------------------------------------------------------------------
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.systemd-boot.configurationLimit = 5;
-  boot.loader.timeout = 0;
+  networking = {
+    hostName = "nixos";
+
+    networkmanager = {
+      enable = true;
+
+      plugins = with pkgs; [
+        networkmanager-openconnect
+      ];
+
+      ensureProfiles.profiles.fuVpn = {
+        connection = {
+          id = "FU VPN";
+          type = "vpn";
+          autoconnect = false;
+        };
+
+        ipv4.method = "auto";
+        ipv6.method = "disabled";
+
+        vpn = {
+          gateway = "vpn.fu-berlin.de";
+          protocol = "anyconnect";
+          service-type = "org.freedesktop.NetworkManager.openconnect";
+
+          reported-os = "ios";
+          reported-version = "5.1.6.103";
+          useragent = "AnyConnect";
+        };
+      };
+    };
+  };
 
   # ---------------------------------------------------------------------------
-  # Kernel
+  # Nix
   # ---------------------------------------------------------------------------
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.kernelParams = [
-    "quiet"
-    "splash"
-    "boot.shell_on_fail"
-    "rd.systemd.show_status=auto"
-    "udev.log_priority=3"
-  ];
+  nix = {
+    gc = {
+      automatic = true;
+      dates = "hourly";
+      options = "--delete-older-than 5d";
+    };
 
-  # ---------------------------------------------------------------------------
-  # Plymouth & boot tweaks
-  # ---------------------------------------------------------------------------
-  boot.consoleLogLevel = 3;
-  boot.initrd.systemd.enable = true;
-  boot.initrd.verbose = false;
-  boot.plymouth = {
-    enable = true;
-    theme = "nixos-bgrt";
-    themePackages = with pkgs; [
-      nixos-bgrt-plymouth
+    settings = {
+      auto-optimise-store = true;
+      experimental-features = [ "flakes" "nix-command" ];
+    };
+  };
+
+  nixpkgs = {
+    config.allowUnfree = true;
+
+    overlays = [
+      (self: super: {
+        bottles = super.bottles.override {
+          removeWarningPopup = true;
+        };
+
+        webex = super.webex.overrideAttrs (old: {
+          nativeBuildInputs = (old.nativeBuildInputs or []) ++ [ super.makeWrapper ];
+
+          postFixup = (old.postFixup or "") + ''
+            wrapProgram $out/opt/Webex/bin/CiscoCollabHost \
+              --set WAYLAND_DISPLAY "" \
+              --set XDG_SESSION_TYPE x11 \
+              --set QT_QPA_PLATFORM xcb \
+              --set GDK_BACKEND x11 \
+              --set NIXOS_OZONE_WL 0
+          '';
+        });
+      })
     ];
   };
+
+  # ---------------------------------------------------------------------------
+  # Printing
+  # ---------------------------------------------------------------------------
+  services = {
+    avahi = {
+      enable = true;
+      nssmdns4 = true;
+      openFirewall = true;
+    };
+
+    printing = {
+      enable = true;
+      drivers = with pkgs; [
+        cups-browsed
+        cups-filters
+      ];
+    };
+
+    pipewire = {
+      enable = true;
+
+      alsa = {
+        enable = true;
+        support32Bit = true;
+      };
+
+      pulse.enable = true;
+    };
+  };
+
+  security.rtkit.enable = true;
+  services.pulseaudio.enable = false;
+
+  # ---------------------------------------------------------------------------
+  # Programs
+  # ---------------------------------------------------------------------------
+  programs = {
+    appimage = {
+      enable = true;
+      binfmt = true;
+    };
+
+    firefox = {
+      enable = true;
+
+      preferences = {
+        "widget.use-xdg-desktop-portal.file-picker" = 1;
+      };
+
+      wrapperConfig.pipewireSupport = true;
+    };
+
+    nix-ld.enable = true;
+    steam.enable = true;
+    virt-manager.enable = true;
+    zsh.enable = true;
+  };
+
+  programs.firefox.nativeMessagingHosts.packages = [
+    pkgs.firefoxpwa
+  ];
 
   # ---------------------------------------------------------------------------
   # Swap
@@ -80,354 +388,49 @@ in
   swapDevices = [
     {
       device = "/var/lib/swapfile";
-      size = 16*1024;
+      size = 16 * 1024;
       randomEncryption.enable = true;
     }
   ];
 
   # ---------------------------------------------------------------------------
-  # Networking
+  # System
   # ---------------------------------------------------------------------------
-  networking.hostName = "nixos";
-
-  networking.networkmanager = {
-    enable = true;
-
-    plugins = with pkgs; [
-      networkmanager-openconnect
-    ];
-
-    ensureProfiles.profiles.fuVpn = {
-      connection = {
-        id = "FU VPN";
-        type = "vpn";
-        autoconnect = false;
-      };
-
-      vpn = {
-        service-type = "org.freedesktop.NetworkManager.openconnect";
-
-        gateway = "vpn.fu-berlin.de";
-        protocol = "anyconnect";
-
-        # Cisco-required lies
-        useragent = "AnyConnect";
-        reported-os = "ios";
-        reported-version = "5.1.6.103";
-      };
-
-      ipv4.method = "auto";
-      ipv6.method = "disabled";
+  system = {
+    autoUpgrade = {
+      enable = true;
+      allowReboot = false;
     };
+
+    stateVersion = "25.11";
   };
 
-
+  # ---------------------------------------------------------------------------
+  # Users / Shell
+  # ---------------------------------------------------------------------------
+  users.defaultUserShell = pkgs.zsh;
 
   # ---------------------------------------------------------------------------
-  # Bluetooth
+  # Virtualisation
   # ---------------------------------------------------------------------------
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = true;
-    settings = {
-      General = {
-        # Shows battery charge of connected devices on supported
-        # Bluetooth adapters. Defaults to 'false'.
-        Experimental = true;
-        # When enabled other devices can connect faster to us, however
-        # the tradeoff is increased power consumption. Defaults to
-        # 'false'.
-        FastConnectable = true;
-      };
-      Policy = {
-        # Enable all controllers when they are found. This includes
-        # adapters present on start as well as adapters that are plugged
-        # in later on. Defaults to 'true'.
-        AutoEnable = true;
-      };
-    };
-  };
-
-  # --------------------------------------------------------------------------- 
-  # Podman & Containers
-  # ---------------------------------------------------------------------------
-  virtualisation.containers.enable = true;
   virtualisation = {
+    containers.enable = true;
+
+    libvirtd.enable = true;
+
     podman = {
       enable = true;
-      # Create a `docker` alias for podman, to use it as a drop-in replacement
       dockerCompat = true;
-      # Required for containers under podman-compose to be able to talk to each other.
       defaultNetwork.settings.dns_enabled = true;
     };
-  };
 
+    spiceUSBRedirection.enable = true;
 
-  # ---------------------------------------------------------------------------
-  # Locale & time
-  # ---------------------------------------------------------------------------
-  i18n.defaultLocale = "de_DE.UTF-8";
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS        = "de_DE.UTF-8";
-    LC_IDENTIFICATION = "de_DE.UTF-8";
-    LC_MEASUREMENT    = "de_DE.UTF-8";
-    LC_MONETARY       = "de_DE.UTF-8";
-    LC_NAME           = "de_DE.UTF-8";
-    LC_NUMERIC        = "de_DE.UTF-8";
-    LC_PAPER          = "de_DE.UTF-8";
-    LC_TELEPHONE      = "de_DE.UTF-8";
-    LC_TIME           = "de_DE.UTF-8";
-  };
-  time.timeZone = "Europe/Berlin";
-
-  # ---------------------------------------------------------------------------
-  # Console / X11 keyboard
-  # ---------------------------------------------------------------------------
-  console.keyMap = "de";
-  services.xserver.enable = true;
-  services.xserver.xkb = {
-    layout = "de";
-    variant = "";
-  };
-
-  # ---------------------------------------------------------------------------
-  # Display manager & desktop environment
-  # ---------------------------------------------------------------------------
-  services.desktopManager.plasma6.enable = true;
-  services.displayManager.sddm.enable = true;
-  services.displayManager.sddm.wayland.enable = true;
-  hardware.graphics.enable = true;
-
-  # ---------------------------------------------------------------------------
-  # Printing
-  # ---------------------------------------------------------------------------
-  services.avahi = {
-    enable = true;
-    nssmdns4 = true;
-    openFirewall = true;
-  };
-
-  services.printing = {
-    enable = true;
-    drivers = with pkgs; [
-      cups-filters
-      cups-browsed
-    ];
-  };
-
-  # ---------------------------------------------------------------------------
-  # Sound
-  # ---------------------------------------------------------------------------
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-  };
-  services.pulseaudio.enable = false;
-  security.rtkit.enable = true;
-
-  # ---------------------------------------------------------------------------
-  # Flatpak
-  # ---------------------------------------------------------------------------
-  services.flatpak.enable = true;
-  xdg.portal = {
-    enable = true;
-    xdgOpenUsePortal = true;
-    extraPortals = with pkgs; [
-      xdg-desktop-portal-gtk
-      kdePackages.xdg-desktop-portal-kde
-    ];
-    config.common.default = [ "gtk" "kde" ];
-  };
-
-  # ---------------------------------------------------------------------------
-  # AppImage
-  # ---------------------------------------------------------------------------
-  programs.appimage = {
-    enable = true;
-    binfmt = true;
-  };
-
-  # ---------------------------------------------------------------------------
-  # Firefox
-  # ---------------------------------------------------------------------------
-  programs.firefox = {
-    enable = true;
-    preferences = {
-      "widget.use-xdg-desktop-portal.file-picker" = 1;
-    };
-    wrapperConfig = {
-      pipewireSupport = true;
+    waydroid = {
+      enable = true;
+      package = pkgs.waydroid-nftables;
     };
   };
-  programs.firefox.nativeMessagingHosts.packages = [ pkgs.firefoxpwa ];
 
-  # ---------------------------------------------------------------------------
-  # Allow unfree packages
-  # ---------------------------------------------------------------------------
-  nixpkgs.config.allowUnfree = true;
-
-  # ---------------------------------------------------------------------------
-  # Nix / system optimizations
-  # ---------------------------------------------------------------------------
-  nix.gc = {
-    automatic = true;
-    dates = "hourly";
-    options = "--delete-older-than 5d";
-  };
-  nix.settings = {
-    auto-optimise-store = true;
-    experimental-features = [ "nix-command" "flakes" ];
-  };
-
-  # ---------------------------------------------------------------------------
-  # Auto-upgrades
-  # ---------------------------------------------------------------------------
-  system.autoUpgrade = {
-    enable = true;
-    allowReboot = false;
-  };
-
-  # ---------------------------------------------------------------------------
-  # Shell & Fonts
-  # ---------------------------------------------------------------------------
-  programs.zsh.enable = true;
-  users.defaultUserShell = pkgs.zsh;
-  fonts.packages = with pkgs; [
-    nerd-fonts.fira-code
-  ];
-
-  # ---------------------------------------------------------------------------
-  # Virtualization
-  # ---------------------------------------------------------------------------
-  programs.virt-manager.enable = true;
-  virtualisation.libvirtd.enable = true;
-  virtualisation.spiceUSBRedirection.enable = true;
-  virtualisation.waydroid = {
-    enable = true;
-    package = pkgs.waydroid-nftables;
-  };
   systemd.services.waydroid-container.enable = true;
-
-  # ---------------------------------------------------------------------------
-  # Steam
-  # ---------------------------------------------------------------------------
-  programs.steam = {
-    enable = true;
-    dedicatedServer.openFirewall = true;
-    localNetworkGameTransfers.openFirewall = true;
-    remotePlay.openFirewall = true;
-  };
-
-  # ---------------------------------------------------------------------------
-  # System packages
-  # ---------------------------------------------------------------------------
-  environment.systemPackages = with pkgs; [
-    btop
-    btrfs-progs
-    bottles
-    curl
-    discord
-    distrobox
-    firefoxpwa
-    flatpak
-    gimp
-    git
-    github-desktop
-    htop
-    kdePackages.kcalc
-    kdePackages.kdevelop
-    kdePackages.kmines
-    kdePackages.partitionmanager
-    kdePackages.xdg-desktop-portal-kde
-    libreoffice-qt-fresh
-    localsend
-    megasync
-    nixos-bgrt-plymouth
-    ocrmypdf
-    openconnect
-    qbittorrent-enhanced
-    texlive.combined.scheme-basic
-    spotify
-    superTux
-    superTuxKart
-    thunderbird-bin
-    toolbox
-    vim
-    vlc
-    webex
-    wget
-    xdg-desktop-portal-gtk
-    home-manager
-
-    # -------------------------------------------------------------------------
-    # C / C++ / Go / Wayland / KDE Dev Packages
-    # -------------------------------------------------------------------------
-    clang-tools
-    cmakeWithGui
-    devbox
-    gcc
-    gnumake
-    go
-    gopls
-    go-md2man
-    libgcc
-    meson
-    msedit
-    shadow
-    podman
-    xdg-utils
-    wayland-utils
-    kdePackages.kde-dev-utils
-    kdePackages.kdev-php
-    kdePackages.kdev-python
-    kdePackages.kde-dev-scripts
-
-    # -------------------------------------------------------------------------
-    # Fun / CLI toys
-    # -------------------------------------------------------------------------
-    cowsay
-    fortune
-    sl
-    pacman-game
-    ponysay
-    cmatrix
-    toilet
-    figlet
-    rig
-    nyancat
-
-
-    # -------------------------------------------------------------------------
-    # VsCode & Extensions
-    # -------------------------------------------------------------------------
-    (vscode-with-extensions.override {
-      vscodeExtensions = with vscode-extensions; [
-        bbenoist.nix
-        dracula-theme.theme-dracula
-        formulahendry.code-runner
-        llvm-vs-code-extensions.lldb-dap
-        llvm-vs-code-extensions.vscode-clangd
-        ms-azuretools.vscode-docker
-        ms-python.python
-        ms-vscode.makefile-tools
-        ms-vscode-remote.remote-ssh
-        yzhang.markdown-all-in-one
-      ];
-    })
-
-    # -------------------------------------------------------------------------
-    # Custom Packages
-    # -------------------------------------------------------------------------
-
-    # Disabled because the Network Manager Profile works now
-    #(pkgs.callPackage ./pkgs/fu-vpn { })
-  ];
-
-  # ---------------------------------------------------------------------------
-  # System version
-  # ---------------------------------------------------------------------------
-  system.stateVersion = "25.11";
 }
-

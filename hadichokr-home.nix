@@ -1,81 +1,37 @@
-{config, pkgs, ... }:
+{ config, pkgs, ... }:
 
 let
-  # External Home Manager modules
-  nix-flatpak    = builtins.fetchTarball "https://github.com/gmodena/nix-flatpak/archive/latest.tar.gz";
-  plasma-manager = builtins.fetchTarball "https://github.com/nix-community/plasma-manager/archive/trunk.tar.gz";
+  nix-flatpak = builtins.fetchTarball
+    "https://github.com/gmodena/nix-flatpak/archive/latest.tar.gz";
+
+  plasma-manager = builtins.fetchTarball
+    "https://github.com/nix-community/plasma-manager/archive/trunk.tar.gz";
 in
 {
-  ## ── Home user basics ───────────────────────────────────────────────
-  home.username      = "hadichokr";
-  home.homeDirectory = "/home/hadichokr";
-  home.stateVersion  = "26.05";  # Update this only when upgrading HM
-  home.enableNixpkgsReleaseCheck = false;
+  # ---------------------------------------------------------------------------
+  # Home basics
+  # ---------------------------------------------------------------------------
+  home = {
+    enableNixpkgsReleaseCheck = false;
+    homeDirectory = "/home/hadichokr";
+    stateVersion = "26.05";
+    username = "hadichokr";
 
-  ## ── Packages installed in home environment ─────────────────────────
-  home.packages = with pkgs; [
-    plasma-manager
-    zsh-autosuggestions
-    zsh-syntax-highlighting
-    autojump
-    tmux
-    docker
-    kubectl
-    fastfetch
-  ];
-
-  ## ── Housekeeping: auto-expire HM generations ───────────────────────
-  services.home-manager.autoExpire = {
-    enable     = true;
-    frequency  = "hourly";
-    timestamp  = "-3 days";  # Delete generations older than 3 days
+    packages = with pkgs; [
+      autojump
+      docker
+      fastfetch
+      kubectl
+      plasma-manager
+      tmux
+      zsh-autosuggestions
+      zsh-syntax-highlighting
+    ];
   };
 
-  ## ── Development toolbox container (Debian Unstable) ─────────────────────────
-  programs.distrobox = {
-    enable = true;
-
-    # Global distrobox settings
-    settings = {
-      container_manager = "podman"; # Use podman instead of docker
-      container_name_default = "toolbox-dev";
-      container_generate_entry = 1;
-      container_always_pull = 1; # Always pull latest image
-    };
-
-    containers.toolbox-dev = {
-      image = "docker.io/library/debian:unstable";   # Debian unstable base
-      entry = true;
-
-      # Extra packages to bootstrap the dev environment
-      additional_packages = [
-        # Build tools
-        "cmake" "meson" "ninja-build" "gcc" "g++" "make" "pkg-config"
-
-        # Parser tools
-        "bison" "flex"
-
-        # XML / Docbook
-        "libxml2-dev" "libxslt1-dev"
-        "docbook-xsl" "itstool"
-
-        # Python tooling
-        "python3" "python3-pip" "python3-setuptools"
-
-        # Subid headers & libs
-        "libsubid-dev"
-
-        # Go tooling
-        "golang" "go-md2man"
-
-        # Nice-to-have
-        "fastfetch" "systemd-dev"
-      ];
-    };
-  };
-
-
-  ## ── Virt-manager settings ──────────────────────────────────────────
+  # ---------------------------------------------------------------------------
+  # Dconf
+  # ---------------------------------------------------------------------------
   dconf.settings = {
     "org/virt-manager/virt-manager/connections" = {
       autoconnect = [ "qemu:///system" ];
@@ -83,129 +39,49 @@ in
     };
   };
 
-  ## ── Konsole configuration ──────────────────────────────────────────
-  programs.konsole = {
-    enable         = true;
-    defaultProfile = "Linux";
+  # ---------------------------------------------------------------------------
+  # Distrobox
+  # ---------------------------------------------------------------------------
+  programs.distrobox = {
+    enable = true;
 
-    profiles.Linux = {
-      name        = "Linux";
-      colorScheme = "Linux";   # Matches default Linux scheme
-      extraConfig.Keyboard.KeyBindings = "linux";
-    };
-  };
-
-  ## ── Git config ─────────────────────────────────────────────────────
-  programs.git = {
-    enable    = true;
-    settings.user = {
-      name = "Hadi Chokr";
-      email = "hadichokr@icloud.com";
-    };
-  };
-
-  ## ── Zsh config ─────────────────────────────────────────────────────
-  programs.zsh = {
-    enable           = true;
-    enableCompletion = true;
-
-    # XDG compliant
-    dotDir = "${config.xdg.configHome}/zsh";
-
-    # Custom aliases
-    shellAliases = {
-      # ls variations
-      ll = "ls -lh --color=auto";
-      la = "ls -A";
-      l  = "ls -CF";
-
-      # NixOS rebuild / upgrade
-      rebuild     = "sudo nixos-rebuild switch";
-      update      = "sudo nixos-rebuild switch --upgrade";
-      update-home = "home-manager -f /etc/nixos/hadichokr-home.nix switch";
-      update-all  = "sudo nixos-rebuild switch --upgrade && home-manager -f /etc/nixos/hadichokr-home.nix switch";
-
-      # Always use your config
-      home-manager = "home-manager -f /etc/nixos/hadichokr-home.nix";
-
-      # Git shortcuts
-      gs = "git status";
-      ga = "git add";
-      gc = "git commit";
-      gp = "git push";
-      gd = "git diff";
-
-      # Distrobox shortcuts
-      assemble-toolbox-dev = "distrobox assemble create --replace --file ~/.config/distrobox/containers.ini";
-      toolbox-dev = "distrobox enter toolbox-dev";
-
-      # Misc
-      vi = "nvim";
-      h  = "history";
-
-      # Cleanup old generations
-      cleanup = ''
-        echo "Cleaning old Nix generations, keeping last 5..."
-        sudo nix-collect-garbage -d
-        sudo nix-env --delete-generations old
-        sudo nix-env --delete-generations +5
-        echo "Cleanup done!"
-      '';
+    settings = {
+      container_always_pull      = 1;
+      container_generate_entry   = 1;
+      container_manager          = "podman";
+      container_name_default     = "toolbox-dev";
     };
 
-    # Oh-my-zsh configuration
-    oh-my-zsh = {
-      enable  = true;
-      theme   = "robbyrussell";
-      plugins = [
-        "git" "sudo" "z" "autojump" "extract"
-        "docker" "kubectl" "npm" "golang" "pip"
-        "tmux" "history-substring-search"
+    containers.toolbox-dev = {
+      entry = true;
+      image = "docker.io/library/debian:unstable";
+
+      additional_packages = [
+        # Build
+        "bison" "cmake" "flex" "gcc" "g++" "make"
+        "meson" "ninja-build" "pkg-config"
+
+        # Docs / XML
+        "docbook-xsl" "itstool" "libxml2-dev" "libxslt1-dev"
+
+        # Go
+        "golang" "go-md2man"
+
+        # Python
+        "python3" "python3-pip" "python3-setuptools"
+
+        # System
+        "fastfetch" "libsubid-dev" "systemd-dev"
       ];
     };
-
-    # Zsh init script
-    initContent = ''
-      ZSH_DISABLE_COMPFIX=true 
-      export ZSH=${pkgs.oh-my-zsh}/share/oh-my-zsh
-      source $ZSH/oh-my-zsh.sh
-
-      # Load Nix-installed plugins
-      source ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-      source ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
-      # Environment variables
-      export EDITOR=nvim
-      export VISUAL=nvim
-      export PATH=$HOME/.local/bin:$PATH
-
-      # Autojump
-      [[ -s ${pkgs.autojump}/share/autojump/autojump.zsh ]] && source ${pkgs.autojump}/share/autojump/autojump.zsh
-      
-      # Fast system info
-      clear
-      echo ""
-      fastfetch
-
-      # History search with arrow keys
-      bindkey '^[[A' history-substring-search-up
-      bindkey '^[[B' history-substring-search-down
-
-    '';
   };
 
-  ## ── Home Manager self-management ───────────────────────────────────
-  programs.home-manager.enable = true;
-
-  ## ── Import external modules ────────────────────────────────────────
-  imports = [
-    (import "${plasma-manager}/modules")
-    "${nix-flatpak}/modules/home-manager.nix"
-  ];
-
-  ## ── Flatpak integration ────────────────────────────────────────────
+  # ---------------------------------------------------------------------------
+  # Flatpak
+  # ---------------------------------------------------------------------------
   services.flatpak = {
     enable = true;
+
     packages = [
       "app.eduroam.geteduroam"
       "com.ktechpit.whatsie"
@@ -216,68 +92,192 @@ in
       "org.zealdocs.Zeal"
       "party.supertux.supertuxparty"
     ];
+
     overrides = {
       global = {
-        # Force Wayland by default
-        Context.sockets = ["wayland" "!x11" "!fallback-x11"];
+        Context.sockets = [ "wayland" "!x11" "!fallback-x11" ];
 
         Environment = {
-          # Fix un-themed cursor in some Wayland apps
+          GTK_THEME    = "Adwaita:dark";
           XCURSOR_PATH = "/run/host/user-share/icons:/run/host/share/icons";
-
-          # Force correct theme for some GTK apps
-          GTK_THEME = "Adwaita:dark";
         };
       };
 
       "com.ktechpit.whatsie".Context = {
         filesystems = [
-          "home:rw" # Expose user
-          "/run/current-system/sw/bin:ro" # Expose NixOS managed software
+          "home:rw"
+          "/run/current-system/sw/bin:ro"
         ];
+
         sockets = [
-          "gpg-agent" # Expose GPG agent
-          "pcsc" # Expose smart cards (i.e. YubiKey)
+          "gpg-agent"
+          "pcsc"
         ];
       };
     };
+
     update.auto = {
       enable     = true;
       onCalendar = "daily";
     };
   };
 
-  ## ── Plasma desktop settings ────────────────────────────────────────
+  # ---------------------------------------------------------------------------
+  # Git
+  # ---------------------------------------------------------------------------
+  programs.git = {
+    enable = true;
+
+    settings.user = {
+      email = "hadichokr@icloud.com";
+      name  = "Hadi Chokr";
+    };
+  };
+
+  # ---------------------------------------------------------------------------
+  # Home Manager self-management
+  # ---------------------------------------------------------------------------
+  programs.home-manager.enable = true;
+
+  services.home-manager.autoExpire = {
+    enable    = true;
+    frequency = "hourly";
+    timestamp = "-3 days";
+  };
+
+  # ---------------------------------------------------------------------------
+  # Konsole
+  # ---------------------------------------------------------------------------
+  programs.konsole = {
+    enable = true;
+
+    defaultProfile = "Linux";
+
+    profiles.Linux = {
+      name = "Linux";
+      colorScheme = "Linux";
+      extraConfig.Keyboard.KeyBindings = "linux";
+    };
+  };
+
+  # ---------------------------------------------------------------------------
+  # Plasma
+  # ---------------------------------------------------------------------------
   programs.plasma = {
     enable = true;
 
-    # Keyboard
-    input.keyboard.layouts = [ { layout = "de"; } ];
+    input.keyboard.layouts = [
+      { layout = "de"; }
+    ];
 
-    # Effects
-    kwin.effects = {
-      translucency.enable       = true;
-      wobblyWindows.enable      = true;
-      windowOpenClose.animation = "fade";
+    kwin = {
+      effects = {
+        translucency.enable       = true;
+        wobblyWindows.enable      = true;
+        windowOpenClose.animation = "fade";
+      };
+
+      virtualDesktops = {
+        number = 2;
+        rows   = 2;
+      };
     };
 
-    # Power
     powerdevil.AC.whenLaptopLidClosed = "doNothing";
 
-    # Shortcuts
     spectacle.shortcuts.launch = "F12";
 
-    # Workspace
     workspace = {
-      clickItemTo       = "open";
-      lookAndFeel       = "org.kde.breezedark.desktop";
-      wallpaper = "${pkgs.kdePackages.plasma-workspace-wallpapers}/share/wallpapers/FlyingKonqui/";
+      clickItemTo = "open";
+      lookAndFeel = "org.kde.breezedark.desktop";
+
+      wallpaper =
+        "${pkgs.kdePackages.plasma-workspace-wallpapers}/share/wallpapers/FlyingKonqui/";
+
       wallpaperBackground.blur = true;
     };
-
-    kwin.virtualDesktops = {
-      number = 2;
-      rows   = 2;
-    };
   };
+
+  # ---------------------------------------------------------------------------
+  # Zsh
+  # ---------------------------------------------------------------------------
+  programs.zsh = {
+    enable = true;
+    enableCompletion = true;
+
+    dotDir = "${config.xdg.configHome}/zsh";
+
+    shellAliases = {
+      cleanup = ''
+        echo "Cleaning old Nix generations..."
+        sudo nix-collect-garbage -d
+        sudo nix-env --delete-generations old
+        sudo nix-env --delete-generations +5
+      '';
+
+      ga = "git add";
+      gc = "git commit";
+      gd = "git diff";
+      gp = "git push";
+      gs = "git status";
+
+      h  = "history";
+      l  = "ls -CF";
+      la = "ls -A";
+      ll = "ls -lh --color=auto";
+
+      rebuild     = "sudo nixos-rebuild switch";
+      update      = "sudo nixos-rebuild switch --upgrade";
+      update-home = "home-manager -f /etc/nixos/hadichokr-home.nix switch";
+      update-all  = "sudo nixos-rebuild switch --upgrade && home-manager -f /etc/nixos/hadichokr-home.nix switch";
+
+      toolbox-dev = "distrobox enter toolbox-dev";
+      vi = "nvim";
+    };
+
+    oh-my-zsh = {
+      enable = true;
+      theme  = "robbyrussell";
+
+      plugins = [
+        "autojump"
+        "docker"
+        "extract"
+        "git"
+        "golang"
+        "history-substring-search"
+        "kubectl"
+        "npm"
+        "pip"
+        "sudo"
+        "tmux"
+        "z"
+      ];
+    };
+
+    initContent = ''
+      ZSH_DISABLE_COMPFIX=true
+      export ZSH=${pkgs.oh-my-zsh}/share/oh-my-zsh
+      source $ZSH/oh-my-zsh.sh
+
+      source ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+      source ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+      [[ -s ${pkgs.autojump}/share/autojump/autojump.zsh ]] && source ${pkgs.autojump}/share/autojump/autojump.zsh
+
+      export EDITOR=nvim
+      export VISUAL=nvim
+      export PATH=$HOME/.local/bin:$PATH
+
+      clear
+      fastfetch
+    '';
+  };
+
+  # ---------------------------------------------------------------------------
+  # Imports
+  # ---------------------------------------------------------------------------
+  imports = [
+    (import "${plasma-manager}/modules")
+    "${nix-flatpak}/modules/home-manager.nix"
+  ];
 }

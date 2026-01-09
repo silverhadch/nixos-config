@@ -4,38 +4,43 @@
   # ---------------------------------------------------------------------------
   # Home Manager (global integration)
   # ---------------------------------------------------------------------------
-  home-manager.useGlobalPkgs = true;
-  home-manager.backupFileExtension = "backup";
+  home-manager = {
+    backupFileExtension = "backup";
+    useGlobalPkgs = true;
 
-  home-manager.users.hadichokr = {
-    imports = [ ./hadichokr-home.nix ];
+    users.hadichokr = {
+      imports = [ ./hadichokr-home.nix ];
+    };
   };
 
   # ---------------------------------------------------------------------------
   # Users & groups
   # ---------------------------------------------------------------------------
-  users.groups.libvirtd.members = [ "hadichokr" ];
+  users = {
+    groups.libvirtd.members = [ "hadichokr" ];
 
-  users.users.hadichokr = {
-    isNormalUser = true;
-    description = "Hadi Chokr";
-    extraGroups = [ "libvirtd" "networkmanager" "wheel" ];
+    users.hadichokr = {
+      description = "Hadi Chokr";
+      isNormalUser = true;
 
-    subUidRanges = [
-      { startUid = 100000; count = 65536; }
-    ];
-    subGidRanges = [
-      { startGid = 100000; count = 65536; }
-    ];
+      extraGroups = [
+        "libvirtd"
+        "networkmanager"
+        "wheel"
+      ];
 
-    packages = with pkgs; [
-      fastfetch
-      home-manager
-      kdePackages.kate
-      neovim
-      oh-my-zsh
-      zsh-autosuggestions
-      zsh-syntax-highlighting
-    ];
+      subGidRanges = [
+        { startGid = 100000; count = 65536; }
+      ];
+
+      subUidRanges = [
+        { startUid = 100000; count = 65536; }
+      ];
+
+      # all user-facing packages are managed by Home Manager
+      packages = with pkgs; [
+        home-manager
+      ];
+    };
   };
 }
