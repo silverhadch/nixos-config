@@ -338,6 +338,7 @@ in
     htop
     kdePackages.kcalc
     kdePackages.kdevelop
+    kdePackages.kmines
     kdePackages.partitionmanager
     kdePackages.xdg-desktop-portal-kde
     libreoffice-qt-fresh
@@ -373,6 +374,7 @@ in
     go-md2man
     libgcc
     meson
+    msedit
     shadow
     podman
     xdg-utils
@@ -388,6 +390,7 @@ in
     cowsay
     fortune
     sl
+    pacman-game
     ponysay
     cmatrix
     toilet
