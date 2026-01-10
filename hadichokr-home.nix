@@ -49,10 +49,10 @@ in
       container_always_pull      = 1;
       container_generate_entry   = 1;
       container_manager          = "podman";
-      container_name_default     = "toolbox-dev";
+      container_name_default     = "dev-toolbox";
     };
 
-    containers.toolbox-dev = {
+    containers.dev-toolbox = {
       entry = true;
       image = "docker.io/library/debian:unstable";
 
@@ -231,8 +231,7 @@ in
       update-home = "home-manager -f /etc/nixos/hadichokr-home.nix switch";
       update-all  = "sudo nixos-rebuild switch --upgrade && home-manager -f /etc/nixos/hadichokr-home.nix switch";
 
-      toolbox-dev = "distrobox enter toolbox-dev";
-      vi = "nvim";
+      dev-toolbox = "distrobox enter dev-toolbox";
     };
 
     oh-my-zsh = {

@@ -169,6 +169,11 @@ in
       })
 
       home-manager
+
+      # Get vi back for shits and giggles
+      (pkgs.writeShellScriptBin "vi" ''
+        exec vim -u NONE -C "$@"
+      '')
     ];
   };
 
