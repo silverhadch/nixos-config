@@ -97,6 +97,7 @@ in
       "it.mijorus.gearlever"
       "net.codelogistics.clicker"
       "org.kde.neochat"
+      "org.texstudio.TeXstudio"
       "org.zealdocs.Zeal"
       "party.supertux.supertuxparty"
     ];
