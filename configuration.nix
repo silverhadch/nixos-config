@@ -139,6 +139,7 @@ in
       go
       go-md2man
       gopls
+      jq
       libgcc
       meson
       msedit
