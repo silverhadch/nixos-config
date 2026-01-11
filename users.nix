@@ -39,7 +39,7 @@
         { startUid = 100000; count = 65536; }
       ];
 
-      # all user-facing packages are managed by Home Manager
+      # all user-facing packages are managed by Home Manager, well except Home Manager itself
       packages = with pkgs; [
         home-manager
       ];

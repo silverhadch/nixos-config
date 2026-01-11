@@ -8,10 +8,9 @@ Fully declarative, reproducible, and cleanly split between system and user space
 ## Layout
 
 - configuration.nix – system configuration
-- hardware-configuration.nix – hardware (generated)
 - users.nix – users, groups, Home Manager integration
 - hadichokr-home.nix – Home Manager config
-- pkgs/ – overlays and custom packages (mostly legacy)
+- pkgs/ – overlays and custom packages (unused right now)
 
 ---
 
@@ -118,4 +117,3 @@ No user packages in system config.
 ## License
 
 Do whatever you want with it.
-Declarative systems forgive mistakes. Mutable ones remember them.
