@@ -219,9 +219,9 @@ in
     shellAliases = {
       cleanup = ''
         echo "Cleaning old Nix generations..."
-        sudo nix-collect-garbage -d
-        sudo nix-env --delete-generations old
-        sudo nix-env --delete-generations +5
+        run0 nix-collect-garbage -d
+        run0 nix-env --delete-generations old
+        run0 nix-env --delete-generations +5
       '';
 
       ga = "git add";
@@ -235,10 +235,10 @@ in
       la = "ls -A";
       ll = "ls -lh --color=auto";
 
-      rebuild     = "sudo nixos-rebuild switch";
-      update      = "sudo nixos-rebuild switch --upgrade";
+      rebuild     = "run0 nixos-rebuild switch";
+      update      = "run0 nixos-rebuild switch --upgrade";
       update-home = "home-manager -f /etc/nixos/hadichokr-home.nix switch";
-      update-all  = "sudo nixos-rebuild switch --upgrade && home-manager -f /etc/nixos/hadichokr-home.nix switch";
+      update-all  = "run0 nixos-rebuild switch --upgrade && home-manager -f /etc/nixos/hadichokr-home.nix switch";
 
       dev-toolbox = "distrobox enter dev-toolbox";
     };

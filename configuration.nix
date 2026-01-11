@@ -1,7 +1,8 @@
 { config, pkgs, lib, ... }:
 
 let
-  home-manager = builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/master.tar.gz";
+  home-manager = builtins.fetchTarball
+    "https://github.com/nix-community/home-manager/archive/master.tar.gz";
 in
 {
   # ---------------------------------------------------------------------------
@@ -25,6 +26,7 @@ in
     };
 
     kernelPackages = pkgs.linuxPackages_latest;
+
     kernelParams = [
       "boot.shell_on_fail"
       "quiet"
@@ -37,8 +39,8 @@ in
       efi.canTouchEfiVariables = true;
 
       systemd-boot = {
-        configurationLimit = 5;
         enable = true;
+        configurationLimit = 5;
       };
 
       timeout = 0;
@@ -94,6 +96,7 @@ in
       curl
       git
       htop
+      neovim
       vim
       wget
 
@@ -161,7 +164,7 @@ in
       sl
       toilet
 
-      # VSCode
+      # VSCode and Extensions
       (vscode-with-extensions.override {
         vscodeExtensions = with vscode-extensions; [
           bbenoist.nix
@@ -179,9 +182,23 @@ in
 
       home-manager
 
-      # Get vi back for shits and giggles
+      # vi compatibility shim for shits and giggles
       (pkgs.writeShellScriptBin "vi" ''
         exec vim -u NONE -C "$@"
+      '')
+
+      # sudo to run0 shim
+      (pkgs.writeShellScriptBin "sudo" ''
+        exec run0 "$@"
+      '')
+
+      # optional muscle-memory shims
+      (pkgs.writeShellScriptBin "doas" ''
+        exec run0 "$@"
+      '')
+
+      (pkgs.writeShellScriptBin "pkexec" ''
+        exec run0 "$@"
       '')
     ];
   };
@@ -211,7 +228,7 @@ in
   ];
 
   # ---------------------------------------------------------------------------
-  # Hardware
+  # Bluetooth
   # ---------------------------------------------------------------------------
   hardware.bluetooth = {
     enable = true;
@@ -228,7 +245,7 @@ in
   };
 
   # ---------------------------------------------------------------------------
-  # i18n / Time
+  # Locale / Time
   # ---------------------------------------------------------------------------
   i18n = {
     defaultLocale = "de_DE.UTF-8";
@@ -296,7 +313,7 @@ in
 
     settings = {
       auto-optimise-store = true;
-      experimental-features = [ "flakes" "nix-command" ];
+      experimental-features = [ "nix-command" "flakes" ];
     };
   };
 
@@ -310,7 +327,8 @@ in
         };
 
         webex = super.webex.overrideAttrs (old: {
-          nativeBuildInputs = (old.nativeBuildInputs or []) ++ [ super.makeWrapper ];
+          nativeBuildInputs =
+            (old.nativeBuildInputs or []) ++ [ super.makeWrapper ];
 
           postFixup = (old.postFixup or "") + ''
             wrapProgram $out/opt/Webex/bin/CiscoCollabHost \
@@ -326,37 +344,41 @@ in
   };
 
   # ---------------------------------------------------------------------------
-  # Printing
+  # Avahi
   # ---------------------------------------------------------------------------
-  services = {
-    avahi = {
-      enable = true;
-      nssmdns4 = true;
-      openFirewall = true;
-    };
-
-    printing = {
-      enable = true;
-      drivers = with pkgs; [
-        cups-browsed
-        cups-filters
-      ];
-    };
-
-    pipewire = {
-      enable = true;
-
-      alsa = {
-        enable = true;
-        support32Bit = true;
-      };
-
-      pulse.enable = true;
-    };
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = true;
   };
 
-  security.rtkit.enable = true;
+  # ---------------------------------------------------------------------------
+  # Printing
+  # ---------------------------------------------------------------------------
+  services.printing = {
+    enable = true;
+    drivers = with pkgs; [
+      cups-browsed
+      cups-filters
+    ];
+  };
+
+  # ---------------------------------------------------------------------------
+  # Audio
+  # ---------------------------------------------------------------------------
+  services.pipewire = {
+    enable = true;
+
+    alsa = {
+      enable = true;
+      support32Bit = true;
+    };
+
+    pulse.enable = true;
+  };
+
   services.pulseaudio.enable = false;
+  security.rtkit.enable = true;
 
   # ---------------------------------------------------------------------------
   # Programs
@@ -399,21 +421,12 @@ in
   ];
 
   # ---------------------------------------------------------------------------
-  # System
-  # ---------------------------------------------------------------------------
-  system = {
-    autoUpgrade = {
-      enable = true;
-      allowReboot = false;
-    };
-
-    stateVersion = "25.11";
-  };
-
-  # ---------------------------------------------------------------------------
   # Users / Shell
   # ---------------------------------------------------------------------------
   users.defaultUserShell = pkgs.zsh;
+
+  # kill sudo, embrace run0
+  security.sudo.enable = false;
 
   # ---------------------------------------------------------------------------
   # Virtualisation
@@ -438,4 +451,16 @@ in
   };
 
   systemd.services.waydroid-container.enable = true;
+
+  # ---------------------------------------------------------------------------
+  # System
+  # ---------------------------------------------------------------------------
+  system = {
+    autoUpgrade = {
+      enable = true;
+      allowReboot = false;
+    };
+
+    stateVersion = "25.11";
+  };
 }
