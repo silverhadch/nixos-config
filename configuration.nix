@@ -213,7 +213,7 @@ in
     enable = true;
     xdgOpenUsePortal = true;
 
-    config.common.default = [ "gtk" "kde" ];
+    config.common.default = [ "kde" "gtk" ];
 
     extraPortals = with pkgs; [
       kdePackages.xdg-desktop-portal-kde
