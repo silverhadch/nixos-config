@@ -140,7 +140,7 @@ in
       meson
       msedit
       shadow
-      texlive.combined.scheme-basic
+      texlive.combined.scheme-small
       wayland-utils
       xdg-utils
 
