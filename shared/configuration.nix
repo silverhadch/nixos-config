@@ -1,17 +1,11 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, hostName, ... }:
 
-let
-  home-manager = builtins.fetchTarball
-    "https://github.com/nix-community/home-manager/archive/master.tar.gz";
-in
 {
   # ---------------------------------------------------------------------------
   # Imports
   # ---------------------------------------------------------------------------
   imports = [
-    ./hardware-configuration.nix
-    ./users.nix
-    (import "${home-manager}/nixos")
+    ./users/users.nix
   ];
 
   # ---------------------------------------------------------------------------
@@ -270,7 +264,7 @@ in
   # Networking
   # ---------------------------------------------------------------------------
   networking = {
-    hostName = "nixos";
+    hostName = hostName;
 
     networkmanager = {
       enable = true;

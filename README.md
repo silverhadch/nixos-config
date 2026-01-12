@@ -1,119 +1,89 @@
-# NixOS Configuration
+### ❄️ NixOS Flake Desktop Config
 
-Personal NixOS + Home Manager setup for a Plasma 6 / Wayland workstation.
-Fully declarative, reproducible, and cleanly split between system and user space.
-
----
-
-## Layout
-
-- configuration.nix – system configuration
-- users.nix – users, groups, Home Manager integration
-- hadichokr-home.nix – Home Manager config
-- pkgs/ – overlays and custom packages (unused right now)
+One desktop config, multiple machines.
+Each machine = one folder under `hosts/`.
 
 ---
 
-## System Overview
+## Files
 
-- Boot: systemd-boot (EFI), Plymouth (bgrt), quiet boot
-- Kernel: latest stable
-- Nix:
-  - automatic GC (hourly, keep 5 days)
-  - store optimisation
-  - nix-command + flakes
-  - auto-upgrades (no forced reboot)
-  - nix-ld enabled
-- Storage: encrypted swapfile (16 GiB, random key per boot)
+- flake.nix  
+  Wires everything together.  
+  Defines inputs, exposes all hosts, passes `hostName`.
 
----
+- hosts/`hostname`/default.nix  
+  Machine entry point.  
+  Imports hardware + shared config.
 
-## Desktop & Audio
+- hosts/`hostname`/hardware-configuration.nix  
+  Generated per machine.  
+  Disks, filesystems, kernel modules only.
 
-- Plasma 6 (Wayland-first)
-- SDDM (Wayland enabled)
-- PipeWire (ALSA + Pulse compatibility)
-- Bluetooth with battery reporting
+- shared/configuration.nix  
+  Full system desktop config (Plasma, audio, network, Flatpak, packages, etc).  
+  Uses `hostName` from the flake.
 
----
+- shared/users/users.nix  
+  System users + Home Manager integration.
 
-## Networking
-
-- NetworkManager
-- Declarative Cisco AnyConnect VPN (FU Berlin)
-- IPv6 disabled for VPN profile
+- shared/users/hadichokr-home-manager.nix  
+  Pure Home Manager config (shell, Plasma, apps, aliases).
 
 ---
 
-## Containers & Virtualization
+## New machine (fresh install)
 
-- Podman (docker-compatible)
-- Distrobox enabled
-- libvirt + virt-manager
-- Waydroid (nftables backend)
-- Spice USB redirection
-
----
-
-## Locale & Input
-
-- Locale: de_DE.UTF-8
-- Timezone: Europe/Berlin
-- Keyboard: de (console + graphical)
-
----
-
-## User Environment (Home Manager)
-
-Defined in hadichokr-home.nix.
-No user packages in system config.
-
-### Shell
-
-- Zsh + Oh My Zsh
-- Autosuggestions + syntax highlighting (Nix-managed)
-- Aliases for NixOS, Home Manager, Git, Distrobox
-- fastfetch on shell startup
-
-### Development
-
-- Debian Unstable toolbox via Distrobox
-- Podman-backed, auto-pull
-- Toolchains: C/C++, Go, Python, XML/DocBook, systemd headers
-- Host stays clean, dev stays isolated
-
-### Plasma (Declarative)
-
-- Breeze Dark
-- Konqi wallpaper (blurred)
-- Wobbly windows + translucency
-- Virtual desktops: 2×2
-- Spectacle on F12
-
-### Flatpak (User)
-
-- Daily auto-updates
-- Wayland-only policy
-- Cursor and GTK theme fixes
-- Small, curated app set
+1. Install NixOS normally
+2. Move the hardware config:
+   ```
+   mv /etc/nixos/hardware-configuration.nix /etc/nixos/hosts/<hostname>/
+   ```
+3. Delete the old configuration.nix
+4. Create hosts/`hostname`/default.nix:
+   ```
+   {
+     imports = [
+       ./hardware-configuration.nix
+       ../../shared/configuration.nix
+     ];
+   }
+   ```
+5. Build:
+   ```
+   run0 nixos-rebuild switch --flake /etc/nixos#<hostname>
+   ```
 
 ---
 
-## Overlays
+## Rename a machine
 
-- Bottles: warning popup removed
-- Webex: forced X11 for Wayland stability
+```
+mv hosts/old-name hosts/new-name
+git add .
+run0 nixos-rebuild switch --flake /etc/nixos#new-name
+```
 
 ---
 
-## Versions
+## Aliases
 
-- System stateVersion: 25.11
-- Home Manager stateVersion: 26.05
-- User: hadichokr
+```
+rebuild='run0 nixos-rebuild switch --flake /etc/nixos#$(hostnamectl hostname)'
+update='run0 nixos-rebuild switch --upgrade --flake /etc/nixos#$(hostnamectl hostname)'
+list-hosts='ls /etc/nixos/hosts'
+rebuild-host='run0 nixos-rebuild switch --flake /etc/nixos#$1'
+```
+
+---
+
+## Update inputs
+
+```
+nix flake update
+```
 
 ---
 
 ## License
 
-Do whatever you want with it.
+MIT

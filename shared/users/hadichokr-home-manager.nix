@@ -1,21 +1,6 @@
 { config, pkgs, ... }:
 
-let
-  nix-flatpak = builtins.fetchTarball
-    "https://github.com/gmodena/nix-flatpak/archive/latest.tar.gz";
-
-  plasma-manager = builtins.fetchTarball
-    "https://github.com/nix-community/plasma-manager/archive/trunk.tar.gz";
-in
 {
-  # ---------------------------------------------------------------------------
-  # Imports
-  # ---------------------------------------------------------------------------
-  imports = [
-    (import "${plasma-manager}/modules")
-    "${nix-flatpak}/modules/home-manager.nix"
-  ];
-
   # ---------------------------------------------------------------------------
   # Home basics
   # ---------------------------------------------------------------------------
@@ -30,7 +15,6 @@ in
       docker
       fastfetch
       kubectl
-      plasma-manager
       tmux
       zsh-autosuggestions
       zsh-syntax-highlighting
@@ -54,10 +38,10 @@ in
     enable = true;
 
     settings = {
-      container_always_pull      = 1;
-      container_generate_entry   = 1;
-      container_manager          = "podman";
-      container_name_default     = "dev-toolbox";
+      container_always_pull    = 1;
+      container_generate_entry = 1;
+      container_manager        = "podman";
+      container_name_default   = "dev-toolbox";
     };
 
     containers.dev-toolbox = {
@@ -65,27 +49,18 @@ in
       image = "docker.io/library/debian:unstable";
 
       additional_packages = [
-        # Build
         "bison" "cmake" "flex" "gcc" "g++" "make"
         "meson" "ninja-build" "pkg-config"
-
-        # Docs / XML
         "docbook-xsl" "itstool" "libxml2-dev" "libxslt1-dev"
-
-        # Go
         "golang" "go-md2man"
-
-        # Python
         "python3" "python3-pip" "python3-setuptools"
-
-        # System
         "fastfetch" "libsubid-dev" "systemd-dev"
       ];
     };
   };
 
   # ---------------------------------------------------------------------------
-  # Flatpak
+  # Flatpak (module provided by flake)
   # ---------------------------------------------------------------------------
   services.flatpak = {
     enable = true;
@@ -170,7 +145,7 @@ in
   };
 
   # ---------------------------------------------------------------------------
-  # Plasma
+  # Plasma (module injected by flake)
   # ---------------------------------------------------------------------------
   programs.plasma = {
     enable = true;
@@ -235,10 +210,11 @@ in
       la = "ls -A";
       ll = "ls -lh --color=auto";
 
-      rebuild     = "run0 nixos-rebuild switch";
-      update      = "run0 nixos-rebuild switch --upgrade";
-      update-home = "home-manager -f /etc/nixos/hadichokr-home.nix switch";
-      update-all  = "run0 nixos-rebuild switch --upgrade && home-manager -f /etc/nixos/hadichokr-home.nix switch";
+      rebuild = "run0 nixos-rebuild switch --flake /etc/nixos#$(get-current-host)";
+      update  = "run0 nixos-rebuild switch --upgrade --flake /etc/nixos#$(get-current-host)";
+
+      list-hosts   = "ls /etc/nixos/hosts";
+      rebuild-host = "run0 nixos-rebuild switch --flake /etc/nixos#$1";
 
       dev-toolbox = "distrobox enter dev-toolbox";
     };
@@ -271,6 +247,10 @@ in
       source ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
       source ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
       [[ -s ${pkgs.autojump}/share/autojump/autojump.zsh ]] && source ${pkgs.autojump}/share/autojump/autojump.zsh
+
+      get-current-host() {
+        hostnamectl hostname
+      }
 
       export EDITOR=nvim
       export VISUAL=nvim

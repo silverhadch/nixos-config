@@ -1,21 +1,17 @@
 { config, pkgs, ... }:
 
 {
-  # ---------------------------------------------------------------------------
-  # Home Manager (global integration)
-  # ---------------------------------------------------------------------------
   home-manager = {
     backupFileExtension = "backup";
     useGlobalPkgs = true;
 
     users.hadichokr = {
-      imports = [ ./hadichokr-home.nix ];
+      imports = [
+        ./hadichokr-home-manager.nix
+      ];
     };
   };
 
-  # ---------------------------------------------------------------------------
-  # Users & groups
-  # ---------------------------------------------------------------------------
   users = {
     groups.libvirtd.members = [ "hadichokr" ];
 
@@ -39,10 +35,10 @@
         { startUid = 100000; count = 65536; }
       ];
 
-      # all user-facing packages are managed by Home Manager, well except Home Manager itself
       packages = with pkgs; [
         home-manager
       ];
     };
   };
 }
+
