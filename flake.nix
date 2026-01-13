@@ -30,12 +30,35 @@
   let
     system = "x86_64-linux";
 
+    pkgs = import nixpkgs {
+      inherit system;
+    };
+
+    lib = nixpkgs.lib;
+
+    # -------------------------
+    # Dynamic devShell loading
+    # -------------------------
+    shellFiles =
+      builtins.filter
+        (name: lib.hasSuffix ".nix" name)
+        (builtins.attrNames (builtins.readDir ./shells));
+
+    devShellsForSystem =
+      builtins.listToAttrs (map (name: {
+        name = lib.removeSuffix ".nix" name;
+        value = import (./shells + "/${name}") { inherit pkgs; };
+      }) shellFiles);
+
+    # -------------------------
+    # Host detection
+    # -------------------------
     hosts =
       builtins.attrNames
         (builtins.readDir ./hosts);
 
     mkHost = hostName:
-      nixpkgs.lib.nixosSystem {
+      lib.nixosSystem {
         inherit system;
 
         specialArgs = {
@@ -62,6 +85,9 @@
       };
   in
   {
+    # -------------------------
+    # NixOS systems
+    # -------------------------
     nixosConfigurations =
       builtins.listToAttrs (map
         (host: {
@@ -69,5 +95,10 @@
           value = mkHost host;
         })
         hosts);
+
+    # -------------------------
+    # Dev shells
+    # -------------------------
+    devShells.${system} = devShellsForSystem;
   };
 }

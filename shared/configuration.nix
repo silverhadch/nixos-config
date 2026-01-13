@@ -114,6 +114,7 @@
       webex
 
       # KDE
+      kdePackages.appstream-qt
       kdePackages.kcalc
       kdePackages.kdevelop
       kdePackages.kmines
@@ -129,6 +130,7 @@
       clang-tools
       cmakeWithGui
       devbox
+      flatpak-builder
       gcc
       gnumake
       go

@@ -222,6 +222,7 @@
       rebuild-host = "run0 nixos-rebuild switch --flake /etc/nixos#$1";
 
       dev-toolbox = "distrobox enter dev-toolbox";
+      kontainer-shell = "nix develop /etc/nixos#kontainer";
     };
 
     oh-my-zsh = {
