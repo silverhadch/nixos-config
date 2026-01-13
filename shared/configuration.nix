@@ -90,6 +90,7 @@
       curl
       git
       htop
+      nano
       neovim
       vim
       wget
@@ -188,12 +189,27 @@
       '')
 
       # optional muscle-memory shims
+      (pkgs.writeShellScriptBin "sudoedit" ''
+        exec run0 rnano "$@"
+      '')
+
       (pkgs.writeShellScriptBin "doas" ''
         exec run0 "$@"
       '')
 
       (pkgs.writeShellScriptBin "pkexec" ''
         exec run0 "$@"
+      '')
+
+      # su → run0 bash
+      (pkgs.writeShellScriptBin "su" ''
+        if [ "$#" -eq 0 ]; then
+          exec run0 bash
+        elif [ "$1" = "-" ]; then
+          exec run0 --login bash
+        else
+          exec run0 --user="$1" bash
+        fi
       '')
     ];
   };
@@ -420,8 +436,16 @@
   # ---------------------------------------------------------------------------
   users.defaultUserShell = pkgs.zsh;
 
-  # kill sudo, embrace run0
-  security.sudo.enable = false;
+  # ---------------------------------------------------------------------------
+  # Security (Disable SUID-based interactive privilege escalation helpers)
+  # ---------------------------------------------------------------------------
+  security = {
+    sudo.enable = false;
+    wrappers = {
+      su.enable = false;
+      pkexec.enable = false;
+    };
+  };
 
   # ---------------------------------------------------------------------------
   # Virtualisation

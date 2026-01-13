@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   home-manager = {
@@ -19,12 +19,13 @@
       description = "Hadi Chokr";
       isNormalUser = true;
 
-      extraGroups = [
+      extraGroups = lib.mkForce [
+        "audio"
         "docker"
         "input"
         "libvirtd"
         "networkmanager"
-        "wheel"
+        "video"
       ];
 
       subGidRanges = [
