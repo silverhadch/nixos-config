@@ -211,7 +211,12 @@
       ll = "ls -lh --color=auto";
 
       rebuild = "run0 nixos-rebuild switch --flake /etc/nixos#$(get-current-host)";
-      update  = "run0 nixos-rebuild switch --upgrade --flake /etc/nixos#$(get-current-host)";
+      update  = ''
+      cd /etc/nixos
+      nix flake update
+      run0 nixos-rebuild switch --upgrade --flake /etc/nixos#$(get-current-host)
+      cd -
+      '';
 
       list-hosts   = "ls /etc/nixos/hosts";
       rebuild-host = "run0 nixos-rebuild switch --flake /etc/nixos#$1";
@@ -250,6 +255,39 @@
 
       get-current-host() {
         hostnamectl hostname
+      }
+
+      flake-update() {
+        cd /etc/nixos || return 1
+        nix flake update
+      }
+
+      flake-check() {
+        cd /etc/nixos || return 1
+        nix flake check
+      }
+
+      update-hardware-host() {
+        set -e
+        local host tmpdir
+        host="$(get-current-host)"
+        tmpdir="$(mktemp -d)"
+
+        echo "→ Generating hardware config"
+        run0 nixos-generate-config --dir "$tmpdir"
+
+        echo "→ Updating hardware configuration for host: $host"
+        cd /etc/nixos || return 1
+
+        rm -f "$tmpdir/configuration.nix"
+
+        mv "$tmpdir/hardware-configuration.nix" \
+          "hosts/$host/hardware-configuration.nix"
+
+        rmdir "$tmpdir"
+
+        git add "hosts/$host/hardware-configuration.nix"
+        git commit -m "nixos($host): update hardware configuration" || true
       }
 
       export EDITOR=nvim
