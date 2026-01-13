@@ -215,6 +215,9 @@
       cd /etc/nixos
       nix flake update
       run0 nixos-rebuild switch --upgrade --flake /etc/nixos#$(get-current-host)
+      git add .
+      git commit -m "Update inputs on $(date '+%Y-%m-%d %H:%M')"
+      git push
       cd -
       '';
 
