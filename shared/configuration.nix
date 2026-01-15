@@ -141,7 +141,7 @@
       meson
       msedit
       shadow
-      texlive.combined.scheme-small
+      texlive.combined.scheme-full
       wayland-utils
       xdg-utils
 
