@@ -19,22 +19,15 @@
     };
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    home-manager,
-    plasma-manager,
-    nix-flatpak,
-    ...
-  }:
+  outputs = { self, ... } @ inputs:  # Capture all inputs with @ inputs
   let
     system = "x86_64-linux";
 
-    pkgs = import nixpkgs {
+    pkgs = import inputs.nixpkgs {
       inherit system;
     };
 
-    lib = nixpkgs.lib;
+    lib = inputs.nixpkgs.lib;
 
     # -------------------------
     # Dynamic devShell loading
@@ -63,12 +56,13 @@
 
         specialArgs = {
           inherit hostName;
+          inherit inputs;
         };
 
         modules = [
           ./hosts/${hostName}
 
-          home-manager.nixosModules.home-manager
+          inputs.home-manager.nixosModules.home-manager
 
           {
             home-manager = {
@@ -76,8 +70,8 @@
               useUserPackages = true;
 
               sharedModules = [
-                plasma-manager.homeModules.plasma-manager
-                nix-flatpak.homeManagerModules.nix-flatpak
+                inputs.plasma-manager.homeModules.plasma-manager
+                inputs.nix-flatpak.homeManagerModules.nix-flatpak
               ];
             };
           }

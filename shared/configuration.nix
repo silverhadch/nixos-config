@@ -156,6 +156,7 @@
       cowsay
       figlet
       fortune
+      nix-tree
       nyancat
       ponysay
       rig
