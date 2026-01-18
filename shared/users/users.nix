@@ -36,9 +36,7 @@
         { startUid = 100000; count = 65536; }
       ];
 
-      packages = with pkgs; [
-        home-manager
-      ];
+      packages = with pkgs; [];
     };
   };
 }

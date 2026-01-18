@@ -1,4 +1,4 @@
-{ config, pkgs, lib, hostName, ... }:
+{ config, inputs, pkgs, lib, hostName, ... }:
 
 {
   # ---------------------------------------------------------------------------
@@ -179,8 +179,6 @@
         ];
       })
 
-      home-manager
-
       # vi compatibility shim for shits and giggles
       (pkgs.writeShellScriptBin "vi" ''
         exec vim -u NONE -C "$@"
@@ -214,6 +212,9 @@
           exec run0 --user="$1" bash
         fi
       '')
+
+      # Flakes
+      inputs.better-soundcloud.packages.${pkgs.stdenv.hostPlatform.system}.default
     ];
   };
 

@@ -17,6 +17,11 @@
     nix-flatpak = {
       url = "github:gmodena/nix-flatpak";
     };
+
+    better-soundcloud = {
+      url = "github:AlirezaKJ/BetterSoundCloud";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, ... } @ inputs:  # Capture all inputs with @ inputs
