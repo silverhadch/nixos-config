@@ -197,6 +197,7 @@
         run0 nix-collect-garbage -d
         run0 nix-env --delete-generations old
         run0 nix-env --delete-generations +5
+        run0 nix-store --optimise
       '';
 
       ga = "git add";
