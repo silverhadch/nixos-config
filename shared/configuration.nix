@@ -140,6 +140,7 @@
       libgcc
       meson
       msedit
+      ripgrep
       shadow
       texlive.combined.scheme-full
       virtualenv
