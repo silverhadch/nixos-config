@@ -176,7 +176,7 @@
       lookAndFeel = "org.kde.breezedark.desktop";
 
       wallpaper =
-        "${pkgs.kdePackages.plasma-workspace-wallpapers}/share/wallpapers/FlyingKonqui/";
+        "/etc/nixos/images/nixos-wallpaper-catppuccin-mocha.svg";
 
       wallpaperBackground.blur = true;
     };
