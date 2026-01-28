@@ -206,6 +206,8 @@
       gp = "git push";
       gs = "git status";
 
+      ds = "devshell";
+
       h  = "history";
       l  = "ls -CF";
       la = "ls -A";
@@ -253,6 +255,9 @@
       ZSH_DISABLE_COMPFIX=true
       export ZSH=${pkgs.oh-my-zsh}/share/oh-my-zsh
       source $ZSH/oh-my-zsh.sh
+      
+      # Source devshell function
+      source /etc/nixos/shells/devshell.sh
 
       source ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
       source ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh

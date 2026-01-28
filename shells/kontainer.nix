@@ -1,4 +1,4 @@
-{ pkgs }:
+{ pkgs ? import <nixpkgs> {} }:
 
 pkgs.mkShell {
   name = "kontainer-dev-shell";
@@ -34,7 +34,7 @@ pkgs.mkShell {
     echo "Kontainer Kirigami dev environment"
     echo "--------------------------------"
     echo
-    echo "⚠️  NOTE about Nix builds:"
+    echo "⚠  NOTE about Nix builds:"
     echo
     echo "  ecm_find_qmlmodule(org.kde.kirigami REQUIRED)"
     echo "  fails under Nix because QML modules are not"

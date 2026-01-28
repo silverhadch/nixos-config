@@ -35,20 +35,6 @@
     lib = inputs.nixpkgs.lib;
 
     # -------------------------
-    # Dynamic devShell loading
-    # -------------------------
-    shellFiles =
-      builtins.filter
-        (name: lib.hasSuffix ".nix" name)
-        (builtins.attrNames (builtins.readDir ./shells));
-
-    devShellsForSystem =
-      builtins.listToAttrs (map (name: {
-        name = lib.removeSuffix ".nix" name;
-        value = import (./shells + "/${name}") { inherit pkgs; };
-      }) shellFiles);
-
-    # -------------------------
     # Host detection
     # -------------------------
     hosts =
@@ -94,10 +80,5 @@
           value = mkHost host;
         })
         hosts);
-
-    # -------------------------
-    # Dev shells
-    # -------------------------
-    devShells.${system} = devShellsForSystem;
   };
 }
