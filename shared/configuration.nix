@@ -142,6 +142,7 @@
       msedit
       shadow
       texlive.combined.scheme-full
+      virtualenv
       wayland-utils
       xdg-utils
 
