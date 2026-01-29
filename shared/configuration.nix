@@ -80,6 +80,7 @@
   # ---------------------------------------------------------------------------
   environment = {
     sessionVariables = {
+      LIBCLANG_PATH = "${pkgs.llvmPackages.libclang.lib}/lib";
       NIXOS_OZONE_WL = "1";
     };
 
@@ -127,6 +128,8 @@
       toolbox
 
       # Dev
+      btrfs-progs.dev
+      clang
       clang-tools
       cmakeWithGui
       devbox
@@ -137,15 +140,27 @@
       go-md2man
       gopls
       jq
+      llvmPackages.libclang
       libgcc
       meson
       msedit
+      openssl
+      openssl.dev
+      pkg-config
       ripgrep
       shadow
       texlive.combined.scheme-full
       virtualenv
       wayland-utils
       xdg-utils
+      zlib
+      zlib.dev
+
+      # Rust
+      cargo
+      clippy
+      rustc
+      rustfmt
 
       # KDE Dev
       kdePackages.kde-dev-scripts
