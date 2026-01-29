@@ -162,6 +162,10 @@
       rustc
       rustfmt
 
+      # Zig
+      zig
+      zls
+
       # KDE Dev
       kdePackages.kde-dev-scripts
       kdePackages.kde-dev-utils

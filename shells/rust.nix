@@ -27,6 +27,7 @@ pkgs.mkShell {
   name = "rust-dev-shell";
 
   nativeBuildInputs = with pkgs; [
+    rust-analyzer
     rustup
     rustPlatform.bindgenHook
     pkg-config
