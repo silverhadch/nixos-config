@@ -25,12 +25,16 @@ pkgs.mkShell {
     libxcrypt
     libbsd
     systemd
+    libssh
 
     tcb
     linux-pam
 
     glibc.dev
     systemd.dev
+    libssh.dev
+
+    python313
   ];
 
   env = {
