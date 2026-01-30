@@ -482,9 +482,10 @@
 
     podman = {
       enable = true;
-      dockerCompat = true;
       defaultNetwork.settings.dns_enabled = true;
     };
+
+    docker.enable = true;
 
     spiceUSBRedirection.enable = true;
 
