@@ -90,6 +90,7 @@
       btrfs-progs
       curl
       git
+      graphviz-nox
       htop
       nano
       neovim

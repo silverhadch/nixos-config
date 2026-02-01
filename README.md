@@ -1,46 +1,41 @@
-### ❄️ NixOS Flake Desktop Config
+# ❄️ NixOS Flake Desktop Configuration
 
-One desktop config, multiple machines.
-Each machine = one folder under `hosts/`.
+One desktop configuration, multiple machines. Each machine is a folder under `hosts/` with only hardware-specific differences.
 
----
+## File Dependencies
 
-## Files
+```
+flake.nix
+├── Imports: nixpkgs, home-manager, plasma-manager, nix-flatpak, better-soundcloud
+└── Discovers: hosts/ directory
+    └── hosts/nixos-thinkpad/default.nix
+        ├── imports: hardware-configuration.nix
+        └── imports: shared/configuration.nix
+            └── imports: shared/users/users.nix
+                └── imports: hadichokr-home-manager.nix
+                    ├── sources: shells/devshell.sh
+                    ├── references: shells/kontainer.nix
+                    └── uses: images/wallpaper.svg
+```
 
-- flake.nix  
-  Wires everything together.  
-  Defines inputs, exposes all hosts, passes `hostName`.
+<details>
+<summary>📊 Visual Dependency Graph (Click to expand)</summary>
 
-- hosts/`hostname`/default.nix  
-  Machine entry point.  
-  Imports hardware + shared config.
+![Configuration Dependencies](images/Files.svg)
 
-- hosts/`hostname`/hardware-configuration.nix  
-  Generated per machine.  
-  Disks, filesystems, kernel modules only.
+</details>
 
-- shared/configuration.nix  
-  Full system desktop config (Plasma, audio, network, Flatpak, packages, etc).  
-  Uses `hostName` from the flake.
+## Quick Start
 
-- shared/users/users.nix  
-  System users + Home Manager integration.
-
-- shared/users/hadichokr-home-manager.nix  
-  Pure Home Manager config (shell, Plasma, apps, aliases).
-
----
-
-## New machine (fresh install)
-
+### New Machine
 1. Install NixOS normally
-2. Move the hardware config:
-   ```
+2. Move hardware config:
+   ```bash
    mv /etc/nixos/hardware-configuration.nix /etc/nixos/hosts/<hostname>/
    ```
-3. Delete the old configuration.nix
-4. Create hosts/`hostname`/default.nix:
-   ```
+3. Create `hosts/<hostname>/default.nix`:
+   ```nix
+   { ... }:
    {
      imports = [
        ./hardware-configuration.nix
@@ -48,42 +43,55 @@ Each machine = one folder under `hosts/`.
      ];
    }
    ```
-5. Build:
-   ```
+4. Build:
+   ```bash
    run0 nixos-rebuild switch --flake /etc/nixos#<hostname>
    ```
 
----
+## Key Commands
 
-## Rename a machine
-
-```
-mv hosts/old-name hosts/new-name
-git add .
-run0 nixos-rebuild switch --flake /etc/nixos#new-name
-```
-
----
-
-## Aliases
-
-```
-rebuild='run0 nixos-rebuild switch --flake /etc/nixos#$(hostnamectl hostname)'
-update='run0 nixos-rebuild switch --upgrade --flake /etc/nixos#$(hostnamectl hostname)'
-list-hosts='ls /etc/nixos/hosts'
-rebuild-host='run0 nixos-rebuild switch --flake /etc/nixos#$1'
+```bash
+rebuild           # Rebuild current host
+update            # Update inputs and rebuild
+list-hosts        # Show available machines
+devshell list     # List dev environments
+devshell kontainer # Container development
 ```
 
----
+## File Guide
 
-## Update inputs
+| File | Purpose |
+|------|---------|
+| `flake.nix` | Root - imports inputs, discovers hosts |
+| `hosts/[hostname]/default.nix` | Machine entry point |
+| `hosts/[hostname]/hardware-configuration.nix` | Auto-generated hardware |
+| `shared/configuration.nix` | Core system config |
+| `shared/users/users.nix` | User definitions |
+| `shared/users/hadichokr-home-manager.nix` | Desktop & shell config |
+| `shells/devshell.sh` | Dev shell manager |
+| `shells/*.nix` | Dev environments |
+| `images/wallpaper.svg` | Desktop wallpaper |
 
+## Management
+
+### Rename Machine
+```bash
+mv hosts/old-name hosts/new-hostname
+run0 nixos-rebuild switch --flake /etc/nixos#new-hostname
 ```
+
+### Update Everything
+```bash
+cd /etc/nixos
 nix flake update
+rebuild
 ```
 
----
+### Regenerate Hardware
+```bash
+update-hardware-host
+```
 
 ## License
 
-MIT
+MIT - see [LICENSE](LICENSE)
