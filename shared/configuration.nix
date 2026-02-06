@@ -129,6 +129,7 @@
       toolbox
 
       # Dev
+      black
       btrfs-progs.dev
       clang
       clang-tools
