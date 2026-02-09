@@ -167,7 +167,7 @@
 
       # Zig
       zig
-      zls
+      # zls
 
       # KDE Dev
       kdePackages.kde-dev-scripts
