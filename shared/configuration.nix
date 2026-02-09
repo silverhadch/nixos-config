@@ -142,6 +142,7 @@
       go-md2man
       gopls
       jq
+      libclang.python
       llvmPackages.libclang
       libgcc
       meson
