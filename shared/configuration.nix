@@ -92,6 +92,7 @@
       git
       graphviz-nox
       htop
+      inotify-tools
       nano
       neovim
       vim
@@ -365,19 +366,19 @@
           removeWarningPopup = true;
         };
 
-#         webex = super.webex.overrideAttrs (old: {
-#           nativeBuildInputs =
-#             (old.nativeBuildInputs or []) ++ [ super.makeWrapper ];
-#
-#           postFixup = (old.postFixup or "") + ''
-#             wrapProgram $out/opt/Webex/bin/CiscoCollabHost \
-#               --set WAYLAND_DISPLAY "" \
-#               --set XDG_SESSION_TYPE x11 \
-#               --set QT_QPA_PLATFORM xcb \
-#               --set GDK_BACKEND x11 \
-#               --set NIXOS_OZONE_WL 0
-#           '';
-#         });
+         webex = super.webex.overrideAttrs (old: {
+           nativeBuildInputs =
+             (old.nativeBuildInputs or []) ++ [ super.makeWrapper ];
+
+           postFixup = (old.postFixup or "") + ''
+             wrapProgram $out/opt/Webex/bin/CiscoCollabHost \
+               --set WAYLAND_DISPLAY "" \
+               --set XDG_SESSION_TYPE x11 \
+               --set QT_QPA_PLATFORM xcb \
+               --set GDK_BACKEND x11 \
+               --set NIXOS_OZONE_WL 0
+           '';
+         });
       })
     ];
   };
@@ -499,6 +500,40 @@
   };
 
   systemd.services.waydroid-container.enable = true;
+
+  # ---------------------------------------------------------------------------
+  # Webex Hacks
+  # ---------------------------------------------------------------------------
+  # Path unit that watches for webex.desktop and auto-updates
+  systemd.user.paths.webex-watcher = {
+    description = "Watch for Webex desktop file";
+    # Start when graphical session is ready
+    wantedBy = [ "graphical-session.target" ];
+    after = [ "graphical-session.target" ];
+
+    pathConfig = {
+      PathExistsGlob = [
+        "%h/.local/share/applications/webex.desktop"
+        "%h/.local/share/applications/Webex.desktop"
+      ];
+      # Trigger the service when detected
+      Unit = "webex-remover.service";
+    };
+  };
+
+  # Service that runs when path is triggered
+  systemd.user.services.webex-remover = {
+    description = "Remove Webex desktop file";
+    serviceConfig.Type = "oneshot";
+
+    script = ''
+      echo "Removing Webex desktop file..."
+      rm -f "$HOME/.local/share/applications/webex.desktop"
+      rm -f "$HOME/.local/share/applications/Webex.desktop"
+      rm -rf "$HOME/.local/share/WebexLauncher"
+      rm -rf "$HOME/.local/share/webexLauncher"
+    '';
+  };
 
   # ---------------------------------------------------------------------------
   # System
