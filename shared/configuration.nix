@@ -19,7 +19,17 @@
       verbose = false;
     };
 
-    kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = pkgs.linuxPackages_zen;
+
+    # DKMS
+    extraModulePackages = with config.boot.kernelPackages; [
+      nullfs
+      openafs
+      openrazer
+      v4l2loopback
+      xone
+      zfs_unstable
+    ];
 
     kernelParams = [
       "boot.shell_on_fail"
@@ -168,7 +178,7 @@
 
       # Zig
       zig
-      zls
+#      zls
 
       # KDE Dev
       kdePackages.kde-dev-scripts
