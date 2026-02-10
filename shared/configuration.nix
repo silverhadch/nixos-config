@@ -45,6 +45,11 @@
       systemd-boot = {
         enable = true;
         configurationLimit = 5;
+
+        # Optional utils
+        edk2-uefi-shell.enable = true;
+        memtest86.enable = true;
+        netbootxyz.enable = true;
       };
 
       timeout = 0;
