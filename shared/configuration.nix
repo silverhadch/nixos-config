@@ -133,6 +133,7 @@
 
       # KDE
       kdePackages.appstream-qt
+      kdePackages.filelight
       kdePackages.kcalc
       kdePackages.kdevelop
       kdePackages.kmines
