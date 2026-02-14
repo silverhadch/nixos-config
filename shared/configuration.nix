@@ -154,6 +154,7 @@
       devbox
       flatpak-builder
       gcc
+      gh
       gnumake
       go
       go-md2man
