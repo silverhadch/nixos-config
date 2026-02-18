@@ -2,28 +2,20 @@
 
 One desktop configuration, multiple machines. Each machine is a folder under `hosts/` with only hardware-specific differences.
 
-## File Dependencies
+## File Guide
 
-```
-flake.nix
-├── Imports: nixpkgs, home-manager, plasma-manager, nix-flatpak, better-soundcloud
-└── Discovers: hosts/ directory
-    └── hosts/nixos-thinkpad/default.nix
-        ├── imports: hardware-configuration.nix
-        └── imports: shared/configuration.nix
-            └── imports: shared/users/users.nix
-                └── imports: hadichokr-home-manager.nix
-                    ├── sources: shells/devshell.sh
-                    ├── references: shells/kontainer.nix
-                    └── uses: images/wallpaper.svg
-```
-
-<details>
-<summary>📊 Visual Dependency Graph (Click to expand)</summary>
-
-![Configuration Dependencies](images/Files.svg)
-
-</details>
+| File | Purpose |
+|------|---------|
+| `flake.nix` | Root - imports inputs, discovers hosts |
+| `hosts/[hostname]/default.nix` | Machine entry point |
+| `hosts/[hostname]/hardware-configuration.nix` | Auto-generated hardware |
+| `shared/configuration.nix` | Core system config |
+| `shared/overlays.nix` | Nixpkgs overlays (e.g., KWallet portal fix, Bottles, Webex) |
+| `shared/users/users.nix` | User definitions |
+| `shared/users/hadichokr-home-manager.nix` | Desktop & shell config |
+| `shells/devshell.sh` | Dev shell manager |
+| `shells/*.nix` | Dev environments |
+| `images/wallpaper.svg` | Desktop wallpaper |
 
 ## Quick Start
 
@@ -58,19 +50,22 @@ devshell list     # List dev environments
 devshell kontainer # Container development
 ```
 
-## File Guide
+## File Dependencies
 
-| File | Purpose |
-|------|---------|
-| `flake.nix` | Root - imports inputs, discovers hosts |
-| `hosts/[hostname]/default.nix` | Machine entry point |
-| `hosts/[hostname]/hardware-configuration.nix` | Auto-generated hardware |
-| `shared/configuration.nix` | Core system config |
-| `shared/users/users.nix` | User definitions |
-| `shared/users/hadichokr-home-manager.nix` | Desktop & shell config |
-| `shells/devshell.sh` | Dev shell manager |
-| `shells/*.nix` | Dev environments |
-| `images/wallpaper.svg` | Desktop wallpaper |
+```
+flake.nix
+├── Imports: nixpkgs, home-manager, plasma-manager, nix-flatpak, better-soundcloud
+└── Discovers: hosts/ directory
+    └── hosts/nixos-thinkpad/default.nix
+        ├── imports: hardware-configuration.nix
+        └── imports: shared/configuration.nix
+            ├── imports: shared/overlays.nix
+            └── imports: shared/users/users.nix
+                └── imports: hadichokr-home-manager.nix
+                    ├── sources: shells/devshell.sh
+                    ├── references: shells/kontainer.nix
+                    └── uses: images/wallpaper.svg
+```
 
 ## Management
 
