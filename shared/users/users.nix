@@ -12,6 +12,11 @@
     };
   };
 
+  services.displayManager.autoLogin = {
+    enable = true;
+    user = "hadichokr";
+  };
+
   users = {
     groups.libvirtd.members = [ "hadichokr" ];
 
