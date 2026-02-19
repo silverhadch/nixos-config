@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ./users/users.nix
+    ./users
 
     ./modules/boot.nix
     ./modules/console-x11.nix

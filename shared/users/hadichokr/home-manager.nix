@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, USERNAME, NAME, ... }:
 
 {
   # ---------------------------------------------------------------------------
@@ -6,9 +6,9 @@
   # ---------------------------------------------------------------------------
   home = {
     enableNixpkgsReleaseCheck = false;
-    homeDirectory = "/home/hadichokr";
+    homeDirectory = "/home/${USERNAME}";
     stateVersion = "26.05";
-    username = "hadichokr";
+    username = USERNAME;
 
     packages = with pkgs; [
       autojump
@@ -79,7 +79,7 @@
 
     overrides = {
       global = {
-        Context.sockets = [ "wayland" "!x11" "!fallback-x11" ];
+        Context.sockets = [ "wayland" "x11" "fallback-x11" ];
 
         Environment = {
           GTK_THEME    = "Adwaita:dark";
@@ -113,8 +113,8 @@
     enable = true;
 
     settings.user = {
-      email = "hadichokr@icloud.com";
-      name  = "Hadi Chokr";
+      email = "${USERNAME}@icloud.com";
+      name  = NAME;
     };
   };
 
