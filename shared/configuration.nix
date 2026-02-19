@@ -142,6 +142,7 @@
       kdePackages.kcalc
       kdePackages.kdevelop
       kdePackages.kmines
+      kdePackages.kwallet-pam
       kdePackages.partitionmanager
       kdePackages.xdg-desktop-portal-kde
 
