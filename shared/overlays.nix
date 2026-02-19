@@ -1,19 +1,6 @@
 # overlays.nix
 [
   ################################################################################
-  # KWallet portal removal overlay (fix PAM auto-unlock)
-  ################################################################################
-  (self: super: {
-    kdePackages = super.kdePackages // {
-      kwallet = super.kdePackages.kwallet.overrideAttrs (old: {
-        postFixup = (old.postFixup or "") + ''
-          rm -f $out/share/org.freedesktop.impl.portal.desktop.kwallet.service
-        '';
-      });
-    };
-  })
-
-  ################################################################################
   # Bottles overlay
   ################################################################################
   (self: super: {
