@@ -91,11 +91,6 @@
     };
   };
 
-  security.pam.services.plasma-login-manager.kwallet = {
-    enable = true;
-    package = pkgs.kdePackages.kwallet-pam;
-  };
-
   # ---------------------------------------------------------------------------
   # Environment
   # ---------------------------------------------------------------------------
