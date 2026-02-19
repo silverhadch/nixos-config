@@ -28,25 +28,6 @@
   };
 
   # ---------------------------------------------------------------------------
-  # Security (PAM / KDE Wallet Integration)
-  # ---------------------------------------------------------------------------
-  security = {
-    pam = {
-      services = {
-        # Automatically unlock the user's KDE wallet when logging in via Plasma login manager.
-        # If no wallet named "kdewallet" exists, or the login password does not match
-        # the wallet password, KDE will prompt separately after session start.
-        "plasma-login-manager" = {
-          kwallet = {
-            enable = true;
-            package = pkgs.kdePackages.kwallet-pam;
-          };
-        };
-      };
-    };
-  };
-
-  # ---------------------------------------------------------------------------
   # Users / Groups
   # ---------------------------------------------------------------------------
   users = {
