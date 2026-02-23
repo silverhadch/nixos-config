@@ -109,6 +109,7 @@
     nix-tree
     nyancat
     ponysay
+    prismlauncher
     rig
     sl
     toilet
