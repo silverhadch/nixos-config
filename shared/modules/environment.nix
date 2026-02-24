@@ -17,6 +17,7 @@
     inotify-tools
     nano
     neovim
+    pandoc
     vim
     wget
 
@@ -31,7 +32,7 @@
     localsend
     megasync
     nixos-bgrt-plymouth
-    ocrmypdf
+    python314Packages.ocrmypdf_16
     qbittorrent-enhanced
     spotify
     thunderbird-bin
