@@ -76,7 +76,7 @@
     openssl
     openssl.dev
     pkg-config
-    python
+    python3
     ripgrep
     shadow
     texlive.combined.scheme-full
