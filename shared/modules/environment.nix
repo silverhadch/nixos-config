@@ -72,9 +72,11 @@
     libgcc
     meson
     msedit
+    nasm
     openssl
     openssl.dev
     pkg-config
+    python
     ripgrep
     shadow
     texlive.combined.scheme-full
