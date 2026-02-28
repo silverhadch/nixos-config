@@ -21,6 +21,7 @@
     ./modules/swap.nix
     ./modules/usershell.nix
     ./modules/security.nix
+    ./modules/systemd.nix
     ./modules/virtualization.nix
     ./modules/webex.nix
     ./modules/system.nix

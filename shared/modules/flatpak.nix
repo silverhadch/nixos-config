@@ -4,11 +4,12 @@
   services.flatpak.enable = true;
 
   xdg.portal = {
-    enable = true;
-    xdgOpenUsePortal = true;
-    config.common.default = [ "kde" ];
-    extraPortals = with pkgs; [
-        kdePackages.xdg-desktop-portal-kde
-    ];
+  	enable = true;
+  	xdgOpenUsePortal = true;
+  	config.common.default = [ "wlr" "gtk" ]; # try both
+  	extraPortals = with pkgs; [
+    	xdg-desktop-portal-wlr
+    	xdg-desktop-portal-gtk
+  	];
   };
 }

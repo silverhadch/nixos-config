@@ -1,4 +1,4 @@
-{ config, pkgs, USERNAME, NAME, ... }:
+{ config, pkgs, lib, USERNAME, NAME, ... }:
 
 {
   # ---------------------------------------------------------------------------
@@ -25,9 +25,56 @@
   # Dconf
   # ---------------------------------------------------------------------------
   dconf.settings = {
+
     "org/virt-manager/virt-manager/connections" = {
       autoconnect = [ "qemu:///system" ];
       uris        = [ "qemu:///system" ];
+    };
+
+    "org/gnome/desktop/input-sources" = {
+      per-window = false;
+      sources = [ (lib.gvariant.mkTuple [ "xkb" "de" ]) ];
+    };
+
+    # Network Manager Applet
+    "org/gnome/nm-applet" = {
+      disable-connected-notifications = true;
+    };
+
+    # Interface settings
+    "org/gnome/desktop/interface" = {
+      color-scheme = "prefer-dark";
+      cursor-blink = true;
+      cursor-blink-time = 1000;
+      cursor-size = 24;
+      cursor-theme = "Qogir-Dark";
+      document-font-name = "Noto Sans  10";
+      enable-animations = true;
+      font-name = "Noto Sans  10";
+      gtk-theme = "Qogir-Dark";
+      icon-theme = "Qogir-Dark";
+      monospace-font-name = "Hack  10";
+      scaling-factor = 1;
+      text-scaling-factor = 1.0;
+      toolbar-style = "text";
+    };
+
+    # Budgie Desktop View
+    "org/buddiesofbudgie/budgie-desktop-view" = {
+      icon-size = "large";
+    };
+
+    # GNOME Terminal profile management
+    "org/gnome/terminal/legacy/profiles:" = {
+      default = "bbbcd3f2-a2b3-4a7a-8952-1dd31c7b23ab";
+      list = [ "bbbcd3f2-a2b3-4a7a-8952-1dd31c7b23ab" ];
+    };
+
+    "org/gnome/terminal/legacy/profiles:/:bbbcd3f2-a2b3-4a7a-8952-1dd31c7b23ab" = {
+      audible-bell = false;
+      default-size-columns = 110;
+      default-size-rows = 29;
+      visible-name = "Linux";
     };
   };
 
@@ -41,26 +88,11 @@
       container_always_pull    = 1;
       container_generate_entry = 1;
       container_manager        = "podman";
-      container_name_default   = "dev-toolbox";
-    };
-
-    containers.dev-toolbox = {
-      entry = true;
-      image = "docker.io/library/debian:unstable";
-
-      additional_packages = [
-        "bison" "cmake" "flex" "gcc" "g++" "make"
-        "meson" "ninja-build" "pkg-config"
-        "docbook-xsl" "itstool" "libxml2-dev" "libxslt1-dev"
-        "golang" "go-md2man"
-        "python3" "python3-pip" "python3-setuptools"
-        "fastfetch" "libsubid-dev" "systemd-dev"
-      ];
     };
   };
 
   # ---------------------------------------------------------------------------
-  # Flatpak (module provided by flake)
+  # Flatpak
   # ---------------------------------------------------------------------------
   services.flatpak = {
     enable = true;
@@ -78,7 +110,7 @@
 
     overrides = {
       global = {
-        Context.sockets = [ "wayland" "x11" "fallback-x11" ];
+        Context.sockets = [ "wayland" "fallback-x11" "org.freedesktop.portal.Desktop" ];
 
         Environment = {
           GTK_THEME    = "Adwaita:dark";
@@ -91,11 +123,7 @@
           "home:rw"
           "/run/current-system/sw/bin:ro"
         ];
-
-        sockets = [
-          "gpg-agent"
-          "pcsc"
-        ];
+        sockets = [ "gpg-agent" "pcsc" ];
       };
     };
 
@@ -126,59 +154,6 @@
     enable    = true;
     frequency = "hourly";
     timestamp = "-3 days";
-  };
-
-  # ---------------------------------------------------------------------------
-  # Konsole
-  # ---------------------------------------------------------------------------
-  programs.konsole = {
-    enable = true;
-
-    defaultProfile = "Linux";
-
-    profiles.Linux = {
-      name = "Linux";
-      colorScheme = "Linux";
-      extraConfig.Keyboard.KeyBindings = "linux";
-    };
-  };
-
-  # ---------------------------------------------------------------------------
-  # Plasma (module injected by flake)
-  # ---------------------------------------------------------------------------
-  programs.plasma = {
-    enable = true;
-
-    input.keyboard.layouts = [
-      { layout = "de"; }
-    ];
-
-    kwin = {
-      effects = {
-        translucency.enable       = true;
-        wobblyWindows.enable      = true;
-        windowOpenClose.animation = "fade";
-      };
-
-      virtualDesktops = {
-        number = 2;
-        rows   = 2;
-      };
-    };
-
-    powerdevil.AC.whenLaptopLidClosed = "doNothing";
-
-    spectacle.shortcuts.launch = "F12";
-
-    workspace = {
-      clickItemTo = "open";
-      lookAndFeel = "org.kde.breezedark.desktop";
-
-      wallpaper =
-        "/etc/nixos/images/nixos-wallpaper-catppuccin-mocha.svg";
-
-      wallpaperBackground.blur = true;
-    };
   };
 
   # ---------------------------------------------------------------------------
@@ -254,7 +229,7 @@
       ZSH_DISABLE_COMPFIX=true
       export ZSH=${pkgs.oh-my-zsh}/share/oh-my-zsh
       source $ZSH/oh-my-zsh.sh
-      
+
       # Source devshell function
       source /etc/nixos/shells/devshell.sh
 
