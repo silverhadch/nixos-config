@@ -24,6 +24,8 @@
     ./modules/systemd.nix
     ./modules/virtualization.nix
     ./modules/webex.nix
+    ./modules/xdg.nix
+
     ./modules/system.nix
   ];
 }
