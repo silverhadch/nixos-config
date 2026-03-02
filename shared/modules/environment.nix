@@ -9,7 +9,6 @@
   environment.systemPackages = with pkgs; [
     # Core
     btop
-    busybox
     btrfs-progs
     curl
     git
@@ -21,7 +20,6 @@
     pandoc
     vim
     wget
-    xdg-desktop-portal-wlr
 
     # Desktop / Apps
     bottles
@@ -42,16 +40,14 @@
     webex
 
     # KDE
+    kdePackages.appstream-qt
     kdePackages.filelight
-    kdePackages.kate
     kdePackages.kcalc
+    kdePackages.kdevelop
     kdePackages.kmines
+    kdePackages.kwallet-pam
     kdePackages.partitionmanager
-
-    # Mate
-    caja
-    mate-terminal
-    pluma
+    kdePackages.xdg-desktop-portal-kde
 
     # Containers / VM
     distrobox
@@ -83,6 +79,7 @@
     pkg-config
     python3
     ripgrep
+    shadow
     texlive.combined.scheme-full
     virtualenv
     wayland-utils
@@ -99,6 +96,12 @@
     # Zig
     zig
     zls
+
+    # KDE Dev
+    kdePackages.kde-dev-scripts
+    kdePackages.kde-dev-utils
+    kdePackages.kdev-php
+    kdePackages.kdev-python
 
     # Fun
     cmatrix

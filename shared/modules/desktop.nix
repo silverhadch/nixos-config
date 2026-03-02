@@ -1,9 +1,7 @@
-{ pkgs, ... }:
-
 {
   hardware.graphics.enable = true;
 
-  services.displayManager.defaultSession = "budgie-desktop";
+  services.desktopManager.plasma6.enable = true;
 
-  services.desktopManager.budgie.enable = true;
+  services.displayManager.plasma-login-manager.enable = true;
 }

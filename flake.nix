@@ -9,6 +9,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    plasma-manager = {
+      url = "github:nix-community/plasma-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nix-flatpak = {
       url = "github:gmodena/nix-flatpak";
     };
@@ -56,6 +61,7 @@
               useUserPackages = true;
 
               sharedModules = [
+                inputs.plasma-manager.homeModules.plasma-manager
                 inputs.nix-flatpak.homeManagerModules.nix-flatpak
               ];
             };

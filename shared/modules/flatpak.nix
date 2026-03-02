@@ -4,11 +4,11 @@
   services.flatpak.enable = true;
 
   xdg.portal = {
-  	enable = true;
-  	xdgOpenUsePortal = true;
-  	config.common.default = [ "hyprland" ];
-  	extraPortals = with pkgs; [
-  	  xdg-desktop-portal-hyprland
-  	];
+    enable = true;
+    xdgOpenUsePortal = true;
+    config.common.default = [ "kde" ];
+    extraPortals = with pkgs; [
+        kdePackages.xdg-desktop-portal-kde
+    ];
   };
 }
