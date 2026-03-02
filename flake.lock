@@ -137,7 +137,8 @@
         "better-soundcloud": "better-soundcloud",
         "home-manager": "home-manager",
         "nix-flatpak": "nix-flatpak",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "plasma-manager": "plasma-manager"
       }
     },
     "systems": {
