@@ -43,6 +43,7 @@
 
     # Interface settings
     "org/gnome/desktop/interface" = {
+      dark-theme = true;
       color-scheme = "prefer-dark";
       cursor-blink = true;
       cursor-blink-time = 1000;
@@ -55,6 +56,7 @@
       icon-theme = "Qogir-Dark";
       monospace-font-name = "Hack  10";
       scaling-factor = 1;
+      show-battery-percentage = true;
       text-scaling-factor = 1.0;
       toolbar-style = "text";
     };
