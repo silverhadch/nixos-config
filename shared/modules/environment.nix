@@ -1,6 +1,6 @@
 { pkgs, inputs, ... }:
 let
-  xwaylandvideobridge = pkgs.kdePackages.callPackage /etc/nixos/pkgs/xwaylandvideobridge/package.nix { };
+  xwaylandvideobridge = pkgs.kdePackages.callPackage ../../pkgs/xwaylandvideobridge/package.nix { };
 in
 {
   environment.sessionVariables = {
