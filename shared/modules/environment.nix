@@ -1,11 +1,12 @@
 { pkgs, inputs, ... }:
-
+let
+  xwaylandvideobridge = pkgs.kdePackages.callPackage /etc/nixos/pkgs/xwaylandvideobridge/package.nix { };
+in
 {
   environment.sessionVariables = {
     LIBCLANG_PATH = "${pkgs.llvmPackages.libclang.lib}/lib";
     NIXOS_OZONE_WL = "1";
   };
-
   environment.systemPackages = with pkgs; [
     # Core
     btop
@@ -48,6 +49,7 @@
     kdePackages.kwallet-pam
     kdePackages.partitionmanager
     kdePackages.xdg-desktop-portal-kde
+    xwaylandvideobridge
 
     # Containers / VM
     distrobox
@@ -135,15 +137,10 @@
 
     # shims
     (writeShellScriptBin "vi" ''exec vim -u NONE -C "$@"'')
-
     (writeShellScriptBin "sudo" ''exec run0 "$@"'')
-
     (writeShellScriptBin "sudoedit" ''exec run0 rnano "$@"'')
-
     (writeShellScriptBin "doas" ''exec run0 "$@"'')
-
     (writeShellScriptBin "pkexec" ''exec run0 "$@"'')
-
     (writeShellScriptBin "su" ''
       if [ "$#" -eq 0 ]; then
         exec run0 bash
