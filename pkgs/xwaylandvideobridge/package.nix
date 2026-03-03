@@ -10,6 +10,7 @@
   kcrash,
   ki18n,
   kpipewire,
+  kstatusnotifieritem,
   kwindowsystem,
   libxcb,
   xcbutil,
@@ -22,7 +23,7 @@ stdenv.mkDerivation (finalAttrs: {
   src = builtins.fetchGit {
     url = "https://invent.kde.org/silverhadch/xwaylandvideobridge.git";
     ref = "master";
-    rev = "5abdd943e6acab0d76329b5bbb2dd8bebfbf8265";
+    rev = "d0b7ce910c7681583386d4491f3b3f3c15c2b1a3";
   };
 
   nativeBuildInputs = [
@@ -39,6 +40,7 @@ stdenv.mkDerivation (finalAttrs: {
     kcrash
     ki18n
     kpipewire
+    kstatusnotifieritem
     kwindowsystem
     libxcb
     xcbutil
