@@ -17,7 +17,7 @@
       openrazer
       v4l2loopback
       xone
-      zfs_unstable
+      # zfs_unstable
     ];
 
     kernelParams = [
