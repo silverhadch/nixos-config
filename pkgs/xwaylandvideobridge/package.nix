@@ -23,7 +23,7 @@ stdenv.mkDerivation (finalAttrs: {
   src = builtins.fetchGit {
     url = "https://invent.kde.org/silverhadch/xwaylandvideobridge.git";
     ref = "master";
-    rev = "7b7515d71f70421cdc17a0f7ddf1beb2e264669d";
+    rev = "d7917ecb7a49f4641dd01bc44b4d7c6a623370c3";
   };
 
   nativeBuildInputs = [
