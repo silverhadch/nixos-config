@@ -8,11 +8,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1773097878,
-        "narHash": "sha256-Yg0uxjulER/x+pYR/8m2znOLe8mrz1/XccIMchyYjWc=",
+        "lastModified": 1773209384,
+        "narHash": "sha256-fzZrRVs9bSUERS/r7RyRa7QsbZIsaZy/76p6MBsFrVM=",
         "owner": "AlirezaKJ",
         "repo": "BetterSoundCloud",
-        "rev": "cfe622e39d86fa66e0ca158d8eb457bed9d49b89",
+        "rev": "756b73528f03a112722b3400051536169402005b",
         "type": "github"
       },
       "original": {
@@ -46,11 +46,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1773093840,
-        "narHash": "sha256-u/96NoAyN8BSRuM3ZimGf7vyYgXa3pLx4MYWjokuoH4=",
+        "lastModified": 1773179137,
+        "narHash": "sha256-EdW2bwzlfme0vbMOcStnNmKlOAA05Bp6su2O8VLGT0k=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "bb014746edb2a98d975abde4dd40fa240de4cf86",
+        "rev": "3f98e2bbc661ec0aaf558d8a283d6955f05f1d09",
         "type": "github"
       },
       "original": {
