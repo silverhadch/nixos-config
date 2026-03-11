@@ -8,11 +8,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1773209384,
-        "narHash": "sha256-fzZrRVs9bSUERS/r7RyRa7QsbZIsaZy/76p6MBsFrVM=",
+        "lastModified": 1773215725,
+        "narHash": "sha256-j43G80+Jw9x8npR0IkMBCBWKkBFd0BO/BEAI+7IEbas=",
         "owner": "AlirezaKJ",
         "repo": "BetterSoundCloud",
-        "rev": "756b73528f03a112722b3400051536169402005b",
+        "rev": "c2fabeac19015746eac01d42590b658bfd7174aa",
         "type": "github"
       },
       "original": {

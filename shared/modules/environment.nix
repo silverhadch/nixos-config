@@ -37,6 +37,7 @@ in
     qbittorrent-enhanced
     spotify
     thunderbird-bin
+    vesktop
     vlc
     webex
 
