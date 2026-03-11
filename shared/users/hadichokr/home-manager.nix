@@ -60,49 +60,56 @@
   };
 
   # ---------------------------------------------------------------------------
-  # Flatpak (module provided by flake)
+  # Flatpak (managed by declarative-flatpak module)
   # ---------------------------------------------------------------------------
   services.flatpak = {
     enable = true;
 
+    # Remotes to add (usually just flathub)
+    remotes = {
+      "flathub" = "https://flathub.org/repo/flathub.flatpakrepo";
+    };
+
+    # List of packages to install. Format: "remote:type/ID//branch"
+    # You can verify branch names with `flatpak remote-info flathub <app-id>`
     packages = [
-      "app.eduroam.geteduroam"
-      "com.ktechpit.whatsie"
-      "com.obsproject.Studio"
-      "net.codelogistics.clicker"
-      "org.kde.neochat"
-      "org.texstudio.TeXstudio"
-      "org.zealdocs.Zeal"
-      "party.supertux.supertuxparty"
+      "flathub:app/org.kde.neochat//stable"
+      "flathub:app/com.obsproject.Studio//stable"
+      "flathub:app/org.texstudio.TeXstudio//stable"
+      "flathub:app/org.zealdocs.Zeal//stable"
+      "flathub:app/net.codelogistics.clicker//stable"
+      "flathub:app/com.ktechpit.whatsie//stable"
+      "flathub:app/party.supertux.supertuxparty//stable"
+      "flathub:app/app.eduroam.geteduroam//stable"
     ];
 
+    # Overrides (global and per‑application)
     overrides = {
-      global = {
-        Context.sockets = [ "wayland" "x11" "fallback-x11" ];
-
+      "global" = {
+        Context = {
+          sockets = [ "wayland" "x11" "fallback-x11" ];
+        };
         Environment = {
           GTK_THEME    = "Adwaita:dark";
           XCURSOR_PATH = "/run/host/user-share/icons:/run/host/share/icons";
         };
       };
-
-      "com.ktechpit.whatsie".Context = {
-        filesystems = [
-          "home:rw"
-          "/run/current-system/sw/bin:ro"
-        ];
-
-        sockets = [
-          "gpg-agent"
-          "pcsc"
-        ];
+      "com.ktechpit.whatsie" = {
+        Context = {
+          filesystems = [
+            "home:rw"
+            "/run/current-system/sw/bin:ro"
+          ];
+          sockets = [
+            "gpg-agent"
+            "pcsc"
+          ];
+        };
       };
     };
 
-    update.auto = {
-      enable     = true;
-      onCalendar = "daily";
-    };
+    # Automatic update schedule (systemd timer)
+    onCalendar = "daily";   # checks for updates every day
   };
 
   # ---------------------------------------------------------------------------
@@ -254,7 +261,7 @@
       ZSH_DISABLE_COMPFIX=true
       export ZSH=${pkgs.oh-my-zsh}/share/oh-my-zsh
       source $ZSH/oh-my-zsh.sh
-      
+
       # Source devshell function
       source /etc/nixos/shells/devshell.sh
 

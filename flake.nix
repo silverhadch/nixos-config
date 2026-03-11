@@ -14,8 +14,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nix-flatpak = {
-      url = "github:gmodena/nix-flatpak";
+    declarative-flatpak = {
+      url = "github:in-a-dil-emma/declarative-flatpak/latest";
     };
 
     better-soundcloud = {
@@ -62,8 +62,8 @@
 
               sharedModules = [
                 inputs.plasma-manager.homeModules.plasma-manager
-                inputs.nix-flatpak.homeManagerModules.nix-flatpak
-              ];
+                inputs.declarative-flatpak.homeModules.default
+                ];
             };
           }
         ];
