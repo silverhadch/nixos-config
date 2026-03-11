@@ -20,7 +20,7 @@
 
     better-soundcloud = {
       url = "github:AlirezaKJ/BetterSoundCloud";
-      inputs.nixpkgs.follows = "nixpkgs";
+      # inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
