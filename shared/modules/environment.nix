@@ -24,7 +24,6 @@ in
 
     # Desktop / Apps
     bottles
-    discord
     firefoxpwa
     flatpak
     gimp
