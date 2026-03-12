@@ -23,7 +23,9 @@ in
     wget
 
     # Desktop / Apps
+    arcan
     bottles
+    cat9
     firefoxpwa
     flatpak
     gimp
