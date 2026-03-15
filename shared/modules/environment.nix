@@ -41,6 +41,7 @@ in
     vesktop
     vlc
     webex
+    zulip
 
     # KDE
     kdePackages.appstream-qt
