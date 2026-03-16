@@ -1,6 +1,7 @@
 {
   lib,
   stdenv,
+  fetchFromGitLab,
   cmake,
   extra-cmake-modules,
   pkg-config,
@@ -20,10 +21,12 @@ stdenv.mkDerivation (finalAttrs: {
   pname = "xwaylandvideobridge";
   version = "0.5.0-kf6";
 
-  src = builtins.fetchGit {
-    url = "https://invent.kde.org/silverhadch/xwaylandvideobridge.git";
-    ref = "master";
+  src = fetchFromGitLab {
+    domain = "invent.kde.org";
+    owner = "silverhadch";
+    repo = "xwaylandvideobridge";
     rev = "d6bae9ba31a9f55f5a781cb24f097b8a32d1ff65";
+    hash = "sha256-/9Hst1id/VhLsu9K2ghS0mrl1aMLPREDpRttbMMhPts=";
   };
 
   nativeBuildInputs = [

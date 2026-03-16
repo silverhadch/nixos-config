@@ -39,7 +39,7 @@ One desktop configuration, multiple machines. Each machine is a folder under `ho
    ```
 4. Build the system:
    ```bash
-   run0 nixos-rebuild switch --flake /etc/nixos#<hostname>
+   git add . && run0 nixos-rebuild switch --flake /etc/nixos#<hostname>
    ```
 
 ## Key Commands

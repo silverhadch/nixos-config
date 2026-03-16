@@ -16,6 +16,7 @@ in
     graphviz-nox
     htop
     inotify-tools
+    libnotify
     nano
     neovim
     pandoc
