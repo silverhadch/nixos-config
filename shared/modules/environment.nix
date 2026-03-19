@@ -20,6 +20,7 @@ in
     nano
     neovim
     pandoc
+    rar
     vim
     wget
 
