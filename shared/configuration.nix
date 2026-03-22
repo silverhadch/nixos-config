@@ -24,5 +24,8 @@
     ./modules/virtualization.nix
     ./modules/webex.nix
     ./modules/system.nix
+
+    # Patches
+    ./modules/no-spyware-here.nix
   ];
 }
