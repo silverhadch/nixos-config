@@ -6,11 +6,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1773891118,
-        "narHash": "sha256-P0JnpGRnmvrhOTNKfrrGlYn5uOYuMMD7JZR8lfxqjTQ=",
+        "lastModified": 1774330091,
+        "narHash": "sha256-ZvdR5psRy0dV+rI62l2UpaiZG+rM2aYQPJwyr+pp7R4=",
         "owner": "AlirezaKJ",
         "repo": "BetterSoundCloud",
-        "rev": "53e4ab80fcefbc22acd944718bbe52ff4dce15c3",
+        "rev": "f95d8891d6df422d8e8bcb0daba8cf458e9b0c36",
         "type": "github"
       },
       "original": {
@@ -60,11 +60,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1774210133,
-        "narHash": "sha256-yeiWCY9aAUUJ3ebMVjs0UZXRnT5x90MCtpbpOWiXrvM=",
+        "lastModified": 1774293042,
+        "narHash": "sha256-OEBV+Y5I4Ldu98k0KvGXRfJYh+jjE8ocCSL/dxTGs1s=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "c6fe2944ad9f2444b2d767c4a5edee7c166e8a95",
+        "rev": "bc357c75e3142a31b849ba49c5299fb52c61cf59",
         "type": "github"
       },
       "original": {
