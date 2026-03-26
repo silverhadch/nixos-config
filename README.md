@@ -1,30 +1,29 @@
-# ❄ NixOS Flake Desktop Configuration
+# ❄️ My NixOS config
 
-One desktop configuration, multiple machines. Each machine is a folder under `hosts/` with only hardware-specific differences.
+One flake, a few machines. Each machine lives in `hosts/` with only its hardware config.
 
-## File Guide
+## What's where
 
-| File | Purpose |
-|------|---------|
-| `flake.nix` | Root – imports inputs, discovers hosts |
-| `hosts/[hostname]/default.nix` | Machine entry point |
-| `hosts/[hostname]/hardware-configuration.nix` | Auto‑generated hardware config |
-| `shared/configuration.nix` | Core system config (common to all hosts) |
-| `shared/overlays.nix` | Nixpkgs overlays (e.g., KWallet portal fix, Bottles, Webex) |
-| `shared/users/default.nix` | **Auto‑imports all users** + global Home Manager defaults |
-| `shared/users/<USERNAME>/` | User directory for **<USERNAME>** |
-| `shared/users/<USERNAME>/default.nix` | User‑specific `_module.args` and imports `./user.nix` |
-| `shared/users/<USERNAME>/user.nix` | System user definition (groups, subuids) + Home Manager integration |
-| `shared/users/<USERNAME>/home-manager.nix` | Desktop & shell config (dconf, distrobox, flatpak, git, konsole, plasma, zsh) |
-| `shells/devshell.sh` | Dev shell manager script |
-| `shells/*.nix` | Dev environments (e.g., `kontainer.nix`) |
-| `images/wallpaper.svg` | Desktop wallpaper |
+- `flake.nix` – root, imports stuff, finds hosts
+- `hosts/<hostname>/` – per‑machine folder
+  - `default.nix` – just imports hardware + shared config
+  - `hardware-configuration.nix` – the generated one
+- `shared/configuration.nix` – core system config (common to all)
+- `shared/overlays.nix` – custom overlays (KWallet portal, Bottles, Webex…)
+- `shared/users/` – all user config
+  - `default.nix` – imports every user folder, global Home Manager settings
+  - `shared/users/<username>/` – one folder per user
+    - `default.nix` – sets username/name, imports `user.nix`
+    - `user.nix` – system user definition, links Home Manager
+    - `home-manager.nix` – actual desktop/shell config (Plasma, zsh, etc.)
+- `shells/` – dev shell stuff
+- `images/wallpaper.svg` – wallpaper
 
-## Quick Start (New Machine)
+## New machine
 
 1. Install NixOS normally.
 2. Move the generated hardware config:
-   ```bash
+   ```
    mv /etc/nixos/hardware-configuration.nix /etc/nixos/hosts/<hostname>/
    ```
 3. Create `hosts/<hostname>/default.nix`:
@@ -37,67 +36,66 @@ One desktop configuration, multiple machines. Each machine is a folder under `ho
      ];
    }
    ```
-4. Build the system:
-   ```bash
+4. Build:
+   ```
    git add . && run0 nixos-rebuild switch --flake /etc/nixos#<hostname>
    ```
 
-## Key Commands
+## Commands I use
 
-```bash
-rebuild           # Rebuild current host
-update            # Update inputs and rebuild
-list-hosts        # Show available machines
-devshell list     # List dev environments
-devshell kontainer # Container development
-```
+- `rebuild` – rebuild current host
+- `update` – nix flake update + rebuild
+- `list-hosts` – list available machines
+- `devshell list` – list dev environments
+- `devshell kontainer` – start kontainer dev shell
 
-## File Dependencies
+## How it's glued together
 
 ```
 flake.nix
-├── Imports: nixpkgs, home-manager, plasma-manager, nix-flatpak, better-soundcloud
-└── Discovers: hosts/ directory
+├── imports nixpkgs, home-manager, plasma-manager, nix-flatpak, better-soundcloud
+└── discovers hosts/ directory
     └── hosts/nixos-thinkpad/default.nix
-        ├── imports: hardware-configuration.nix
-        └── imports: shared/configuration.nix
-            ├── imports: shared/overlays.nix
-            └── imports: shared/users/default.nix   (global Home Manager options)
-                └── imports: all user subdirectories
-                    └── shared/users/<USERNAME>/default.nix
-                        └── imports: ./user.nix
-                            ├── users.users.<USERNAME> (system user)
-                            └── home-manager.users.<USERNAME> = import ./home-manager.nix
-                                ├── sources: shells/devshell.sh
-                                ├── references: shells/kontainer.nix
-                                └── uses: images/wallpaper.svg
+        ├── imports hardware-configuration.nix
+        └── imports shared/configuration.nix
+            ├── imports shared/overlays.nix
+            └── imports shared/users/default.nix
+                └── imports all user subdirectories
+                    └── shared/users/<USER>/default.nix
+                        └── imports ./user.nix
+                            ├── defines system user
+                            └── home-manager.users.<USER> = import ./home-manager.nix
+                                ├── uses shells/devshell.sh
+                                ├── references shells/kontainer.nix
+                                └── uses images/wallpaper.svg
 ```
 
-## Management
+## Adding a user
 
-### Add a New User
-1. Create a new directory under `shared/users/` with the username.
-2. Inside, create:
-   - `default.nix` (sets `USERNAME` and `NAME`, imports `user.nix`)
-   - `user.nix` (system user definition, Home Manager integration)
-   - `home-manager.nix` (user’s desktop/shell configuration)
-3. Rebuild – the new user will be picked up automatically.
+1. Create `shared/users/<username>/` with three files:
+   - `default.nix` – set username/name, import `user.nix`
+   - `user.nix` – system user + home‑manager hook
+   - `home-manager.nix` – actual config
+2. Rebuild – it gets picked up automatically.
 
-### Rename Machine
-```bash
-mv hosts/old-name hosts/new-hostname
-run0 nixos-rebuild switch --flake /etc/nixos#new-hostname
+## Renaming a machine
+
+```
+mv hosts/old-name hosts/new-name
+run0 nixos-rebuild switch --flake /etc/nixos#new-name
 ```
 
-### Update Everything
-```bash
+## Updating everything
+
+```
 cd /etc/nixos
 nix flake update
 rebuild
 ```
 
-### Regenerate Hardware
-```bash
+## Regenerate hardware config
+
+```
 update-hardware-host
 ```
 
