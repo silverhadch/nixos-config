@@ -5,6 +5,7 @@
     ./users
 
     ./modules/boot.nix
+    ./modules/cde.nix
     ./modules/console-x11.nix
     ./modules/desktop.nix
     ./modules/environment.nix
