@@ -113,6 +113,7 @@ in
     # Fun
     cmatrix
     cowsay
+    dosbox
     figlet
     fortune
     myman # My Package!
@@ -121,6 +122,7 @@ in
     ponysay
     prismlauncher
     rig
+    scummvm
     sl
     toilet
 

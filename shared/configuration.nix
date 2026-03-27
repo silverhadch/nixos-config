@@ -4,6 +4,7 @@
   imports = [
     ./users
 
+    ./modules/binfmt.nix
     ./modules/boot.nix
     ./modules/console-x11.nix
     ./modules/desktop.nix
