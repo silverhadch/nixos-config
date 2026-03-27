@@ -117,10 +117,17 @@
   # ---------------------------------------------------------------------------
   programs.git = {
     enable = true;
-
-    settings.user = {
-      email = "${USERNAME}@icloud.com";
-      name  = NAME;
+    settings = {
+      user = {
+        email = "${USERNAME}@icloud.com";
+        name  = NAME;
+      };
+      sendemail = {
+        smtpserver = "smtp.mail.me.com";
+        smtpuser = "${USERNAME}@icloud.com";
+        smtpencryption = "tls";
+        smtpserverport = 587;
+      };
     };
   };
 

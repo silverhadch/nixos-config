@@ -11,10 +11,10 @@ let
     mesa
     wayland
     libxkbcommon
-    xorg.libX11
-    xorg.libXcursor
-    xorg.libXi
-    xorg.libXrandr
+    libX11
+    libXcursor
+    libXi
+    libXrandr
     glib
     gdk-pixbuf
     cairo

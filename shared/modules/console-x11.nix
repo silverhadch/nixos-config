@@ -7,5 +7,6 @@
       layout = "de";
       variant = "";
     };
+    videoDrivers = [ "modesetting" ];
   };
 }
