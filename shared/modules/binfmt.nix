@@ -11,8 +11,6 @@
         mask = ''\xff\xff'';             # Match both bytes
         # Use DOSBox as the interpreter
         interpreter = "${pkgs.dosbox}/bin/dosbox";
-        # Wrap in a shell to pass additional arguments like -exit
-        wrapInterpreterInShell = true;
       };
     };
   };
