@@ -113,7 +113,7 @@ in
     # Fun
     cmatrix
     cowsay
-    dosbox
+    dosbox-staging
     figlet
     fortune
     myman # My Package!

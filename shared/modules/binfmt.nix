@@ -15,7 +15,7 @@ with open(sys.argv[1], 'rb') as f:
   '';
 
   dosBatWrapper = pkgs.writeShellScript "dosbox-bat-binfmt" ''
-    exec ${pkgs.dosbox}/bin/dosbox "$1"
+    exec ${pkgs.dosbox-staging}/bin/dosbox "$1"
   '';
 in
 {
