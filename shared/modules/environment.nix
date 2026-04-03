@@ -52,6 +52,7 @@ in
     kdePackages.kdevelop
     kdePackages.kmines
     kdePackages.kwallet-pam
+    kdePackages.neochat
     kdePackages.partitionmanager
     kdePackages.xdg-desktop-portal-kde
     xwaylandvideobridge

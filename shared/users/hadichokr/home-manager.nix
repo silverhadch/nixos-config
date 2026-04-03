@@ -81,7 +81,6 @@
     # List of packages to install. Format: "remote:type/ID//branch"
     # You can verify branch names with `flatpak remote-info flathub <app-id>`
     packages = [
-      "flathub:app/org.kde.neochat//stable"
       "flathub:app/com.obsproject.Studio//stable"
       "flathub:app/org.texstudio.TeXstudio//stable"
       "flathub:app/org.zealdocs.Zeal//stable"
