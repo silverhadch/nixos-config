@@ -12,6 +12,7 @@
     ./modules/flatpak.nix
     ./modules/fonts.nix
     ./modules/bluetooth.nix
+    ./modules/kmscon.nix
     ./modules/locale.nix
     ./modules/networking.nix
     ./modules/nix.nix
