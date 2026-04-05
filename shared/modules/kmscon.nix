@@ -12,7 +12,7 @@
 
     # Specify fonts
     fonts = [
-      { name = "Inconsolata Nerd Font"; package = pkgs.inconsolata-nerdfont; }
+      { name = "Inconsolata Nerd Font"; package = pkgs.nerd-fonts.inconsolata; }
       { name = "Fira Code"; package = pkgs.fira-code; }
     ];
   };
