@@ -1,25 +1,19 @@
 { config, pkgs, ... }:
-
 {
   boot = {
     consoleLogLevel = 3;
-
     initrd = {
       systemd.enable = true;
       verbose = false;
     };
-
     kernelPackages = pkgs.linuxPackages_zen;
-
     extraModulePackages = with config.boot.kernelPackages; [
       nullfs
       openafs
       openrazer
       v4l2loopback
       xone
-      # zfs_unstable
     ];
-
     kernelParams = [
       "boot.shell_on_fail"
       "quiet"
@@ -27,27 +21,30 @@
       "splash"
       "udev.log_priority=3"
     ];
-
     loader = {
       efi.canTouchEfiVariables = true;
-
-      systemd-boot = {
+      limine = {
         enable = true;
-        configurationLimit = 5;
-        edk2-uefi-shell.enable = true;
-        memtest86.enable = true;
-        netbootxyz.enable = true;
+        maxGenerations = 5;
+        enableEditor = false;
+        style.interface.helpHidden = true;
+        secureBoot = {
+          enable = true;
+          autoGenerateKeys = true;
+          autoEnrollKeys = {
+            enable = true;
+            extraArgs = [ "--microsoft" "--firmware-builtin" ];
+          };
+        };
       };
-
       timeout = 0;
     };
-
     plymouth = {
       enable = true;
       theme = "nixos-bgrt";
-      themePackages = with pkgs; [
-        nixos-bgrt-plymouth
-      ];
+      themePackages = with pkgs; [ nixos-bgrt-plymouth ];
     };
   };
+
+  environment.systemPackages = with pkgs; [ sbctl ];
 }
