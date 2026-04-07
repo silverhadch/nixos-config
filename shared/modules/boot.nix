@@ -27,17 +27,19 @@
         enable = true;
         maxGenerations = 5;
         enableEditor = false;
-        style.interface.helpHidden = true;
+        extraConfig = ''
+          quiet: yes
+        '';
         secureBoot = {
           enable = true;
           autoGenerateKeys = true;
           autoEnrollKeys = {
             enable = true;
-            extraArgs = [ "--microsoft" "--firmware-builtin" ];
+            extraArgs = [ "--microsoft" ];
           };
         };
       };
-      timeout = 0;
+      timeout = 3;
     };
     plymouth = {
       enable = true;

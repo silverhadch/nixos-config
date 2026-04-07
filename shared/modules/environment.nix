@@ -12,6 +12,7 @@ in
     btop
     btrfs-progs
     curl
+    e2fsprogs
     git
     graphviz-nox
     htop
@@ -21,6 +22,7 @@ in
     neovim
     pandoc
     rar
+    sbctl
     vim
     wget
 
