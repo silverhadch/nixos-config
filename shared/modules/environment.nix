@@ -12,6 +12,7 @@ in
     btop
     btrfs-progs
     curl
+    erofs-utils
     e2fsprogs
     git
     graphviz-nox
@@ -25,6 +26,7 @@ in
     sbctl
     vim
     wget
+    xorriso
 
     # Desktop / Apps
     arcan
@@ -77,6 +79,7 @@ in
     go
     go-md2man
     gopls
+    jdt-language-server
     jq
     libclang.python
     llvmPackages.libclang
@@ -84,6 +87,7 @@ in
     meson
     msedit
     nasm
+    openjdk
     openssl
     openssl.dev
     pkg-config
