@@ -29,6 +29,9 @@
 
     ./modules/system.nix
 
+    # KDE Linux Dev
+    ./modules/kde-linux-dev.nix
+
     # Patches
     ./modules/no-spyware-here.nix
   ];

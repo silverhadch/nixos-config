@@ -10,7 +10,6 @@
       defaultNetwork.settings.dns_enabled = true;
     };
 
-    docker.enable = true;
     spiceUSBRedirection.enable = true;
 
     waydroid.enable = true;
