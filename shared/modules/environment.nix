@@ -90,10 +90,12 @@ in
     openjdk
     openssl
     openssl.dev
+    OVMFFull
     pkg-config
     python3
     ripgrep
     shadow
+    systemdUkify
     texlive.combined.scheme-full
     virtualenv
     wayland-utils

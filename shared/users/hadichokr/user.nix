@@ -14,6 +14,7 @@
       "libvirtd"
       "networkmanager"
       "video"
+      "cdrom"
     ];
 
     subGidRanges = [
