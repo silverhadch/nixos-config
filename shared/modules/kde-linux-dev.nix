@@ -1,5 +1,4 @@
 { config, lib, pkgs, ... }:
-
 let
   dockerBtrfsFile = "/docker.btrfs";
   dockerBtrfsSize = "64G";
@@ -12,43 +11,48 @@ in
 
   environment.systemPackages = [ pkgs.btrfs-progs ];
 
-  fileSystems."/var/lib/docker" = {
-    device = dockerBtrfsFile;
-    fsType = "btrfs";
-    options = [ "loop" "noatime" ];
-    neededForBoot = false;
+  # Make the socket wait for the mount — prevents socket-activation race
+  systemd.sockets.docker = {
+    after    = [ "var-lib-docker.mount" ];
+    requires = [ "var-lib-docker.mount" ];
   };
 
   systemd.services.create-docker-btrfs = {
     description = "Create Btrfs backing file for Docker";
-    before = [ "var-lib-docker.mount" "docker.service" ];
-    requiredBy = [ "var-lib-docker.mount" "docker.service" ];
+    wantedBy    = [ "multi-user.target" ];
+    before      = [ "var-lib-docker.mount" ];
+    requiredBy  = [ "var-lib-docker.mount" ];
+
     script = ''
-      set -e
+      set -euo pipefail
+
       if [ ! -f ${dockerBtrfsFile} ]; then
-        echo "Creating ${dockerBtrfsFile} (${dockerBtrfsSize}) ..."
-        ${pkgs.util-linux}/bin/fallocate -l ${dockerBtrfsSize} ${dockerBtrfsFile}
-        echo "Formatting as Btrfs ..."
+        echo "Creating ${dockerBtrfsFile} (${dockerBtrfsSize})…"
+        ${pkgs.coreutils}/bin/truncate -s ${dockerBtrfsSize} ${dockerBtrfsFile}
+        echo "Formatting as Btrfs…"
         ${pkgs.btrfs-progs}/bin/mkfs.btrfs ${dockerBtrfsFile}
       else
-        # Check if it's already a btrfs filesystem
-        if ! ${pkgs.btrfs-progs}/bin/btrfs inspect-internal dump-super ${dockerBtrfsFile} >/dev/null 2>&1; then
-          echo "ERROR: ${dockerBtrfsFile} exists but is not a btrfs filesystem. Please remove or fix it."
+        if ! ${pkgs.btrfs-progs}/bin/btrfs inspect-internal dump-super \
+               ${dockerBtrfsFile} >/dev/null 2>&1; then
+          echo "ERROR: ${dockerBtrfsFile} exists but is not a valid Btrfs image." >&2
           exit 1
         fi
-        echo "${dockerBtrfsFile} already exists and is a btrfs filesystem – skipping creation."
+        echo "${dockerBtrfsFile} already exists and is valid – skipping."
       fi
-      # Ensure the mount point directory exists (the mount unit will use it)
+
       mkdir -p /var/lib/docker
     '';
+
     serviceConfig = {
-      Type = "oneshot";
+      Type            = "oneshot";
       RemainAfterExit = true;
+      UMask           = "0077";
     };
   };
 
-  systemd.services."var-lib-docker.mount" = {
-    after = [ "create-docker-btrfs.service" ];
-    requires = [ "create-docker-btrfs.service" ];
+  fileSystems."/var/lib/docker" = {
+    device  = dockerBtrfsFile;
+    fsType  = "btrfs";
+    options = [ "loop" "noatime" "compress=zstd" ];
   };
 }
