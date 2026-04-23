@@ -17,9 +17,8 @@ in
 
   systemd.services.create-docker-btrfs = {
     description = "Create or recover Btrfs backing file for Docker";
-    wantedBy    = [ "multi-user.target" ];
+    wantedBy    = [ "multi-user.target" "var-lib-docker.mount" ];
     before      = [ "var-lib-docker.mount" ];
-    wantedBy    = [ "var-lib-docker.mount" ];
     script = ''
       set -uo pipefail
 
@@ -38,7 +37,6 @@ in
              ${dockerBtrfsFile} >/dev/null 2>&1; then
           echo "${dockerBtrfsFile} is valid – skipping creation."
         else
-          # Corrupt image: quarantine and recreate rather than hard-failing
           bad="${dockerBtrfsFile}.corrupt-$(date +%s)"
           echo "WARNING: ${dockerBtrfsFile} is corrupt, moving to $bad" >&2
           mv "${dockerBtrfsFile}" "$bad" || { echo "Could not quarantine corrupt image" >&2; exit 1; }
