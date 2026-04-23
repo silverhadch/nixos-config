@@ -17,8 +17,9 @@ in
 
   systemd.services.create-docker-btrfs = {
     description = "Create or recover Btrfs backing file for Docker";
-    wantedBy    = [ "multi-user.target" "var-lib-docker.mount" ];
-    before      = [ "var-lib-docker.mount" ];
+    wantedBy = [ "local-fs.target" ];
+    after    = [ "local-fs-pre.target" "systemd-remount-fs.service" ];
+    before   = [ "var-lib-docker.mount" "local-fs.target" ];
     script = ''
       set -uo pipefail
 
@@ -49,9 +50,10 @@ in
       mkdir -p /var/lib/docker
     '';
     serviceConfig = {
-      Type            = "oneshot";
-      RemainAfterExit = true;
-      UMask           = "0077";
+      Type                = "oneshot";
+      RemainAfterExit     = true;
+      UMask               = "0077";
+      DefaultDependencies = false;
     };
   };
 
