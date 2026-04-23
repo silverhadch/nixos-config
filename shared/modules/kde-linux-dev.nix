@@ -8,41 +8,48 @@ in
     enable = true;
     storageDriver = "btrfs";
   };
-
   environment.systemPackages = [ pkgs.btrfs-progs ];
 
-  # Make the socket wait for the mount — prevents socket-activation race
   systemd.sockets.docker = {
-    after    = [ "var-lib-docker.mount" ];
-    requires = [ "var-lib-docker.mount" ];
+    after = [ "var-lib-docker.mount" ];
+    wants = [ "var-lib-docker.mount" ];
   };
 
   systemd.services.create-docker-btrfs = {
-    description = "Create Btrfs backing file for Docker";
+    description = "Create or recover Btrfs backing file for Docker";
     wantedBy    = [ "multi-user.target" ];
     before      = [ "var-lib-docker.mount" ];
-    requiredBy  = [ "var-lib-docker.mount" ];
-
+    wantedBy    = [ "var-lib-docker.mount" ];
     script = ''
-      set -euo pipefail
+      set -uo pipefail
 
-      if [ ! -f ${dockerBtrfsFile} ]; then
+      create_image() {
         echo "Creating ${dockerBtrfsFile} (${dockerBtrfsSize})…"
-        ${pkgs.coreutils}/bin/truncate -s ${dockerBtrfsSize} ${dockerBtrfsFile}
+        ${pkgs.coreutils}/bin/truncate -s ${dockerBtrfsSize} ${dockerBtrfsFile} || return 1
         echo "Formatting as Btrfs…"
-        ${pkgs.btrfs-progs}/bin/mkfs.btrfs ${dockerBtrfsFile}
-      else
-        if ! ${pkgs.btrfs-progs}/bin/btrfs inspect-internal dump-super \
-               ${dockerBtrfsFile} >/dev/null 2>&1; then
-          echo "ERROR: ${dockerBtrfsFile} exists but is not a valid Btrfs image." >&2
-          exit 1
+        ${pkgs.btrfs-progs}/bin/mkfs.btrfs ${dockerBtrfsFile} || {
+          rm -f ${dockerBtrfsFile}
+          return 1
+        }
+      }
+
+      if [ -f ${dockerBtrfsFile} ]; then
+        if ${pkgs.btrfs-progs}/bin/btrfs inspect-internal dump-super \
+             ${dockerBtrfsFile} >/dev/null 2>&1; then
+          echo "${dockerBtrfsFile} is valid – skipping creation."
+        else
+          # Corrupt image: quarantine and recreate rather than hard-failing
+          bad="${dockerBtrfsFile}.corrupt-$(date +%s)"
+          echo "WARNING: ${dockerBtrfsFile} is corrupt, moving to $bad" >&2
+          mv "${dockerBtrfsFile}" "$bad" || { echo "Could not quarantine corrupt image" >&2; exit 1; }
+          create_image || exit 1
         fi
-        echo "${dockerBtrfsFile} already exists and is valid – skipping."
+      else
+        create_image || exit 1
       fi
 
       mkdir -p /var/lib/docker
     '';
-
     serviceConfig = {
       Type            = "oneshot";
       RemainAfterExit = true;
@@ -53,6 +60,6 @@ in
   fileSystems."/var/lib/docker" = {
     device  = dockerBtrfsFile;
     fsType  = "btrfs";
-    options = [ "loop" "noatime" "compress=zstd" ];
+    options = [ "loop" "noatime" "compress=zstd" "nofail" "x-systemd.device-timeout=15" ];
   };
 }
