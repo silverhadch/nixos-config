@@ -15,6 +15,7 @@ in
     erofs-utils
     e2fsprogs
     git
+    gptfdisk
     graphviz-nox
     htop
     inotify-tools
@@ -95,6 +96,7 @@ in
     python3
     ripgrep
     shadow
+    sqlite
     systemdUkify
     texlive.combined.scheme-full
     virtualenv
