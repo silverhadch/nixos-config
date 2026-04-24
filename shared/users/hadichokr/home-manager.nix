@@ -89,6 +89,7 @@
       "flathub:app/com.ktechpit.whatsie//stable"
       "flathub:app/party.supertux.supertuxparty//stable"
       "flathub:app/app.eduroam.geteduroam//stable"
+      "flathub:app/com.cburch.Logisim//stable"
     ];
 
     # Overrides (global and per‑application)
