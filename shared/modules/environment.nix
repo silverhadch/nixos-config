@@ -84,6 +84,7 @@ in
     jq
     libclang.python
     llvmPackages.libclang
+    logisim-evolution
     libgcc
     meson
     msedit
