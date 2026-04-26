@@ -8,7 +8,8 @@ let
     ];
   });
 in {
-  systemd.package = systemdWithoutSpyware;
+  # Regression in NixOS Unstable, dont build systemd for now
+  # systemd.package = systemdWithoutSpyware;
   services.userdbd.enable = lib.mkForce false;
   systemd.services.systemd-userdbd.enable = lib.mkForce false;
   systemd.sockets.systemd-userdbd.enable = lib.mkForce false;
