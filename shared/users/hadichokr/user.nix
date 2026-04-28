@@ -15,6 +15,7 @@
       "networkmanager"
       "video"
       "cdrom"
+      "wheel"
     ];
 
     subGidRanges = [

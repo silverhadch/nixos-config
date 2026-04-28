@@ -28,6 +28,7 @@
     ./modules/windowmaker.nix
 
     ./modules/system.nix
+    ./modules/systemd.nix
 
     # KDE Linux Dev
     ./modules/kde-linux-dev.nix
