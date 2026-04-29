@@ -17,12 +17,11 @@ in
 
   systemd.services.create-docker-btrfs = {
     description = "Create or recover Btrfs backing file for Docker";
-    wantedBy = [ "local-fs.target" ];
-    after    = [ "local-fs-pre.target" "systemd-remount-fs.service" ];
-    before   = [ "var-lib-docker.mount" "local-fs.target" ];
+    wantedBy = [ "var-lib-docker.mount" ];   # pulled in by the mount unit, not local-fs
+    before   = [ "var-lib-docker.mount" ];
+    after    = [ "local-fs.target" ];        # only need root fs to be up
     script = ''
       set -uo pipefail
-
       create_image() {
         echo "Creating ${dockerBtrfsFile} (${dockerBtrfsSize})…"
         ${pkgs.coreutils}/bin/truncate -s ${dockerBtrfsSize} ${dockerBtrfsFile} || return 1
@@ -32,7 +31,6 @@ in
           return 1
         }
       }
-
       if [ -f ${dockerBtrfsFile} ]; then
         if ${pkgs.btrfs-progs}/bin/btrfs inspect-internal dump-super \
              ${dockerBtrfsFile} >/dev/null 2>&1; then
@@ -46,7 +44,6 @@ in
       else
         create_image || exit 1
       fi
-
       mkdir -p /var/lib/docker
     '';
     serviceConfig = {
@@ -61,5 +58,6 @@ in
     device  = dockerBtrfsFile;
     fsType  = "btrfs";
     options = [ "loop" "noatime" "compress=zstd" "nofail" "x-systemd.device-timeout=15" ];
+    depends = [ "create-docker-btrfs.service" ];  # generates Requires= + After= on the mount unit
   };
 }
