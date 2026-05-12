@@ -68,6 +68,7 @@ in
     toolbox
 
     # Dev
+    arduino-ide
     black
     clang
     clang-tools

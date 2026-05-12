@@ -16,6 +16,7 @@
       "video"
       "cdrom"
       "wheel"
+      "dialout"
     ];
 
     subGidRanges = [

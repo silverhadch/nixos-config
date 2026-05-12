@@ -8,6 +8,7 @@
       enable = true;
       plugins = with pkgs; [
         networkmanager-openconnect
+        networkmanager-openvpn
       ];
 
       ensureProfiles.profiles.fuVpn = {
