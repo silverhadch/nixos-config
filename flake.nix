@@ -1,69 +1,63 @@
 {
   description = "Hadi's NixOS desktop (flake)";
-
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
     plasma-manager = {
       url = "github:nix-community/plasma-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
     declarative-flatpak = {
       url = "github:in-a-dil-emma/declarative-flatpak/latest";
     };
-
     better-soundcloud = {
       url = "github:AlirezaKJ/BetterSoundCloud";
       # inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-
-  outputs = { self, ... } @ inputs:  # Capture all inputs with @ inputs
+  outputs = { self, ... } @ inputs:
   let
     system = "x86_64-linux";
-
     pkgs = import inputs.nixpkgs {
       inherit system;
     };
-
     lib = inputs.nixpkgs.lib;
-
     # -------------------------
     # Host detection
     # -------------------------
     hosts =
       builtins.attrNames
         (builtins.readDir ./hosts);
-
     mkHost = hostName:
       lib.nixosSystem {
         inherit system;
-
         specialArgs = {
           inherit hostName;
           inherit inputs;
         };
-
         modules = [
           ./hosts/${hostName}
-
+          {
+            nixpkgs.overlays = [
+              (final: prev: {
+                bettersoundcloud = prev.bettersoundcloud.overrideAttrs (_: {
+                  npmDepsHash = "sha256-Xj+NpXJloa+xVLVMQ3ScSBDpLCUApddr+jcUU2xLHXU=";
+                });
+              })
+            ];
+          }
           inputs.home-manager.nixosModules.home-manager
-
           {
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;
-
               sharedModules = [
                 inputs.plasma-manager.homeModules.plasma-manager
                 inputs.declarative-flatpak.homeModules.default
-                ];
+              ];
             };
           }
         ];
