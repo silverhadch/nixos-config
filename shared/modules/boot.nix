@@ -8,7 +8,7 @@
     };
     kernelPackages = pkgs.linuxPackages_zen;
     extraModulePackages = with config.boot.kernelPackages; [
-      nullfs
+      # nullfs
       openafs
       openrazer
       v4l2loopback

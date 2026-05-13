@@ -18,5 +18,5 @@
 
   systemd.services.waydroid-container.enable = true;
 
-  programs.cdemu.enable = true;
+  # programs.cdemu.enable = true;
 }

@@ -40,15 +40,6 @@
         };
         modules = [
           ./hosts/${hostName}
-          {
-            nixpkgs.overlays = [
-              (final: prev: {
-                bettersoundcloud = prev.bettersoundcloud.overrideAttrs (_: {
-                  npmDepsHash = "sha256-Xj+NpXJloa+xVLVMQ3ScSBDpLCUApddr+jcUU2xLHXU=";
-                });
-              })
-            ];
-          }
           inputs.home-manager.nixosModules.home-manager
           {
             home-manager = {
