@@ -172,6 +172,6 @@ in
     '')
 
     # Flakes
-   #  inputs.better-soundcloud.packages.${pkgs.stdenv.hostPlatform.system}.default
+    inputs.better-soundcloud.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 }
