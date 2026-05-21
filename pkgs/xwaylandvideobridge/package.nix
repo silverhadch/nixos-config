@@ -25,7 +25,7 @@ stdenv.mkDerivation (finalAttrs: {
     domain = "invent.kde.org";
     owner = "silverhadch";
     repo = "xwaylandvideobridge";
-    rev = "d6bae9ba31a9f55f5a781cb24f097b8a32d1ff65";
+    rev = "aabbb5408840a0eabe1a5c7b387d779fac058c0b";
     hash = "sha256-/9Hst1id/VhLsu9K2ghS0mrl1aMLPREDpRttbMMhPts=";
   };
 
