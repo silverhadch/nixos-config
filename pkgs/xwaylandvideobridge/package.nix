@@ -23,9 +23,9 @@ stdenv.mkDerivation (finalAttrs: {
 
   src = fetchFromGitLab {
     domain = "invent.kde.org";
-    owner = "silverhadch";
+    owner = "system";
     repo = "xwaylandvideobridge";
-    rev = "aabbb5408840a0eabe1a5c7b387d779fac058c0b";
+    rev = "2d5db516b5e777bcce7f2266cea5c1d370fc7f05";
     hash = "sha256-/9Hst1id/VhLsu9K2ghS0mrl1aMLPREDpRttbMMhPts=";
   };
 
