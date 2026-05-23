@@ -153,7 +153,7 @@ in
         llvm-vs-code-extensions.lldb-dap
         llvm-vs-code-extensions.vscode-clangd
         ms-azuretools.vscode-docker
-        ms-python.python
+       #  ms-python.python
         ms-vscode.makefile-tools
         ms-vscode-remote.remote-ssh
         yzhang.markdown-all-in-one

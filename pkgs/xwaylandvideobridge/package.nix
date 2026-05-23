@@ -26,7 +26,7 @@ stdenv.mkDerivation (finalAttrs: {
     owner = "system";
     repo = "xwaylandvideobridge";
     rev = "2d5db516b5e777bcce7f2266cea5c1d370fc7f05";
-    hash = "sha256-/9Hst1id/VhLsu9K2ghS0mrl1aMLPREDpRttbMMhPts=";
+    hash = "sha256-qM7q7UTPMv+XUf8oVqyzID31r5uziDmO20WmhYyg0s0=";
   };
 
   nativeBuildInputs = [
