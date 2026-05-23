@@ -10,8 +10,7 @@
     extraModulePackages = with config.boot.kernelPackages; [
       # nullfs
       openafs
-      openrazer
-      v4l2loopback
+      # openrazer
       xone
     ];
     kernelParams = [
