@@ -51,7 +51,7 @@ stdenv.mkDerivation (finalAttrs: {
 
   meta = {
     description = "Utility to allow streaming Wayland windows to X applications";
-    homepage = "https://invent.kde.org/silverhadch/xwaylandvideobridge";
+    homepage = "https://invent.kde.org/system/xwaylandvideobridge";
     license = with lib.licenses; [
       bsd3
       cc0
