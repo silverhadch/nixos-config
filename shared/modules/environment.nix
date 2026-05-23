@@ -62,6 +62,11 @@ in
     kdePackages.xdg-desktop-portal-kde
     xwaylandvideobridge
 
+    # Oxygen
+    kdePackages.oxygen
+    kdePackages.oxygen-icons
+    kdePackages.oxygen-sounds
+
     # Containers / VM
     distrobox
     lilipod
