@@ -6,7 +6,6 @@
   (self: super: {
     bottles = super.bottles.override { removeWarningPopup = true; };
   })
-
   ################################################################################
   # Webex overlay
   ################################################################################
@@ -21,6 +20,14 @@
           --set GDK_BACKEND x11 \
           --set NIXOS_OZONE_WL 0
       '';
+    });
+  })
+  ################################################################################
+  # OpenLDAP overlay (skip flaky sandbox test, remove when nixpkgs fixes it)
+  ################################################################################
+  (self: super: {
+    openldap = super.openldap.overrideAttrs (old: {
+      doCheck = false;
     });
   })
 ]
