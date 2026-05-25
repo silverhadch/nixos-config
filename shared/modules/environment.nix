@@ -35,6 +35,7 @@ in
     cat9
     firefoxpwa
     flatpak
+    geogebra
     gimp
     github-desktop
     libreoffice-qt-fresh
