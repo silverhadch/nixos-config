@@ -6,6 +6,7 @@
 
     ./modules/binfmt.nix
     ./modules/boot.nix
+    ./modules/cdemu.nix
     ./modules/console-x11.nix
     ./modules/desktop.nix
     ./modules/environment.nix
