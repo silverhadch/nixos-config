@@ -49,7 +49,7 @@ in
     vesktop
     vlc
     webex
-    zulip
+    # zulip
 
     # KDE
     kdePackages.appstream-qt
