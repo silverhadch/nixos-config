@@ -17,5 +17,5 @@
     zsh.enable = true;
   };
 
-  programs.firefox.nativeMessagingHosts.packages = [ pkgs.firefoxpwa ];
+  # programs.firefox.nativeMessagingHosts.packages = [ pkgs.firefoxpwa ];
 }

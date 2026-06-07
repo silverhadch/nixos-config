@@ -9,6 +9,8 @@
     settings = {
       auto-optimise-store = true;
       experimental-features = [ "nix-command" "flakes" ];
+      cores = 0; # 0 = use all cores per job, but systemd cap will enforce the limit
+      max-jobs = "auto";
     };
   };
 

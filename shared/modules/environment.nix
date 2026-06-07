@@ -33,7 +33,7 @@ in
     arcan
     bottles
     cat9
-    firefoxpwa
+    # firefoxpwa
     flatpak
     geogebra
     gimp

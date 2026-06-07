@@ -8,5 +8,9 @@
     settings.Manager = {
       DefaultTimeoutStopSec = "10s";
     };
+    services.nix-daemon.serviceConfig = {
+      CPUQuota = "70%";
+      MemoryMax = "70%";
+    };
   };
 }
