@@ -9,8 +9,9 @@
       DefaultTimeoutStopSec = "10s";
     };
     services.nix-daemon.serviceConfig = {
-      CPUQuota = "70%";
-      MemoryMax = "70%";
+      CPUWeight = 70;      # relative weight, not a percentage of cores
+      MemoryMax = "70%";   # percentage of total RAM
+      MemorySwapMax = "0"; # don't let it swap either
     };
   };
 }
