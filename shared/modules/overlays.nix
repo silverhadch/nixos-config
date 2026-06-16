@@ -22,12 +22,4 @@
       '';
     });
   })
-  ################################################################################
-  # OpenLDAP overlay (skip flaky sandbox test, remove when nixpkgs fixes it)
-  ################################################################################
-  (self: super: {
-    openldap = super.openldap.overrideAttrs (old: {
-      doCheck = false;
-    });
-  })
 ]
