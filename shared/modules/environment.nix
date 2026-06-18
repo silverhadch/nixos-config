@@ -1,6 +1,13 @@
 { pkgs, inputs, ... }:
 let
   xwaylandvideobridge = pkgs.kdePackages.callPackage ../../pkgs/xwaylandvideobridge/package.nix { };
+
+  # Custom JDK with JavaFX
+  jdkWithFX = pkgs.openjdk.override {
+    enableJavaFX = true;
+    # Uncomment the next line if you need WebKit support in JavaFX
+    # openjfx_jdk = pkgs.openjfx.override { withWebKit = true; };
+  };
 in
 {
   environment.sessionVariables = {
@@ -93,16 +100,18 @@ in
     llvmPackages.libclang
     logisim-evolution
     libgcc
+    maven
     meson
     msedit
     nasm
-    openjdk
+    jdkWithFX              # ← replaced openjdk with JavaFX‑enabled JDK
     openssl
     openssl.dev
     OVMFFull
     pkg-config
     python3
     ripgrep
+    scenebuilder
     shadow
     sqlite
     systemdUkify
