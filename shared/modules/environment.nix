@@ -68,6 +68,7 @@ in
     kdePackages.neochat
     kdePackages.partitionmanager
     kdePackages.xdg-desktop-portal-kde
+    kdePackages.skanlite
     xwaylandvideobridge
 
     # Oxygen

@@ -17,6 +17,8 @@
       "cdrom"
       "wheel"
       "dialout"
+      "scanner"
+      "lp"
     ];
 
     subGidRanges = [
