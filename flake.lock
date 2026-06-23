@@ -6,11 +6,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1778727779,
-        "narHash": "sha256-6b9a2yO78/YiHRXufWO6AVJ866kvO9+wSNVhsSmWejg=",
+        "lastModified": 1782198788,
+        "narHash": "sha256-DpiQ5QB/Xyt2TvNbtXVyg4CKeZ76aVGjmAxKqsTyW+o=",
         "owner": "AlirezaKJ",
         "repo": "BetterSoundCloud",
-        "rev": "25c336b8521912d4981ee46774dc2400ece1500e",
+        "rev": "fb3bfdd0fc3ab9f334a88675cf3e50ad718f2136",
         "type": "github"
       },
       "original": {
