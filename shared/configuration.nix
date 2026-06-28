@@ -25,8 +25,6 @@
     ./modules/usershell.nix
     ./modules/security.nix
     ./modules/virtualization.nix
-    ./modules/webex.nix
-    ./modules/windowmaker.nix
 
     ./modules/system.nix
     ./modules/systemd.nix

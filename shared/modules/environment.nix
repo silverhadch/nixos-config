@@ -55,7 +55,6 @@ in
     thunderbird-bin
     vesktop
     vlc
-    webex
     # zulip
 
     # KDE

@@ -46,130 +46,6 @@
   '';
 
   # ---------------------------------------------------------------------------
-  # Oxygen Dark color scheme (from KDE Store p/2066753, inlined declaratively)
-  # Placed here so plasma-manager can reference it by name.
-  # ---------------------------------------------------------------------------
-  xdg.dataFile."color-schemes/OxygenDark.colors".text = ''
-    [ColorEffects:Disabled]
-    Color=56,56,56
-    ColorAmount=0
-    ColorEffect=0
-    ContrastAmount=0.65
-    ContrastEffect=1
-    IntensityAmount=0.1
-    IntensityEffect=2
-
-    [ColorEffects:Inactive]
-    ChangeSelectionColor=true
-    Color=112,111,110
-    ColorAmount=-0.9
-    ColorEffect=1
-    ContrastAmount=0.25
-    ContrastEffect=2
-    Enable=true
-    IntensityAmount=0
-    IntensityEffect=0
-
-    [Colors:Button]
-    BackgroundAlternate=37,40,44
-    BackgroundNormal=32,36,40
-    DecorationFocus=58,167,221
-    DecorationHover=110,214,255
-    ForegroundActive=146,76,157
-    ForegroundInactive=130,130,132
-    ForegroundLink=88,172,255
-    ForegroundNegative=191,3,3
-    ForegroundNeutral=176,128,0
-    ForegroundNormal=210,210,210
-    ForegroundPositive=0,110,40
-    ForegroundVisited=150,111,232
-
-    [Colors:Selection]
-    BackgroundAlternate=62,138,204
-    BackgroundNormal=67,172,232
-    DecorationFocus=58,167,221
-    DecorationHover=110,214,255
-    ForegroundActive=108,36,119
-    ForegroundInactive=199,226,248
-    ForegroundLink=0,49,110
-    ForegroundNegative=156,14,14
-    ForegroundNeutral=255,221,0
-    ForegroundNormal=255,255,255
-    ForegroundPositive=128,255,128
-    ForegroundVisited=69,40,134
-
-    [Colors:Tooltip]
-    BackgroundAlternate=40,44,50
-    BackgroundNormal=24,21,19
-    DecorationFocus=58,167,221
-    DecorationHover=110,214,255
-    ForegroundActive=255,128,224
-    ForegroundInactive=130,130,132
-    ForegroundLink=88,172,255
-    ForegroundNegative=191,3,3
-    ForegroundNeutral=176,128,0
-    ForegroundNormal=231,253,255
-    ForegroundPositive=0,110,40
-    ForegroundVisited=150,111,232
-
-    [Colors:View]
-    BackgroundAlternate=27,30,35
-    BackgroundNormal=22,26,30
-    DecorationFocus=58,167,221
-    DecorationHover=110,214,255
-    ForegroundActive=146,76,157
-    ForegroundInactive=130,130,132
-    ForegroundLink=88,172,255
-    ForegroundNegative=191,3,3
-    ForegroundNeutral=176,128,0
-    ForegroundNormal=210,210,210
-    ForegroundPositive=0,110,40
-    ForegroundVisited=150,111,232
-
-    [Colors:Window]
-    BackgroundAlternate=35,38,42
-    BackgroundNormal=30,34,38
-    DecorationFocus=58,167,221
-    DecorationHover=110,214,255
-    ForegroundActive=146,76,157
-    ForegroundInactive=130,130,132
-    ForegroundLink=88,172,255
-    ForegroundNegative=191,3,3
-    ForegroundNeutral=176,128,0
-    ForegroundNormal=210,210,210
-    ForegroundPositive=0,110,40
-    ForegroundVisited=150,111,232
-
-    [Colors:Complementary]
-    BackgroundAlternate=40,44,50
-    BackgroundNormal=24,21,19
-    DecorationFocus=58,167,221
-    DecorationHover=110,214,255
-    ForegroundActive=255,128,224
-    ForegroundInactive=130,130,132
-    ForegroundLink=88,172,255
-    ForegroundNegative=191,3,3
-    ForegroundNeutral=176,128,0
-    ForegroundNormal=231,253,255
-    ForegroundPositive=0,110,40
-    ForegroundVisited=150,111,232
-
-    [General]
-    ColorScheme=OxygenDark
-    Name=Oxygen Dark
-    shadeSortColumn=true
-
-    [KDE]
-    contrast=7
-
-    [WM]
-    activeBackground=48,174,232
-    activeForeground=255,255,255
-    inactiveBackground=35,38,42
-    inactiveForeground=130,130,132
-  '';
-
-  # ---------------------------------------------------------------------------
   # Distrobox
   # ---------------------------------------------------------------------------
   programs.distrobox = {
@@ -205,6 +81,7 @@
 
     remotes = {
       "flathub" = "https://flathub.org/repo/flathub.flatpakrepo";
+      "webexweb" = "https://silverhadch.github.io/io.github.silverhadch.WebexWeb/index.flatpakrepo";
     };
 
     packages = [
@@ -216,6 +93,7 @@
       "flathub:app/com.ktechpit.whatsie//stable"
       "flathub:app/party.supertux.supertuxparty//stable"
       "flathub:app/app.eduroam.geteduroam//stable"
+      "webexweb:app/io.github.silverhadch.WebexWeb//master"
     ];
 
     overrides = {
@@ -293,6 +171,8 @@
   programs.plasma = {
     enable = true;
 
+    configFile.kdeglobals.General.accentColorFromWallpaper = true;
+
     input.keyboard.layouts = [
       { layout = "de"; }
     ];
@@ -316,10 +196,10 @@
 
     workspace = {
       clickItemTo = "open";
-      lookAndFeel = "org.kde.oxygen.desktop";
-      colorScheme  = "OxygenDark";
+      lookAndFeel = "org.kde.oxygen";
+      colorScheme = "OxygenDark";
 
-      wallpaper = "${pkgs.kdePackages.plasma-workspace-wallpapers}/share/wallpapers/Elarun/";
+      wallpaper = "${pkgs.kdePackages.oxygen}/share/wallpapers/Horos/";
 
       wallpaperBackground.blur = true;
     };
