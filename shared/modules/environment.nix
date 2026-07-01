@@ -24,12 +24,14 @@ in
     git
     gptfdisk
     graphviz-nox
+    grub2_efi
     htop
     inotify-tools
     libnotify
     nano
     neovim
     pandoc
+    parted
     rar
     sbctl
     vim
