@@ -18,4 +18,6 @@
   };
 
   # programs.firefox.nativeMessagingHosts.packages = [ pkgs.firefoxpwa ];
+
+  programs.fuse.userAllowOther = true;
 }
