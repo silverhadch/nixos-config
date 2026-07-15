@@ -87,6 +87,7 @@
     packages = [
       "flathub:app/com.jetbrains.IntelliJ-IDEA-Community//stable"
       "flathub:app/com.obsproject.Studio//stable"
+      "flathub:app/org.kde.neochat//stable"
       "flathub:app/org.texstudio.TeXstudio//stable"
       "flathub:app/org.zealdocs.Zeal//stable"
       "flathub:app/net.codelogistics.clicker//stable"
