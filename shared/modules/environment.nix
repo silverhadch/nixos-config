@@ -134,10 +134,10 @@ in
     zls
 
     # KDE Dev
-    kdePackages.kde-dev-scripts
-    kdePackages.kde-dev-utils
-    kdePackages.kdev-php
-    kdePackages.kdev-python
+#     kdePackages.kde-dev-scripts
+#     kdePackages.kde-dev-utils
+#     kdePackages.kdev-php
+#     kdePackages.kdev-python
 
     # Fun
     cmatrix
