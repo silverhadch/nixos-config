@@ -161,6 +161,10 @@
     profiles.Linux = {
       name = "Linux";
       colorScheme = "Linux";
+      font = {
+        name = "Hack";
+        size = 11;
+      };
       extraConfig.Keyboard.KeyBindings = "linux";
     };
   };
