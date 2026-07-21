@@ -16,6 +16,7 @@ in
   };
   environment.systemPackages = with pkgs; [
     # Core
+    android-tools
     btop
     btrfs-progs
     curl

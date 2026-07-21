@@ -19,6 +19,7 @@
       "dialout"
       "scanner"
       "lp"
+      "adbusers"
     ];
 
     subGidRanges = [
