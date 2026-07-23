@@ -211,6 +211,33 @@
   };
 
   # ---------------------------------------------------------------------------
+  # Zed
+  # ---------------------------------------------------------------------------
+  programs.zed-editor = {
+    enable = true;
+    extensions = [ "nix" "toml" ];
+
+    userSettings = {
+      auto_update = false;
+
+      lsp = {
+        rust-analyzer = {
+          binary = { path_lookup = true; };
+        };
+      };
+
+      load_direnv = "shell_hook";
+
+      agent = {
+        default_model = {
+          provider = "anthropic";
+          model = "claude-sonnet-4-7";
+        };
+      };
+    };
+  };
+
+  # ---------------------------------------------------------------------------
   # Zsh
   # ---------------------------------------------------------------------------
   programs.zsh = {

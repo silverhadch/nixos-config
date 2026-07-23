@@ -128,6 +128,7 @@ in
     cargo
     clippy
     rustc
+    rust-analyzer
     rustfmt
 
     # Zig
