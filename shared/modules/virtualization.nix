@@ -19,7 +19,4 @@
   systemd.services.waydroid-container.enable = true;
 
   # programs.cdemu.enable = true;
-
-  virtualisation.virtualbox.host.enable = true;
-  users.extraGroups.vboxusers.members = [ "hadichokr" ];
 }
