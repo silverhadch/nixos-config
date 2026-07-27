@@ -1,25 +1,24 @@
-{ lib, pkgs, USERNAME, NAME, ... }:
+{ USERNAME, NAME, ... }:
 
 {
-  users.groups.libvirtd.members = [ USERNAME ];
-
   users.users.${USERNAME} = {
     description = NAME;
     isNormalUser = true;
 
-    extraGroups = lib.mkForce [
+    # No mkForce here: other modules must be able to add groups of their own.
+    extraGroups = [
+      "adbusers"
       "audio"
+      "cdrom"
+      "dialout"
       "docker"
       "input"
       "libvirtd"
-      "networkmanager"
-      "video"
-      "cdrom"
-      "wheel"
-      "dialout"
-      "scanner"
       "lp"
-      "adbusers"
+      "networkmanager"
+      "scanner"
+      "video"
+      "wheel"
     ];
 
     subGidRanges = [
@@ -29,8 +28,6 @@
     subUidRanges = [
       { startUid = 100000; count = 65536; }
     ];
-
-    packages = with pkgs; [];
   };
 
   # ------------------------------

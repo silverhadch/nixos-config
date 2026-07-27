@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 let
   # MZ wrapper that bails out if it's actually a Windows PE binary
   dosExeWrapper = pkgs.writeShellScript "dosbox-exe-binfmt" ''
@@ -11,7 +11,7 @@ with open(sys.argv[1], 'rb') as f:
     f.seek(off)
     sys.exit(1 if f.read(4) == b'PE\x00\x00' else 0)
 " "$1" || { echo "Windows PE binary, not invoking dosbox" >&2; exit 1; }
-    exec ${pkgs.dosbox}/bin/dosbox "$1"
+    exec ${pkgs.dosbox-staging}/bin/dosbox "$1"
   '';
 
   dosBatWrapper = pkgs.writeShellScript "dosbox-bat-binfmt" ''

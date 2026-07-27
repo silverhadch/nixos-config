@@ -1,12 +1,11 @@
 { pkgs, hostName, ... }:
 
 {
-
   # ModemManager is pulled in by NetworkManager, but being explicit doesn't hurt:
   systemd.services.ModemManager.enable = true;
 
   # FCC unlock for Lenovo-branded modems (needed if a Quectel/Fibocom ever appears)
-  networking.networkmanager.fccUnlockScripts = [
+  networking.modemmanager.fccUnlockScripts = [
     {
       id = "2c7c:6008";  # Quectel EM061K-GL, the usual Gen 13 module
       path = "${pkgs.modemmanager}/share/ModemManager/fcc-unlock.available.d/2c7c";

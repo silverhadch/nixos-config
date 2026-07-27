@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ ... }:
 
 {
   programs = {
@@ -11,13 +11,10 @@
       wrapperConfig.pipewireSupport = true;
     };
 
+    fuse.userAllowOther = true;
     nix-ld.enable = true;
     steam.enable = true;
     virt-manager.enable = true;
     zsh.enable = true;
   };
-
-  # programs.firefox.nativeMessagingHosts.packages = [ pkgs.firefoxpwa ];
-
-  programs.fuse.userAllowOther = true;
 }

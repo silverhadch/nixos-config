@@ -1,23 +1,27 @@
 # ❄️ My NixOS config
 
-One flake, a few machines. Each machine lives in `hosts/` with only its hardware config.
+One flake, a few machines. Each machine lives in `hosts/` with only its hardware
+config; everything else is shared.
 
 ## What's where
 
-- `flake.nix` – root, imports stuff, finds hosts
+- `flake.nix` – inputs, host discovery, dev shell discovery
 - `hosts/<hostname>/` – per‑machine folder
-  - `default.nix` – just imports hardware + shared config
+  - `default.nix` – imports hardware config + shared config
   - `hardware-configuration.nix` – the generated one
-- `shared/configuration.nix` – core system config (common to all)
-- `shared/overlays.nix` – custom overlays (KWallet portal, Bottles, Webex…)
+  - `modules/` – machine‑specific bits (optional)
+- `shared/configuration.nix` – imports every shared module
+- `shared/modules/` – one file per topic (boot, audio, docker, networking…)
+  - `overlays.nix` – custom overlays (currently: Bottles)
 - `shared/users/` – all user config
   - `default.nix` – imports every user folder, global Home Manager settings
-  - `shared/users/<username>/` – one folder per user
-    - `default.nix` – sets username/name, imports `user.nix`
+  - `<username>/`
+    - `default.nix` – sets `USERNAME`/`NAME`, imports `user.nix`
     - `user.nix` – system user definition, links Home Manager
-    - `home-manager.nix` – actual desktop/shell config (Plasma, zsh, etc.)
-- `shells/` – dev shell stuff
-- `images/wallpaper.svg` – wallpaper
+    - `home-manager.nix` – desktop/shell config (Plasma, zsh, Flatpak…)
+- `pkgs/` – packages that aren't in nixpkgs (yet)
+- `shells/` – one `<name>.nix` per dev shell + the `devshell` helper
+- `images/` – wallpapers
 
 ## New machine
 
@@ -44,30 +48,35 @@ One flake, a few machines. Each machine lives in `hosts/` with only its hardware
 ## Commands I use
 
 - `rebuild` – rebuild current host
-- `update` – nix flake update + rebuild
+- `rebuild-host <name>` – rebuild a specific host
+- `update` – flake update + rebuild + commit + push
+- `cleanup` – garbage‑collect old generations
+- `update-hardware-host` – regenerate this host's hardware config
 - `list-hosts` – list available machines
 - `devshell list` – list dev environments
-- `devshell kontainer` – start kontainer dev shell
+- `devshell kontainer` – enter the kontainer dev shell
+- `repo-analysis` – git history stats for the repo you're standing in
 
 ## How it's glued together
 
 ```
 flake.nix
-├── imports nixpkgs, home-manager, plasma-manager, nix-flatpak, better-soundcloud
-└── discovers hosts/ directory
+├── inputs: nixpkgs, home-manager, plasma-manager, declarative-flatpak
+├── devShells  ← every shells/<name>.nix
+└── nixosConfigurations  ← every hosts/<hostname>/
     └── hosts/nixos-thinkpad/default.nix
         ├── imports hardware-configuration.nix
+        ├── imports modules/            (machine specific)
         └── imports shared/configuration.nix
-            ├── imports shared/overlays.nix
+            ├── imports shared/modules/*.nix
+            │   └── nix.nix imports shared/modules/overlays.nix
             └── imports shared/users/default.nix
                 └── imports all user subdirectories
                     └── shared/users/<USER>/default.nix
                         └── imports ./user.nix
-                            ├── defines system user
+                            ├── defines the system user
                             └── home-manager.users.<USER> = import ./home-manager.nix
-                                ├── uses shells/devshell.sh
-                                ├── references shells/kontainer.nix
-                                └── uses images/wallpaper.svg
+                                └── sources shells/devshell.sh
 ```
 
 ## Adding a user
@@ -77,6 +86,11 @@ flake.nix
    - `user.nix` – system user + home‑manager hook
    - `home-manager.nix` – actual config
 2. Rebuild – it gets picked up automatically.
+
+## Adding a dev shell
+
+Drop a `shells/<name>.nix` in place. It shows up in `devshell list` and as
+`nix develop /etc/nixos#<name>`.
 
 ## Renaming a machine
 
@@ -88,15 +102,7 @@ run0 nixos-rebuild switch --flake /etc/nixos#new-name
 ## Updating everything
 
 ```
-cd /etc/nixos
-nix flake update
-rebuild
-```
-
-## Regenerate hardware config
-
-```
-update-hardware-host
+update
 ```
 
 ## License

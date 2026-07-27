@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ pkgs, ... }:
 let
   dockerBtrfsFile = "/docker.btrfs";
   dockerBtrfsSize = "64G";
@@ -8,7 +8,6 @@ in
     enable = true;
     storageDriver = "btrfs";
   };
-  environment.systemPackages = [ pkgs.btrfs-progs ];
 
   systemd.sockets.docker = {
     after = [ "var-lib-docker.mount" ];

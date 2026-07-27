@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ lib, ... }:
 
 {
   # ---------------------------------------------------------------------------
@@ -15,16 +15,14 @@
   # ---------------------------------------------------------------------------
   home-manager = {
     backupFileExtension = "backup";
-    useGlobalPkgs = true;
   };
 
   # ---------------------------------------------------------------------------
   # Import all per-user modules automatically
   # ---------------------------------------------------------------------------
   imports =
-    builtins.map
-      (u: ./${u})
-      (builtins.filter
-        (n: n != "default.nix")
-        (builtins.attrNames (builtins.readDir ./.)));
+    builtins.map (u: ./${u})
+      (builtins.attrNames
+        (lib.filterAttrs (_: type: type == "directory")
+          (builtins.readDir ./.)));
 }

@@ -1,78 +1,68 @@
-#!/usr/bin/env bash
+# shellcheck shell=bash
+# Sourced from ~/.zshrc – provides the `devshell` helper.
+#
+# Every shells/<name>.nix is exposed by flake.nix as devShells.<name>, so this
+# is just a thin wrapper around `nix develop /etc/nixos#<name>`.
+
+SHELLS_DIR="${SHELLS_DIR:-/etc/nixos/shells}"
+
+_devshell_names() {
+  local file
+  for file in "$SHELLS_DIR"/*.nix; do
+    [[ -f "$file" ]] && basename "$file" .nix
+  done
+}
 
 _devshell_completion() {
-  local shells_dir="/etc/nixos/shells"
   local -a shell_names
-  
-  if [[ -d "$shells_dir" ]]; then
-    for file in "$shells_dir"/*.nix; do
-      if [[ -f "$file" ]]; then
-        shell_names+=("$(basename "$file" .nix)")
-      fi
-    done
-  fi
-  
+  local name
+  while IFS= read -r name; do
+    shell_names+=("$name")
+  done < <(_devshell_names)
   _describe 'devshell' shell_names
 }
 
 devshell() {
-  local SHELLS_DIR="/etc/nixos/shells"
-  
-  # List available devshells
-  if [[ "$1" == "list" ]]; then
-    if [[ -d "$SHELLS_DIR" ]]; then
-      echo "Available devshells:"
-      for file in "$SHELLS_DIR"/*.nix; do
-        if [[ -f "$file" ]]; then
-          local name="$(basename "$file" .nix)"
-          echo "  $name"
-        fi
-      done
-    else
-      echo "Shells directory not found: $SHELLS_DIR"
-      return 1
-    fi
-    return 0
-  fi
-  
-  # Show help if no arguments
-  if [[ $# -eq 0 ]]; then
-    echo "Usage:"
-    echo "  devshell list                     - List available devshells"
-    echo "  devshell <name>                   - Enter devshell environment"
-    echo "  devshell <name> --command 'cmd'  - Run command in devshell"
-    echo ""
-    echo "Example:"
-    echo "  devshell kontainer"
+  if [[ $# -eq 0 || "$1" == "-h" || "$1" == "--help" ]]; then
+    cat <<'USAGE'
+Usage:
+  devshell list                    - List available devshells
+  devshell <name>                  - Enter devshell environment
+  devshell <name> --command 'cmd'  - Run command in devshell
+
+Example:
+  devshell kontainer
+USAGE
     return 1
   fi
-  
+
+  if [[ "$1" == "list" ]]; then
+    if [[ ! -d "$SHELLS_DIR" ]]; then
+      echo "Shells directory not found: $SHELLS_DIR" >&2
+      return 1
+    fi
+    echo "Available devshells:"
+    _devshell_names | sed 's/^/  /'
+    return 0
+  fi
+
   local shell_name="$1"
-  local shell_file="$SHELLS_DIR/$shell_name.nix"
-  
-  # Shift to get remaining arguments
   shift
-  
-  if [[ ! -f "$shell_file" ]]; then
-    echo "Devshell not found: $shell_name"
-    echo "Available shells:"
+
+  if [[ ! -f "$SHELLS_DIR/$shell_name.nix" ]]; then
+    echo "Devshell not found: $shell_name" >&2
     devshell list
     return 1
   fi
-  
-  # Determine current directory (try to preserve it)
-  local original_dir="$(pwd)"
-  
-  # Enter devshell
+
   if [[ "$1" == "--command" ]]; then
     shift
-    local command="$*"
-    echo "Running command in devshell '$shell_name': $command"
-    cd "$original_dir" && nix develop --impure -f "$shell_file" -c zsh -c "$command"
+    echo "Running command in devshell '$shell_name': $*"
+    nix develop "/etc/nixos#$shell_name" --command zsh -c "$*"
   else
     echo "Entering devshell: $shell_name"
     echo "Use 'exit' to leave the devshell"
-    cd "$original_dir" && nix develop --impure -f "$shell_file"
+    nix develop "/etc/nixos#$shell_name"
   fi
 }
 

@@ -1,12 +1,12 @@
-{ pkgs, inputs, ... }:
+{ pkgs, ... }:
 let
   xwaylandvideobridge = pkgs.kdePackages.callPackage ../../pkgs/xwaylandvideobridge/package.nix { };
 
-  # Custom JDK with JavaFX
+  # openjdk with JavaFX enabled.
+  # For WebKit support in JavaFX, add:
+  #   openjfx_jdk = pkgs.openjfx.override { withWebKit = true; };
   jdkWithFX = pkgs.openjdk.override {
     enableJavaFX = true;
-    # Uncomment the next line if you need WebKit support in JavaFX
-    # openjfx_jdk = pkgs.openjfx.override { withWebKit = true; };
   };
 in
 {
@@ -20,8 +20,8 @@ in
     btop
     btrfs-progs
     curl
-    erofs-utils
     e2fsprogs
+    erofs-utils
     git
     gptfdisk
     graphviz-nox
@@ -34,7 +34,6 @@ in
     pandoc
     parted
     rar
-    sbctl
     vim
     wget
     xorriso
@@ -43,22 +42,18 @@ in
     arcan
     bottles
     cat9
-    # firefoxpwa
-    flatpak
     geogebra
     gimp
     github-desktop
     libreoffice-qt-fresh
     localsend
     megasync
-    nixos-bgrt-plymouth
     python314Packages.ocrmypdf_16
     qbittorrent-enhanced
     spotify
     thunderbird-bin
     vesktop
     vlc
-    # zulip
 
     # KDE
     kdePackages.appstream-qt
@@ -68,7 +63,6 @@ in
     kdePackages.kmines
     kdePackages.kwallet-pam
     kdePackages.partitionmanager
-    kdePackages.xdg-desktop-portal-kde
     kdePackages.skanlite
     xwaylandvideobridge
 
@@ -96,17 +90,17 @@ in
     go
     go-md2man
     gopls
+    jdkWithFX
     jdt-language-server
     jq
     libclang.python
+    libgcc
     llvmPackages.libclang
     logisim-evolution
-    libgcc
     maven
     meson
     msedit
     nasm
-    jdkWithFX              # ← replaced openjdk with JavaFX‑enabled JDK
     openssl
     openssl.dev
     OVMFFull
@@ -117,7 +111,7 @@ in
     shadow
     sqlite
     systemdUkify
-    texlive.combined.scheme-full
+    texliveFull
     virtualenv
     wayland-utils
     xdg-utils
@@ -134,12 +128,6 @@ in
     # Zig
     zig
     zls
-
-    # KDE Dev
-#     kdePackages.kde-dev-scripts
-#     kdePackages.kde-dev-utils
-#     kdePackages.kdev-php
-#     kdePackages.kdev-python
 
     # Fun
     cmatrix
@@ -166,7 +154,6 @@ in
         llvm-vs-code-extensions.lldb-dap
         llvm-vs-code-extensions.vscode-clangd
         ms-azuretools.vscode-docker
-       #  ms-python.python
         ms-vscode.makefile-tools
         ms-vscode-remote.remote-ssh
         yzhang.markdown-all-in-one
@@ -188,8 +175,5 @@ in
         exec run0 --user="$1" bash
       fi
     '')
-
-    # Flakes
-    # inputs.better-soundcloud.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 }
