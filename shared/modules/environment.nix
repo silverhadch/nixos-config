@@ -48,6 +48,7 @@ in
     libreoffice-qt-fresh
     localsend
     megasync
+    nheko
     python314Packages.ocrmypdf_16
     qbittorrent-enhanced
     spotify
