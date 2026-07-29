@@ -19,23 +19,20 @@
 }:
 stdenv.mkDerivation (finalAttrs: {
   pname = "xwaylandvideobridge";
-  version = "0.5.0-kf6";
-
+  version = "0.5.1-unstable";
   src = fetchFromGitLab {
     domain = "invent.kde.org";
     owner = "system";
     repo = "xwaylandvideobridge";
-    rev = "2d5db516b5e777bcce7f2266cea5c1d370fc7f05";
-    hash = "sha256-qM7q7UTPMv+XUf8oVqyzID31r5uziDmO20WmhYyg0s0=";
+    rev = "0f7ed9fdcfa2502d539eb7acf8232b127a219673";
+    hash = "sha256-QcXZKhhk/E4Doja2k43J9updu0Hc4haRCkK4M9YADn8=";
   };
-
   nativeBuildInputs = [
     cmake
     extra-cmake-modules
     pkg-config
     wrapQtAppsHook
   ];
-
   buildInputs = [
     qtbase
     qtdeclarative
@@ -48,7 +45,6 @@ stdenv.mkDerivation (finalAttrs: {
     libxcb
     xcbutil
   ];
-
   meta = {
     description = "Utility to allow streaming Wayland windows to X applications";
     homepage = "https://invent.kde.org/system/xwaylandvideobridge";
@@ -57,7 +53,7 @@ stdenv.mkDerivation (finalAttrs: {
       cc0
       gpl2Plus
     ];
-    maintainers = with lib.maintainers; [ stepbrobd ];
+    maintainers = with lib.maintainers; [ silverhadch ];
     platforms = lib.platforms.linux;
     mainProgram = "xwaylandvideobridge";
   };
