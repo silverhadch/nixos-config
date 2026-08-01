@@ -24,6 +24,7 @@ pkgs.mkShell {
     pkg-config
     clang
     llvmPackages.libclang
+    protobuf
   ];
 
   buildInputs = dlopenLibraries ++ [ qtEnv ] ++ (with pkgs; [

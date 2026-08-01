@@ -49,12 +49,13 @@ in
     localsend
     megasync
     nheko
-    python314Packages.ocrmypdf_16
+    ocrmypdf
     qbittorrent-enhanced
     spotify
     thunderbird-bin
     vesktop
     vlc
+    zulip
 
     # KDE
     kdePackages.appstream-qt
