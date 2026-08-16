@@ -1,6 +1,8 @@
 { pkgs, ... }:
 
 {
+  environment.systemPackages = with pkgs; [ podman-compose runc conmon skopeo fuse-overlayfs ];
+
   virtualisation = {
     containers.enable = true;
     libvirtd.enable = true;
