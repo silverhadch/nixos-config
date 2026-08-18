@@ -9,7 +9,7 @@
     kernelPackages = pkgs.linuxPackages_latest;
     extraModulePackages = with config.boot.kernelPackages; [
       # nullfs
-      openafs
+      # openafs
       # openrazer
       xone
     ];
