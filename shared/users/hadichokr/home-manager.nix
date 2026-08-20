@@ -128,6 +128,8 @@
   programs.git = {
     enable = true;
     settings = {
+      init.defaultBranch = "master";
+
       user = {
         email = "${USERNAME}@icloud.com";
         name  = NAME;
