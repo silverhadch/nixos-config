@@ -7,6 +7,7 @@
   pkg-config,
   qtbase,
   qtdeclarative,
+  kdbusaddons,
   kcoreaddons,
   kcrash,
   ki18n,
@@ -19,13 +20,13 @@
 }:
 stdenv.mkDerivation (finalAttrs: {
   pname = "xwaylandvideobridge";
-  version = "0.5.1-unstable";
+  version = "0.5.2-unstable";
   src = fetchFromGitLab {
     domain = "invent.kde.org";
     owner = "system";
     repo = "xwaylandvideobridge";
-    rev = "0f7ed9fdcfa2502d539eb7acf8232b127a219673";
-    hash = "sha256-QcXZKhhk/E4Doja2k43J9updu0Hc4haRCkK4M9YADn8=";
+    rev = "9600ad46f91afcca878b6f8351d41fe39411dc50";
+    hash = "sha256-WFklGsUPdt14P6gDX71CpCsBoO5fxbC4TgWb8IBdNfc=";
   };
   nativeBuildInputs = [
     cmake
@@ -38,6 +39,7 @@ stdenv.mkDerivation (finalAttrs: {
     qtdeclarative
     kcoreaddons
     kcrash
+    kdbusaddons
     ki18n
     kpipewire
     kstatusnotifieritem
