@@ -30,7 +30,6 @@ in
     inotify-tools
     libnotify
     nano
-    neovim
     pandoc
     parted
     rar
@@ -45,7 +44,7 @@ in
     geogebra
     gimp
     github-desktop
-    libreoffice-qt-fresh
+    libreoffice-qt-stable
     localsend
     megasync
     nheko

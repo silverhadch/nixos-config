@@ -1,11 +1,10 @@
-{ USERNAME, NAME, ... }:
+{ USERNAME, NAME, config, ... }:
 
 {
   users.users.${USERNAME} = {
     description = NAME;
     isNormalUser = true;
 
-    # No mkForce here: other modules must be able to add groups of their own.
     extraGroups = [
       "adbusers"
       "audio"
@@ -30,12 +29,11 @@
     ];
   };
 
-  # ------------------------------
-  # Home Manager integration
-  # ------------------------------
   home-manager = {
-    extraSpecialArgs = { inherit USERNAME NAME; };
-
+    extraSpecialArgs = {
+      inherit USERNAME NAME;
+      osConfig = config;
+    };
     users.${USERNAME} = import ./home-manager.nix;
   };
 }

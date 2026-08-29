@@ -2,6 +2,11 @@
 
 {
   # ---------------------------------------------------------------------------
+  # Imports
+  # ---------------------------------------------------------------------------
+  imports = [ ./helix/main.nix ];
+
+  # ---------------------------------------------------------------------------
   # Home basics
   # ---------------------------------------------------------------------------
   home = {
@@ -293,8 +298,8 @@
     initContent = ''
       ZSH_DISABLE_COMPFIX=true
 
-      export EDITOR=nvim
-      export VISUAL=nvim
+      export EDITOR=hx
+      export VISUAL=hx
       export PATH="$HOME/.local/bin:$PATH"
 
       # Oxygen widget style for native Qt apps, dark GTK theme for GTK apps
