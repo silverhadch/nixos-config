@@ -10,6 +10,7 @@
     ./modules/bluetooth.nix
     ./modules/boot.nix
     ./modules/cdemu.nix
+    ./modules/clamav.nix
     ./modules/console-x11.nix
     ./modules/desktop.nix
     ./modules/docker.nix
