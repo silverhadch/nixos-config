@@ -65,7 +65,7 @@ in
     kdePackages.kwallet-pam
     kdePackages.partitionmanager
     kdePackages.skanlite
-    xwaylandvideobridge
+    #xwaylandvideobridge
 
     # Oxygen
     kdePackages.oxygen

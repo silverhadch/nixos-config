@@ -89,6 +89,7 @@
     remotes = {
       "flathub" = "https://flathub.org/repo/flathub.flatpakrepo";
       "webexweb" = "https://silverhadch.github.io/io.github.silverhadch.WebexWeb/index.flatpakrepo";
+      "xwaylandvideobridge-nightly" = "https://cdn.kde.org/flatpak/xwaylandvideobridge-nightly/xwaylandvideobridge-nightly.flatpakrepo";
     };
 
     packages = [
@@ -101,6 +102,7 @@
       "flathub:app/party.supertux.supertuxparty//stable"
       "flathub:app/app.eduroam.geteduroam//stable"
       "webexweb:app/io.github.silverhadch.WebexWeb//master"
+      "xwaylandvideobridge-nightly:app/org.kde.xwaylandvideobridge//master"
     ];
 
     overrides = {
