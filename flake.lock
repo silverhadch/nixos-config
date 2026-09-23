@@ -2,11 +2,11 @@
   "nodes": {
     "declarative-flatpak": {
       "locked": {
-        "lastModified": 1790151208,
-        "narHash": "sha256-ndxf1g0Siy8IWcpZIBp7UF1r/9xsJi/wH9d+1HlaaLk=",
+        "lastModified": 1790162670,
+        "narHash": "sha256-piqrsSKYl+vj2hZp9fd4VmbqtXspAlY6y47Cfw9uEtA=",
         "owner": "in-a-dil-emma",
         "repo": "declarative-flatpak",
-        "rev": "10500e2156cd4749e2a2d418eb16aa9d29de0f4d",
+        "rev": "16956dc05edbf56c3b4a9ac46a9e08df77708aa5",
         "type": "github"
       },
       "original": {
