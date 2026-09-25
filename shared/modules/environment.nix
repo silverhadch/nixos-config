@@ -163,9 +163,10 @@ in
 
     # shims
     (writeShellScriptBin "vi" ''exec vim -u NONE -C "$@"'')
-    (writeShellScriptBin "sudo" ''exec run0 "$@"'')
+    # `sudo` itself comes from security.run0.sudo-shim (see security.nix).
+    # The shim doesn't do sudoedit yet, so keep this one.
     (writeShellScriptBin "sudoedit" ''exec run0 rnano "$@"'')
-    (writeShellScriptBin "doas" ''exec run0 "$@"'')
+    (writeShellScriptBin "doas" ''exec sudo "$@"'')
     (writeShellScriptBin "pkexec" ''exec run0 "$@"'')
     (writeShellScriptBin "su" ''
       if [ "$#" -eq 0 ]; then

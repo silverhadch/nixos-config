@@ -11,6 +11,7 @@
     ./modules/boot.nix
     ./modules/cdemu.nix
     ./modules/clamav.nix
+    ./modules/command-not-found.nix
     ./modules/console-x11.nix
     ./modules/desktop.nix
     ./modules/docker.nix
@@ -25,6 +26,7 @@
     ./modules/printing.nix
     ./modules/programs.nix
     ./modules/security.nix
+    ./modules/sleep.nix
     ./modules/swap.nix
     ./modules/system.nix
     ./modules/systemd.nix

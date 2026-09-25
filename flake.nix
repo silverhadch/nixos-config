@@ -16,6 +16,12 @@
     };
 
     declarative-flatpak.url = "github:in-a-dil-emma/declarative-flatpak/latest";
+
+    # Prebuilt, weekly-updated nix-index database (for command-not-found + comma).
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs:
@@ -47,6 +53,7 @@
           modules = [
             ./hosts/${hostName}
             inputs.home-manager.nixosModules.home-manager
+            inputs.nix-index-database.nixosModules.nix-index
             {
               home-manager = {
                 useGlobalPkgs = true;

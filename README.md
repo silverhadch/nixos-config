@@ -56,12 +56,14 @@ config; everything else is shared.
 - `devshell list` – list dev environments
 - `devshell kontainer` – enter the kontainer dev shell
 - `repo-analysis` – git history stats for the repo you're standing in
+- `<anything not installed>` – fetched from nixpkgs, run, and kept on PATH until logout
+- `, <cmd>` – run a command from nixpkgs once (comma)
 
 ## How it's glued together
 
 ```
 flake.nix
-├── inputs: nixpkgs, home-manager, plasma-manager, declarative-flatpak
+├── inputs: nixpkgs, home-manager, plasma-manager, declarative-flatpak, nix-index-database
 ├── devShells  ← every shells/<name>.nix
 └── nixosConfigurations  ← every hosts/<hostname>/
     └── hosts/nixos-thinkpad/default.nix
