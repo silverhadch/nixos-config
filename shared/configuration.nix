@@ -20,6 +20,7 @@
     ./modules/fonts.nix
     ./modules/kmscon.nix
     ./modules/locale.nix
+    ./modules/minecraft-bedrock.nix
     ./modules/networking.nix
     ./modules/nix.nix
     ./modules/no-spyware-here.nix
