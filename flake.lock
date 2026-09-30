@@ -7,11 +7,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1789658051,
-        "narHash": "sha256-jglFsi6DVzeBP/rCpZTq1gq0/9kodXABofOoGGImJxM=",
+        "lastModified": 1790720165,
+        "narHash": "sha256-Kg6RPNlDpKg3aDDBC2Cq2r8uDvTaSCGdZwX5aU46/SY=",
         "owner": "Wyze3306",
         "repo": "BedrockOnLinux",
-        "rev": "f6a76188ea8df3c369fd335386cbc7faa71fa334",
+        "rev": "7a315c836b7ae8068042bc466b0540c16ffe3a5e",
         "type": "github"
       },
       "original": {
@@ -43,11 +43,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790365885,
-        "narHash": "sha256-iQ0ebhiVo64NktTnwft9hNxlFu4j5cvljVxyJaEVIP4=",
+        "lastModified": 1790742230,
+        "narHash": "sha256-5399J1/O3DyLSsYGVa950JtOUDB9Reqvy7FhfDuTVzk=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "7b4c5ec4bedaf1e062bbc1bcaeddbc6bd242aa1b",
+        "rev": "0aefa652eb6fd8b7396af25e8c81cb0790f12cc2",
         "type": "github"
       },
       "original": {
