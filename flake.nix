@@ -24,7 +24,7 @@
     };
 
     bedrock-on-linux = {
-      url = "github:silverhadch/BedrockOnLinux";
+      url = "github:Wyze3306/BedrockOnLinux";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
