@@ -26,6 +26,7 @@
     ./modules/no-spyware-here.nix
     ./modules/printing.nix
     ./modules/programs.nix
+    ./modules/ros.nix
     ./modules/security.nix
     ./modules/sleep.nix
     ./modules/swap.nix

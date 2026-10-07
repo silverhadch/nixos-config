@@ -27,6 +27,12 @@
       url = "github:silverhadch/BedrockOnLinux";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # ROS 2 for Nix. Deliberately NOT following our nixpkgs: the overlay is
+    # tested (and cached) against its own pinned nixpkgs, and following
+    # nixos-unstable would mean building most of ROS from source.
+    # Only the `ros` dev shell uses it; the system itself is untouched.
+    nix-ros-overlay.url = "github:lopsided98/nix-ros-overlay/master";
   };
 
   outputs = inputs:
@@ -72,7 +78,14 @@
           ];
         };
 
-      mkShell = name: import ./shells/${name}.nix { inherit pkgs; };
+      # Each shell only gets the arguments it asks for, so plain
+      # `{ pkgs ? ... }:` shells keep working and shells that need flake
+      # inputs (like ros.nix) can take `{ inputs, system, ... }:`.
+      mkShell = name:
+        let f = import ./shells/${name}.nix;
+        in f (builtins.intersectAttrs (builtins.functionArgs f) {
+          inherit pkgs inputs system;
+        });
     in
     {
       # nixos-rebuild switch --flake /etc/nixos#<hostname>
