@@ -1,6 +1,11 @@
-{ pkgs, ... }:
+{ inputs, pkgs, ... }:
 let
   xwaylandvideobridge = pkgs.kdePackages.callPackage ../../pkgs/xwaylandvideobridge/package.nix { };
+
+  pdfcraft = pkgs.callPackage ../../pkgs/pdfcraft/package.nix {
+    src = inputs.pdfcraft;
+    craftFonts = inputs.craft-fonts;
+  };
 
   # openjdk with JavaFX enabled.
   # For WebKit support in JavaFX, add:
@@ -49,6 +54,7 @@ in
     megasync
     nheko
     ocrmypdf
+    pdfcraft
     qbittorrent-enhanced
     spotify
     thunderbird-bin

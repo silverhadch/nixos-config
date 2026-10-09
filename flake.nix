@@ -33,6 +33,21 @@
     # nixos-unstable would mean building most of ROS from source.
     # Only the `ros` dev shell uses it; the system itself is untouched.
     nix-ros-overlay.url = "github:lopsided98/nix-ros-overlay/master";
+
+    # PdfCraft, built from source off the tip of its default branch (`main`;
+    # the repo has no `master`). `update` / `nix flake update` moves it to
+    # the newest commit.
+    pdfcraft = {
+      url = "github:storytold/pdfcraft/main";
+      flake = false;
+    };
+
+    # Optional build input for PdfCraft: Japanese UI text and Japanese text
+    # in edited PDFs. Release builds always include it.
+    craft-fonts = {
+      url = "github:storytold/craft-fonts/main";
+      flake = false;
+    };
   };
 
   outputs = inputs:
