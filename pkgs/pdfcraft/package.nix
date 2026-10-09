@@ -2,7 +2,8 @@
 # main), `craftFonts` the optional `craft-fonts` input; see flake.nix.
 {
   lib,
-  rustPlatform,
+  makeRustPlatform,
+  rust,
   src,
   craftFonts ? null,
   cmake,
@@ -38,6 +39,16 @@ let
     vulkan-loader
     wayland
   ];
+
+  # nixpkgs' own rustc (1.98) is linked against LLVM 21, but its stdarch
+  # already uses LLVM 22's AVX-512 VNNI intrinsic signatures, so any crate
+  # calling _mm512_dpbusd_epi32 (rten-gemm, via OCR) fails to compile. The
+  # official prebuilt toolchain of the same version bundles the LLVM it
+  # expects. Switch back to plain `rustPlatform` once nixpkgs builds rustc
+  # with LLVM 22.
+  rustPlatform = makeRustPlatform {
+    inherit (rust.packages.prebuilt) rustc cargo;
+  };
 in
 rustPlatform.buildRustPackage {
   pname = "pdfcraft";
