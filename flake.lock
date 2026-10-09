@@ -20,6 +20,23 @@
         "type": "github"
       }
     },
+    "craft-fonts": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1791311399,
+        "narHash": "sha256-4E9OrthE5z39xFXpvpwn4Fn6RH3wX2sF56rZZejZT+I=",
+        "owner": "storytold",
+        "repo": "craft-fonts",
+        "rev": "8dcdacd5153e64560d109541a47d806f26f048c0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "storytold",
+        "ref": "main",
+        "repo": "craft-fonts",
+        "type": "github"
+      }
+    },
     "declarative-flatpak": {
       "locked": {
         "lastModified": 1791141831,
@@ -147,6 +164,23 @@
         "type": "github"
       }
     },
+    "pdfcraft": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1791513992,
+        "narHash": "sha256-89d6B0483PcwUlZuhPoZ5B2ekGjXyWwuhq/4I/qhKwc=",
+        "owner": "storytold",
+        "repo": "pdfcraft",
+        "rev": "a6bc63a497954af87c1cd5a2a1e72e928a11c039",
+        "type": "github"
+      },
+      "original": {
+        "owner": "storytold",
+        "ref": "main",
+        "repo": "pdfcraft",
+        "type": "github"
+      }
+    },
     "plasma-manager": {
       "inputs": {
         "home-manager": [
@@ -173,11 +207,13 @@
     "root": {
       "inputs": {
         "bedrock-on-linux": "bedrock-on-linux",
+        "craft-fonts": "craft-fonts",
         "declarative-flatpak": "declarative-flatpak",
         "home-manager": "home-manager",
         "nix-index-database": "nix-index-database",
         "nix-ros-overlay": "nix-ros-overlay",
         "nixpkgs": "nixpkgs_2",
+        "pdfcraft": "pdfcraft",
         "plasma-manager": "plasma-manager"
       }
     },
