@@ -7,11 +7,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791411127,
-        "narHash": "sha256-6Q32Mjyg9jMVFA+OfoOM8gFB/QGPoLBVNrXWLhzojRI=",
+        "lastModified": 1791584805,
+        "narHash": "sha256-F8tN9HVfhO2cQS0v+mQpLwth8xXYFtXzBbcvlV2kcq0=",
         "owner": "Wyze3306",
         "repo": "BedrockOnLinux",
-        "rev": "fd5aba3a4182d5085630ed34b27f9cac2e8cda7d",
+        "rev": "276ae7bd6172c588b7311cb70faf3145a0af3fd2",
         "type": "github"
       },
       "original": {
@@ -78,11 +78,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791484883,
-        "narHash": "sha256-iKxFHJrg7Sltwhq3ssCZYQ4CFEDVvReVVuVuO9dj3sE=",
+        "lastModified": 1791600313,
+        "narHash": "sha256-/2gb2WTztITD/JU1XUCg63vDsIfJGLr0LDsjSCTTJc8=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "dfadbe5162d5e86bc0808badec8f346f81b4b3f0",
+        "rev": "427c74a88a93cc9f856c8bb99bf6b4a5187a6b33",
         "type": "github"
       },
       "original": {
@@ -167,11 +167,11 @@
     "pdfcraft": {
       "flake": false,
       "locked": {
-        "lastModified": 1791513992,
-        "narHash": "sha256-89d6B0483PcwUlZuhPoZ5B2ekGjXyWwuhq/4I/qhKwc=",
+        "lastModified": 1791600456,
+        "narHash": "sha256-9vRH7tHlhbRmbkVdcgYKSuWfTiZi0BcfsQM1OkptUG8=",
         "owner": "storytold",
         "repo": "pdfcraft",
-        "rev": "a6bc63a497954af87c1cd5a2a1e72e928a11c039",
+        "rev": "68e91d4815ed43212895589411aa3d21b2a84bc3",
         "type": "github"
       },
       "original": {
