@@ -78,11 +78,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791600313,
-        "narHash": "sha256-/2gb2WTztITD/JU1XUCg63vDsIfJGLr0LDsjSCTTJc8=",
+        "lastModified": 1791642191,
+        "narHash": "sha256-0bK0A59rVUn1SRZzo4cNi4VSqAe7vR1gL2/MZl53Frw=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "427c74a88a93cc9f856c8bb99bf6b4a5187a6b33",
+        "rev": "c58f54c733a7894d84fa2fdff26cc12088c4b78c",
         "type": "github"
       },
       "original": {
@@ -167,15 +167,15 @@
     "pdfcraft": {
       "flake": false,
       "locked": {
-        "lastModified": 1791635620,
-        "narHash": "sha256-Gbxt4JaPk9ekGcFjtNN/IuyXWDC+I+qc/NAKQ0LumgU=",
-        "owner": "storytold",
+        "lastModified": 1791650393,
+        "narHash": "sha256-2oNhinNpCCgyBGm8rtkBQBUvjre541RUCqFaufy9pqM=",
+        "owner": "silverhadch",
         "repo": "pdfcraft",
-        "rev": "5d590604867fdac7ed71c555c40477ae3331a60a",
+        "rev": "59846e846a59dd00cc230c2f76f4f8fe5596558c",
         "type": "github"
       },
       "original": {
-        "owner": "storytold",
+        "owner": "silverhadch",
         "ref": "main",
         "repo": "pdfcraft",
         "type": "github"
