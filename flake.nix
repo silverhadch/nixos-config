@@ -38,7 +38,7 @@
     # the repo has no `master`). `update` / `nix flake update` moves it to
     # the newest commit.
     pdfcraft = {
-      url = "github:storytold/pdfcraft/main";
+      url = "github:silverhadch/pdfcraft/main";
       flake = false;
     };
 
