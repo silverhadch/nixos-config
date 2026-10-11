@@ -150,11 +150,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1791456040,
-        "narHash": "sha256-H83yz/do+hjOO0uujHyH8RgtIQP2v7Mw+cLwcZK/xKc=",
+        "lastModified": 1791594108,
+        "narHash": "sha256-XK4KceonkwD8LuMAt/vNrz982mXJM5jeHAxMwsUXXAQ=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "e7439b6b14ad3cc35d05608ebca9bce01a25f5f8",
+        "rev": "6510408d147d8c5e6d76043e899e9251756f6a75",
         "type": "github"
       },
       "original": {
@@ -167,11 +167,11 @@
     "pdfcraft": {
       "flake": false,
       "locked": {
-        "lastModified": 1791650393,
-        "narHash": "sha256-2oNhinNpCCgyBGm8rtkBQBUvjre541RUCqFaufy9pqM=",
+        "lastModified": 1791663938,
+        "narHash": "sha256-B7vi4NNxd6zefPWQUSFV7+0vfLjf0DPoQOoKrCL+jmY=",
         "owner": "silverhadch",
         "repo": "pdfcraft",
-        "rev": "59846e846a59dd00cc230c2f76f4f8fe5596558c",
+        "rev": "106344d210b3ab2c2ebff8e50cd9ec39bb3734ea",
         "type": "github"
       },
       "original": {
