@@ -167,11 +167,11 @@
     "pdfcraft": {
       "flake": false,
       "locked": {
-        "lastModified": 1791872181,
-        "narHash": "sha256-HKOUUZXythGsL3W9nPoMBbAasUbt0UhNQ7ZeF/Sjiyo=",
+        "lastModified": 1791875053,
+        "narHash": "sha256-NoNMmmLoW4OstDO0lsBjF43FKT1+vHKdxJfiouOUcKI=",
         "owner": "storytold",
         "repo": "pdfcraft",
-        "rev": "4cb803038da36a878215f089511739296fec5959",
+        "rev": "7437bde378f43856eada40af25b983812e615e8a",
         "type": "github"
       },
       "original": {
