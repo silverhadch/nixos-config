@@ -57,8 +57,14 @@ rustPlatform.buildRustPackage {
   inherit src;
 
   # The lock file comes straight from the checkout, so following main never
-  # needs a cargoHash bump (Cargo.lock has no git dependencies).
-  cargoLock.lockFile = "${src}/Cargo.lock";
+  # needs a cargoHash bump. Upstream pins its git dependencies (craft-print,
+  # craft-ui from storytold/craft-libs) to exact revs in Cargo.lock, so
+  # builtins.fetchGit can fetch them without a hand-maintained outputHashes
+  # entry that would break every time upstream bumps one.
+  cargoLock = {
+    lockFile = "${src}/Cargo.lock";
+    allowBuiltinFetchGit = true;
+  };
 
   # aws-lc-sys (signatures) builds C/asm; cmake is for it only, not for us.
   nativeBuildInputs = [ cmake perl pkg-config patchelf ];
@@ -103,3 +109,4 @@ rustPlatform.buildRustPackage {
     mainProgram = "pdfcraft";
   };
 }
+
