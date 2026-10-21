@@ -338,11 +338,14 @@
 
       update() {
         (
-          set -e
-          cd /etc/nixos
-          nix flake update
-          run0 nixos-rebuild switch --flake "/etc/nixos#$(get-current-host)"
-          git add .
+          cd /etc/nixos || exit 1
+          nix flake update || exit 1
+          if ! run0 nixos-rebuild switch --flake "/etc/nixos#$(get-current-host)"; then
+            echo "» rebuild failed, putting flake.lock back" >&2
+            git restore flake.lock
+            exit 1
+          fi
+          git add flake.lock
           git commit -m "Update inputs on $(date '+%Y-%m-%d %H:%M')"
           git push
         )
