@@ -24,6 +24,11 @@
 
 let
   cargoToml = lib.importTOML "${src}/Cargo.toml";
+  cargoLockToml = lib.importTOML "${src}/Cargo.lock";
+
+  # Crates Cargo.toml [patch]es but nothing depends on; Cargo.lock lists them
+  # as [[patch.unused]]. Read from the lock so this follows upstream.
+  unusedPatches = map (p: p.name) (cargoLockToml.patch.unused or [ ]);
   appId = "ai.storyteller.pdfcraft";
   date = src.lastModifiedDate or "19700101000000";
   isoDate = "${lib.substring 0 4 date}-${lib.substring 4 2 date}-${lib.substring 6 2 date}";
@@ -65,6 +70,14 @@ rustPlatform.buildRustPackage {
     lockFile = "${src}/Cargo.lock";
     allowBuiltinFetchGit = true;
   };
+
+  # Cargo still checks that every [patch] location contains its crate, but
+  # importCargoLock only vendors what the lock actually uses, so offline the
+  # unused git patches (egui_demo_lib & co. from storytold/egui) point at
+  # nothing and cargo aborts. Drop just those lines from the patch table.
+  postPatch = lib.concatMapStrings (name: ''
+    sed -i '/^${name} = { git = /d' Cargo.toml
+  '') unusedPatches;
 
   # aws-lc-sys (signatures) builds C/asm; cmake is for it only, not for us.
   nativeBuildInputs = [ cmake perl pkg-config patchelf ];
