@@ -2,10 +2,6 @@
 {
   boot = {
     consoleLogLevel = 3;
-    initrd = {
-      systemd.enable = true;
-      verbose = false;
-    };
     kernelPackages = pkgs.linuxPackages_latest;
     extraModulePackages = with config.boot.kernelPackages; [
       # nullfs

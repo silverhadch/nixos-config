@@ -19,8 +19,8 @@ in
     environment.SYSTEMD_SLEEP_FREEZE_USER_SESSIONS = "false";
   });
 
-  # Hibernation (Ruhezustand): no resume= / resume_offset= needed. With the
-  # systemd initrd (boot.nix) systemd stores where the image lives in the EFI
+  # Hibernation (Ruhezustand): no resume= / resume_offset= needed. The
+  # (now mandatory) systemd initrd stores where the image lives in the EFI
   # variable HibernateLocation, and the initrd resumes from it after you've
   # unlocked LUKS. Needs the persistent swapfile from swap.nix.
 }
